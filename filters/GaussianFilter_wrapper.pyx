@@ -2,8 +2,6 @@ cimport numpy as cnp
 import numpy as np
 cimport cython
 
-from skimage.color import guess_spatial_dimensions
-
 cnp.import_array()
 
 cdef extern from "ippfuncswrappers.c":
