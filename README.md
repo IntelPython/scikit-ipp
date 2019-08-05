@@ -12,6 +12,7 @@ Corrently it works for all dtypes
 5) integrate numpy conversions
 6) test on scikit-image gausssian_test
 7) multichannels
+8) code style
 
 ### issues:
 1) Ipp has more than 6 types of borders, is it needed to use all of them?
