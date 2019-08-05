@@ -62,9 +62,10 @@ cdef int _getIppBorderType(mode):
 def _get_output(output, input, shape=None):
 	if shape is None:
 		shape = input.shape
-
 	if output is None:
-		output = np.zeros(shape, dtype=input.dtype.name)
+		# as in skimage gaussian filter logic
+		# Integer arrays are converted to float.
+		output = np.zeros(shape, dtype=np.float32)
 	elif type(output) in [type(type), type(np.zeros((4,)).dtype)]:
 		output = np.zeros(shape, dtype=output)
 	elif output.shape != shape:
@@ -98,116 +99,122 @@ def gaussian(cnp.ndarray image, float sigma=1.0, output=None, mode='nearest',
 	cdef void* cyimage
 	cdef void* cydestination
 
-	# needed more correct way. Warning: conversion from 'npy_intp' to 'int', possible loss of data
-	cdef int img_width = image.shape[0]
-	cdef int img_height = image.shape[1]
-	cdef int stepsize = image.strides[0]
+	cdef int img_width
+	cdef int img_height
+	cdef int stepsize
 
 	cdef int numChannels = _get_number_of_channels(image)
 	cdef int ippBorderType = _getIppBorderType(mode)
 
-
-	"""
-	## numpy convertations has some bug
 	if(numChannels == 1):
 		if(destination.dtype == np.uint8):
-			if not image.dtype == destination.dtype:
-				image = image.astype(dtype = destination.dtype.name)
-			print(image.dtype)
-			print(destination.dtype)
+			#If dtype is set, array is copied only if dtype does not match
+			image = np.asarray(image, dtype=destination.dtype)
+			# needed more correct way. Warning: conversion from 'npy_intp' to 'int', possible loss of data
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
 			cyimage = <void*> cnp.PyArray_DATA(image)
 			cydestination = <void*> cnp.PyArray_DATA(destination)
 			GaussianFilterUINT8(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+		elif(destination.dtype == np.int16):
+			#If dtype is set, array is copied only if dtype does not match
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
+			cyimage = <void*> cnp.PyArray_DATA(image)
+			cydestination = <void*> cnp.PyArray_DATA(destination)
+			GaussianFilterINT16(cyimage, cydestination, img_width, img_height, 
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
 		elif(destination.dtype == np.uint16):
-			if not image.dtype == destination.dtype:
-				image = np.asarray(image, dtype = destination.dtype)
+			#If dtype is set, array is copied only if dtype does not match
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
 			cyimage = <void*> cnp.PyArray_DATA(image)
 			cydestination = <void*> cnp.PyArray_DATA(destination)
 			GaussianFilterUINT16(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		elif(destination.dtype == np.int16):
-			if not image.dtype == destination.dtype:
-				image = np.asarray(image, dtype = destination.dtype)
-			cyimage = <void*> cnp.PyArray_DATA(image)
-			cydestination = <void*> cnp.PyArray_DATA(destination)
-			GaussianFilterINT16(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
 		elif(destination.dtype == np.float32):
-			if not image.dtype == destination.dtype:
-				image = np.asarray(image, dtype = destination.dtype)
+			#If dtype is set, array is copied only if dtype does not match
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
 			cyimage = <void*> cnp.PyArray_DATA(image)
 			cydestination = <void*> cnp.PyArray_DATA(destination)
 			GaussianFilterFLOAT32(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		# other dtypes for one channel
-		elif(destination.dtype == np.int8): 
-			print("case is this")
-			if not image.dtype == np.float32:
-				image = np.asarray(image, dtype = np.float32)
-			print(image)
-			print("output dtype is ", destination.dtype)
-			destination = np.asarray(destination, dtype = np.float32)
-			cyimage = <void*> cnp.PyArray_DATA(image)
-			cydestination = <void*> cnp.PyArray_DATA(destination)
-			GaussianFilterFLOAT32(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-			destination = np.asarray(destination, dtype=np.int8)
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
 		else:
-			raise ValueError("Currently not supported")
+			# needs check for other dtypes
+			destination_actual_dtype = destination.dtype
+			destination = np.asarray(destination, dtype=np.float32)
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
+			cyimage = <void*> cnp.PyArray_DATA(image)
+			cydestination = <void*> cnp.PyArray_DATA(destination)
+			GaussianFilterFLOAT32(cyimage, cydestination, img_width, img_height, 
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+			destination = np.asarray(destination, dtype=destination_actual_dtype)
 	elif(numChannels == 3):
 		if(destination.dtype == np.uint8):
-			if not image.dtype == destination.dtype:
-				image = np.asarray(image, dtype = destination.dtype)
+			#If dtype is set, array is copied only if dtype does not match
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
 			cyimage = <void*> cnp.PyArray_DATA(image)
 			cydestination = <void*> cnp.PyArray_DATA(destination)
 			GaussianFilterUINT8RGB(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		else:
-			raise ValueError("Currently not supported")
-	else:
-		raise ValueError("Currently not supported")
-	return destination
-	"""
-
-
-	
-	cyimage = <void*> cnp.PyArray_DATA(image)
-	cydestination = <void*> cnp.PyArray_DATA(destination)
-
-	
-	if(numChannels == 1):
-		if(image.dtype == np.uint8):
-			GaussianFilterUINT8(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		elif(image.dtype == np.float32):
-			GaussianFilterFLOAT32(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		elif(image.dtype == np.uint16):
-			GaussianFilterUINT16(cyimage, cydestination, img_width, img_height,
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		elif(image.dtype == np.int16):
-			GaussianFilterINT16(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		else:
-			raise ValueError("Currently not supported")
-	elif(numChannels == 3):
-		if(image.dtype == np.uint8):
-			GaussianFilterUINT8RGB(cyimage, cydestination, img_width, img_height,
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		elif(image.dtype == np.float32):
-			GaussianFilterFLOAT32RGB(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		elif(image.dtype == np.uint16):
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+		elif(destination.dtype == np.int16):
+			#If dtype is set, array is copied only if dtype does not match
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
+			cyimage = <void*> cnp.PyArray_DATA(image)
+			cydestination = <void*> cnp.PyArray_DATA(destination)
+			GaussianFilterINT16RGB(cyimage, cydestination, img_width, img_height, 
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+		elif(destination.dtype == np.uint16):
+			#If dtype is set, array is copied only if dtype does not match
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
+			cyimage = <void*> cnp.PyArray_DATA(image)
+			cydestination = <void*> cnp.PyArray_DATA(destination)
 			GaussianFilterUINT16RGB(cyimage, cydestination, img_width, img_height, 
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
-		elif(image.dtype == np.int16):
-			GaussianFilterINT16(cyimage, cydestination, img_width, img_height,
-									numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+		elif(destination.dtype == np.float32):
+			#If dtype is set, array is copied only if dtype does not match
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
+			cyimage = <void*> cnp.PyArray_DATA(image)
+			cydestination = <void*> cnp.PyArray_DATA(destination)
+			GaussianFilterFLOAT32RGB(cyimage, cydestination, img_width, img_height, 
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
 		else:
-			raise ValueError("Currently not supported")
+			# needs check for other dtypes
+			destination_actual_dtype = destination.dtype
+			destination = np.asarray(destination, dtype=np.float32)
+			image = np.asarray(image, dtype=destination.dtype)
+			img_width = image.shape[0]
+			img_height = image.shape[1]
+			stepsize = image.strides[0]
+			cyimage = <void*> cnp.PyArray_DATA(image)
+			cydestination = <void*> cnp.PyArray_DATA(destination)
+			GaussianFilterFLOAT32RGB(cyimage, cydestination, img_width, img_height, 
+								numChannels, sigma, kernelSize, stepsize, ippBorderType, ippBorderValue)
+			destination = np.asarray(destination, dtype=destination_actual_dtype)
 	else:
 		raise ValueError("Currently not supported")
 	return destination
-	
-	
