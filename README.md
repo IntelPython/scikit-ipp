@@ -2,8 +2,6 @@
 
 * filters (Gaussian)
 
-Corrently it works for all dtypes
-
 ### TODO
 1) fix bug for RGB images [case: output is None]
 2) handle the ipp status check
