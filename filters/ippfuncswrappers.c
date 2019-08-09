@@ -3,27 +3,6 @@
 #define EXIT_FUNC exitLine:                      /* Label for Exit */
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine; 
 
-int ippConvertUINT8toFLOAT32(void *pSRC,
-                             void * pDST,
-                             int img_width,
-                             int img_height)
-{
-    Ipp8u* pSrc1 = NULL;
-    Ipp32f *pDst1 = NULL;
-    // Size of source/destination ROI in pixels
-    IppiSize roiSize = { img_width, img_height };
-    pSrc1 = (Ipp8u *) pSRC;
-    pDst1 = (Ipp32f *) pDST;
-    IppStatus status = ippStsNoErr;
-    check_sts(status = ippiConvert_8u32f_C1R(pSrc1,
-                                             img_width * sizeof(Ipp8u),
-                                             pDst1,
-                                             img_width * sizeof(Ipp32f),
-                                             roiSize));
-EXIT_FUNC
-    return (int)status;
-}
-
 
 int GaussianFilterUINT8(void *pSRC,
                         void * pDST,

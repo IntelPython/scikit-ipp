@@ -2,11 +2,6 @@
 #ifndef IPPFUNCSWRAPPERS_H
 #define IPPFUNCSWRAPPERS_H
 
-int ippConvertUINT8toFLOAT32(void *pSRC,
-                             void * pDST,
-                             int img_width,
-                             int img_height);
-
 int GaussianFilterUINT8(void *pSRC,
                         void * pDST,
                         int img_width,
