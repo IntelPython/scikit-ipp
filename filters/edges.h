@@ -3,6 +3,13 @@
 #define EDGES_H
 
 int
+PrewittFilterFLOAT32(void * pA_srcDst,
+                     void * pB_srcDst,
+                     int stepsize,
+                     int img_width,
+                     int img_height);
+
+int
 PrewittFilterHorizonFLOAT32(void * pSRC,
                             int srcStep,
                             void * pDST,
