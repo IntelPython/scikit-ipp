@@ -92,7 +92,7 @@ FilterBorderFLOAT32RGB(void * pSRC,
     Ipp8u * pBuffer = NULL;                // Pointer to the work buffer
     IppiFilterBorderSpec * pSpec = NULL;    // context structure
     int iTmpBufSize = 0, iSpecSize = 0;    // Common work buffer size
-    Ipp32f borderValue = {0, 0, 0};
+    Ipp32f borderValue[] = {0, 0, 0};
     int numChannels = 3;
     pSrc = (Ipp32f *) pSRC;
     pDst = (Ipp32f *) pDST;
