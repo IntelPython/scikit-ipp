@@ -19,6 +19,34 @@ cdef extern from "ippbase.h":
 
 
 cdef extern from "edges.c":
+    int FilterBorderFLOAT32(void * pSRC,
+                            int srcStep,
+                            void * pDST,
+                            int dstStep,
+                            int img_width,
+                            int img_height,
+                            int borderType)
+
+    int LaplaceFilterFLOAT32(void * pSRC,
+                             int srcStep,
+                             void * pDST,
+                             int dstStep,
+                             int img_width,
+                             int img_height,
+                             int maskSize,
+                             int borderType,
+                             Ipp32f borderValue);
+
+    int LaplaceFilterFLOAT32RGB(void * pSRC,
+                                int srcStep,
+                                void * pDST,
+                                int dstStep,
+                                int img_width,
+                                int img_height,
+                                int maskSize,
+                                int borderType,
+                                Ipp32f borderValue)
+
     int PrewittFilterFLOAT32(void * pA_srcDst,
                              void * pB_srcDst,
                              int stepsize,
@@ -120,6 +148,88 @@ def _mask_filter_result(result, mask):
     else:
         raise RuntimeError('mask mode not supported')
 
+
+def laplace(image, ksize=3, mask=None):
+    """
+    //
+    //                               -1 -1 -1
+    //              Laplace (3x3)    -1  8 -1
+    //                               -1 -1 -1
+
+    """
+    image = img_as_float32(image)
+    cdef int numChannels = _get_number_of_channels(image)
+    destination = np.zeros_like(image, dtype=np.float32, order='c')
+
+    cdef int img_width = int(image.shape[0])
+    cdef int img_height = int(image.shape[1])
+    cdef int stepsize = int(image.strides[0])
+
+    cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
+    cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
+    cdef int ippStatusIndex = 0  # OK 
+
+    if(numChannels == 1):
+        ippStatusIndex = LaplaceFilterFLOAT32(cyimage,
+                                              stepsize,
+                                              cydestination,
+                                              stepsize,
+                                              img_width,
+                                              img_height,
+                                              33, # mask size
+                                              1, # bordervalue reflect
+                                              0)
+    elif(numChannels == 3):
+        ippStatusIndex = LaplaceFilterFLOAT32RGB(cyimage,
+                                                 stepsize,
+                                                 cydestination,
+                                                 stepsize,
+                                                 img_width,
+                                                 img_height,
+                                                 33, # mask size
+                                                 1, # bordervalue reflect
+                                                 0)
+    else:
+        raise ValueError("Currently not supported")
+    # ippStatusIndex: ipp error handler will be added
+    return _mask_filter_result(destination, mask)
+
+
+def laplace1(image, ksize=3, mask=None):
+    """
+    //
+    //                                0 -1  0
+    //              Laplace (3x3)    -1  4 -1
+    //                                0 -1  0
+
+    """
+    image = img_as_float32(image)
+    cdef int numChannels = _get_number_of_channels(image)
+    destination = np.zeros_like(image, dtype=np.float32, order='c')
+
+    cdef int img_width = int(image.shape[0])
+    cdef int img_height = int(image.shape[1])
+    cdef int stepsize = int(image.strides[0])
+
+    cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
+    cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
+    cdef int ippStatusIndex = 0  # OK 
+
+    if(numChannels == 1):
+        ippStatusIndex = FilterBorderFLOAT32(cyimage,
+                                             stepsize,
+                                             cydestination,
+                                             stepsize,
+                                             img_width,
+                                             img_height,
+                                             1)  # bordervalue reflect
+    elif(numChannels == 3):
+        raise ValueError("Currently not supported")
+    else:
+        raise ValueError("Currently not supported")
+    # ippStatusIndex: ipp error handler will be added
+    return _mask_filter_result(destination, mask)
+
 def sobel(cnp.ndarray image, mask=None, normType='l2'):
     # currently doesnt use `mask`
     # image = np.asarray(image, dtype=np.float32)
@@ -127,7 +237,7 @@ def sobel(cnp.ndarray image, mask=None, normType='l2'):
     # curerntly uses skimage's utils.img_as_float
     image = img_as_float32(image)
 
-    if not image.flags.f_contiguous:
+    if not image.flags.c_contiguous:
         image = np.ascontiguousarray(image)
     if _get_number_of_channels(image) is not 1:
         raise ValueError('invalid axis')
@@ -164,7 +274,7 @@ def sobel_h(cnp.ndarray image, mask=None):
     # curerntly uses skimage's utils.img_as_float
     image = img_as_float32(image)
 
-    if not image.flags.f_contiguous:
+    if not image.flags.c_contiguous:
         image = np.ascontiguousarray(image)
     if _get_number_of_channels(image) is not 1:
         raise ValueError('invalid axis')
@@ -199,7 +309,7 @@ def sobel_v(cnp.ndarray image, mask=None):
     # curerntly uses skimage's utils.img_as_float
     image = img_as_float32(image)
 
-    if not image.flags.f_contiguous:
+    if not image.flags.c_contiguous:
         image = np.ascontiguousarray(image)
     if _get_number_of_channels(image) is not 1:
         raise ValueError('invalid axis')
@@ -234,7 +344,7 @@ def sobel_c(cnp.ndarray image, mask=None):
     # curerntly uses skimage's utils.img_as_float
     image = img_as_float32(image)
 
-    if not image.flags.f_contiguous:
+    if not image.flags.c_contiguous:
         image = np.ascontiguousarray(image)
     if _get_number_of_channels(image) is not 1:
         raise ValueError('invalid axis')
@@ -267,7 +377,7 @@ def prewitt(image, mask=None):
     currently like skimage implementation
     """
 
-    if not image.flags.f_contiguous:
+    if not image.flags.c_contiguous:
         image = np.ascontiguousarray(image)
     if _get_number_of_channels(image) is not 1:
         raise ValueError('invalid axis')
@@ -308,7 +418,6 @@ def prewitt_proto(image, mask=None):
     # ippStatusIndex: ipp error handler will be added
     return B
 
-  
 
 def prewitt_h(image, mask=None):
     # currently doesnt use `mask`
@@ -317,7 +426,7 @@ def prewitt_h(image, mask=None):
     # curerntly uses skimage's utils.img_as_float
     image = img_as_float32(image)
 
-    if not image.flags.f_contiguous:
+    if not image.flags.c_contiguous:
         image = np.ascontiguousarray(image)
     if _get_number_of_channels(image) is not 1:
         raise ValueError('invalid axis')
@@ -350,7 +459,7 @@ def prewitt_v(image, mask=None):
     # curerntly uses skimage's utils.img_as_float
     image = img_as_float32(image)
 
-    if not image.flags.f_contiguous:
+    if not image.flags.c_contiguous:
         image = np.ascontiguousarray(image)
     if _get_number_of_channels(image) is not 1:
         raise ValueError('invalid axis')
