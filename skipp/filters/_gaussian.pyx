@@ -4,7 +4,7 @@ cimport cython
 
 cnp.import_array()
 
-cdef extern from "gaussian.c":
+cdef extern from "src/gaussian.c":
     int  GaussianFilter(int index,
                         void * pSRC,
                         void * pDST,

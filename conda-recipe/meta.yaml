@@ -1,0 +1,42 @@
+{% set version = "0.0.9" %}
+{% set buildnumber = 0 %}
+
+package:
+    name: scikit-ipp
+    version: {{ version }}
+
+source:
+    path: ..
+
+requirements:
+    build:
+      - {{ compiler('c') }}
+    host:
+      - setuptools
+      - python
+      - numpy
+      - cython
+      - ipp-devel
+      - ipp
+      - ipp-include
+    run:
+      - python
+      - numpy
+      - ipp
+test:
+    requires:
+      - pytest
+    imports:
+      - skipp
+      - skipp.skipp.filters
+    commands:
+      - pytest -v
+    source_files:
+      - skipp/filters/tests
+about:
+     license: BSD-3-Clause
+     license_family: BSD
+
+extra:
+     recipe-maintainers:
+      - samir-nasibli
