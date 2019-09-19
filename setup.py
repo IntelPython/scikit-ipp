@@ -2,23 +2,23 @@
 
 from __future__ import division, print_function, absolute_import
 
-import os
-import sys
 import io
+import os
 import re
+import sys
 
 with io.open('skipp/_version.py', 'rt', encoding='utf8') as f:
     version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
+
 
 VERSION = version
 
 CLASSIFIERS = ""
 
-def configuration(parent_package='',top_path=None):
+
+def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
 
-    # config = Configuration(None, parent_package, top_path)
-    # ~~~~------< delete scikit_ipp as a name
     config = Configuration('skipp', parent_package, top_path)
     config.set_options(ignore_setup_xxx_py=True,
                        assume_default_configuration=True,
@@ -42,10 +42,10 @@ def setup_package():
     from numpy.distutils.core import setup
 
     metadata = dict(
-        name = 'skipp',
+        name='skipp',
         install_requires=['numpy'],
         packages=find_packages(),
-        configuration = configuration
+        configuration=configuration
         )
 
     try:
@@ -55,6 +55,7 @@ def setup_package():
         os.chdir(old_path)
 
     return None
+
 
 if __name__ == '__main__':
     setup_package()

@@ -35,6 +35,7 @@ cdef int _getIppBorderType(mode):
     else:
         raise RuntimeError('boundary mode not supported')
 
+
 # from _ni_support.py scipy/ndimage/_ni_support.py
 def _get_output(output, input, shape=None):
     if shape is None:
@@ -49,7 +50,7 @@ def _get_output(output, input, shape=None):
         raise RuntimeError("output shape not correct")
     return output
 
-# maybe cdef needed
+
 # needed more correct version (guest_spatial_dim skimage)
 cdef int _get_number_of_channels(image):
     if image.ndim == 2:
@@ -64,33 +65,31 @@ cdef int _get_gaussian_filter_func_index(dtype, int numChannels):
     if(numChannels == 1):
         if(dtype == np.uint8):
             return 0
-        elif(numChannels ==np.uint16):
+        elif(numChannels == np.uint16):
             return 1
-        elif(numChannels ==np.int16):
+        elif(numChannels == np.int16):
             return 2
-        elif(numChannels ==np.float32):
+        elif(numChannels == np.float32):
             return 3
         else:
-            # ~~~change case
-            raise ValueError("Currently not supported")           
+            raise ValueError("Currently not supported")
     elif(numChannels == 1):
         if(dtype == np.uint8):
             return 4
-        elif(numChannels ==np.uint16):
+        elif(numChannels == np.uint16):
             return 5
-        elif(numChannels ==np.int16):
+        elif(numChannels == np.int16):
             return 6
-        elif(numChannels ==np.float32):
+        elif(numChannels == np.float32):
             return 7
         else:
-            # ~~~change case
             raise ValueError("Currently not supported")
     else:
         raise ValueError("Currently not supported")
 
 
-def gaussian(cnp.ndarray image, float sigma=1.0, output=None, mode='nearest', 
-                cval=0, multichannel=None, preserve_range=False, float truncate=4.0):
+def gaussian(cnp.ndarray image, float sigma=1.0, output=None, mode='nearest',
+             cval=0, multichannel=None, preserve_range=False, float truncate=4.0):
     image = np.asarray(image)
     if not image.flags.f_contiguous:
         image = np.ascontiguousarray(image)
@@ -102,8 +101,8 @@ def gaussian(cnp.ndarray image, float sigma=1.0, output=None, mode='nearest',
     # make the radius of the filter equal to truncate standard deviations
     # as is in SciPy
     kernelSize = int(tr * sd + 0.5) * 2 - 1
-    cdef void* cyimage
-    cdef void* cydestination
+    cdef void * cyimage
+    cdef void * cydestination
 
     cdef int img_width
     cdef int img_height
@@ -112,11 +111,10 @@ def gaussian(cnp.ndarray image, float sigma=1.0, output=None, mode='nearest',
     cdef int numChannels = _get_number_of_channels(image)
     cdef int ippBorderType = _getIppBorderType(mode)
 
-
-
     # If dtype is set, array is copied only if dtype does not match
     image = np.asarray(image, dtype=destination.dtype)
-    # needed more correct way. Warning: conversion from 'npy_intp' to 'int', possible loss of data
+    # needed more correct way. Warning: conversion from 'npy_intp'
+    # to 'int', possible loss of data
     img_width = image.shape[0]
     img_height = image.shape[1]
     stepsize = image.strides[0]
@@ -125,7 +123,7 @@ def gaussian(cnp.ndarray image, float sigma=1.0, output=None, mode='nearest',
 
     cdef int index = _get_gaussian_filter_func_index(destination.dtype,
                                                      numChannels)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
     ippStatusIndex = GaussianFilter(index,
                                     cyimage,
                                     cydestination,

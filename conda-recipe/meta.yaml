@@ -12,17 +12,18 @@ requirements:
     build:
       - {{ compiler('c') }}
     host:
-      - setuptools
-      - python
-      - numpy
       - cython
+      - ipp
       - ipp-devel
-      - ipp
       - ipp-include
-    run:
+      - numpy >=1.13.3
       - python
-      - numpy
+      - setuptools
+    run:
       - ipp
+      - numpy >=1.13.3
+      - python
+
 test:
     requires:
       - pytest
@@ -33,6 +34,7 @@ test:
       - pytest -v
     source_files:
       - skipp/filters/tests
+
 about:
      license: BSD-3-Clause
      license_family: BSD

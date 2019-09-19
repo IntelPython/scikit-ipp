@@ -103,16 +103,16 @@ int(*funcHandler)(void *pSRC,
                   float ippBorderValue);
 
 
-int  GaussianFilter(int index,
-                     void * pSRC,
-                     void * pDST,
-                     int img_width,
-                     int img_height,
-                     int numChannels,
-                     float sigma_,
-                     int kernelSize,
-                     int stepSize,
-                     int ippBorderType,
-                     float ippBorderValue);
+int GaussianFilter(int index,
+                   void * pSRC,
+                   void * pDST,
+                   int img_width,
+                   int img_height,
+                   int numChannels,
+                   float sigma_,
+                   int kernelSize,
+                   int stepSize,
+                   int ippBorderType,
+                   float ippBorderValue);
 
 #endif
