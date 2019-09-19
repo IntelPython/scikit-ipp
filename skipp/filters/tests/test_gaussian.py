@@ -43,8 +43,8 @@ def test_energy_decrease():
     assert gaussian_a.std() < a.std()
 
 
-def test_multichannel():
-    pass
+# def test_multichannel():
+#    pass
 
 
 def test_preserve_range():
@@ -57,12 +57,3 @@ def test_gaussian_error_ndim():
     with pytest.raises(ValueError):
         gaussian(img, sigma=1)
 
-
-def test_output_type():
-    img = np.arange(16, dtype=np.uint8).reshape((4, 4))
-    output_type = np.uint8
-    gaussian_img = gaussian(img, 1, output=output_type)
-    assert gaussian_img.dtype == output_type
-    output_image = np.zeros_like(img, dtype=output_type)
-    gaussian_img = gaussian(img, 1, output=output_image)
-    assert gaussian_img.dtype == output_type
