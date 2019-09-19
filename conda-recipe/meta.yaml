@@ -27,6 +27,7 @@ requirements:
 test:
     requires:
       - pytest
+      - teamcity-messages
     imports:
       - skipp
       - skipp.skipp.filters
