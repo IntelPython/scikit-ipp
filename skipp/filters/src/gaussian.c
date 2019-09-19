@@ -1,29 +1,30 @@
 #include "gaussian.h"
 
-#define EXIT_FUNC exitLine                                  /* Label for Exit */
+#define EXIT_FUNC exitLine:                                  /* Label for Exit */
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine 
 
 int
 GaussianFilterUINT8(void * pSRC,
                     void * pDST,
                     int img_width,
-                    int img_height, 
-                  int numChannels,
+                    int img_height,
+                    int numChannels,
                     float sigma_,
                     int kernelSize,
                     int stepSize,
                     int ippBorderType, 
                     float ippBorderValue)
 {
-  IppStatus status = ippStsNoErr;
+    IppStatus status = ippStsNoErr;
     Ipp8u* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
-    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the source/destination images
+    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the
+                                                         //source/destination images
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
     Ipp32f sigma = (Ipp32f)sigma_;
     Ipp8u *pBuffer = NULL;                 // Pointer to the work buffer 
     IppFilterGaussianSpec* pSpec = NULL;   // context structure 
     int iTmpBufSize = 0, iSpecSize = 0;    // Common work buffer size
-    IppiBorderType borderType = ippBorderType; // ~~~~ added here
+    IppiBorderType borderType = ippBorderType;
     Ipp8u borderValue = (Ipp8u) ippBorderValue;
     //// border values i
     pSrc1 = (Ipp8u *) pSRC;
@@ -42,10 +43,8 @@ GaussianFilterUINT8(void * pSRC,
         roiSize, borderValue, pSpec, pBuffer));
 
 EXIT_FUNC
-  ippsFree(pBuffer);
-// EXIT_FUNC_1
+    ippsFree(pBuffer);
     ippsFree(pSpec);
-// EXIT_FUNC_2
     return (int)status;
 }
 
@@ -61,9 +60,10 @@ GaussianFilterUINT8RGB(void * pSRC,
                        int ippBorderType,
                        float ippBorderValue)
 {
-  IppStatus status = ippStsNoErr;
+    IppStatus status = ippStsNoErr;
     Ipp8u* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images 
-    int srcStep = stepSize, dstStep = stepSize;          //Steps, in bytes, through the source/destination images 
+    int srcStep = stepSize, dstStep = stepSize;          //Steps, in bytes, through the 
+                                                         // source/destination images 
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels 
     Ipp32f sigma = (Ipp32f)sigma_;
     Ipp8u *pBuffer = NULL;                 // Pointer to the work buffer
@@ -87,7 +87,7 @@ GaussianFilterUINT8RGB(void * pSRC,
         roiSize, borderValue, pSpec, pBuffer));
 
 EXIT_FUNC
-  ippsFree(pBuffer);
+    ippsFree(pBuffer);
     ippsFree(pSpec);
     return (int)status;
 }
@@ -104,9 +104,10 @@ GaussianFilterUINT16(void * pSRC,
                      int ippBorderType,
                      float ippBorderValue)
 {
-  IppStatus status = ippStsNoErr;
+    IppStatus status = ippStsNoErr;
     Ipp16u* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
-    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the source/destination images
+    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the 
+                                                         // source/destination images
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
     Ipp32f sigma = (Ipp32f)sigma_;
     Ipp8u *pBuffer = NULL;                 // Pointer to the work buffer
@@ -130,7 +131,7 @@ GaussianFilterUINT16(void * pSRC,
         roiSize, borderValue, pSpec, pBuffer));
 
 EXIT_FUNC
-  ippsFree(pBuffer);
+    ippsFree(pBuffer);
     ippsFree(pSpec);
     return (int)status;
 }
@@ -147,9 +148,10 @@ GaussianFilterINT16(void * pSRC,
                     int ippBorderType,
                     float ippBorderValue)
 {
-  IppStatus status = ippStsNoErr;
+    IppStatus status = ippStsNoErr;
     Ipp16s* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
-    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the source/destination images
+    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through 
+                                                         // the source/destination images
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
     Ipp32f sigma = (Ipp32f)sigma_;
     Ipp8u *pBuffer = NULL;                 // Pointer to the work buffer 
@@ -173,7 +175,7 @@ GaussianFilterINT16(void * pSRC,
         roiSize, borderValue, pSpec, pBuffer));
 
 EXIT_FUNC
-  ippsFree(pBuffer);
+    ippsFree(pBuffer);
     ippsFree(pSpec);
     return (int)status;
 }
@@ -190,9 +192,10 @@ GaussianFilterUINT16RGB(void * pSRC,
                         int ippBorderType,
                         float ippBorderValue)
 {
-  IppStatus status = ippStsNoErr;
+    IppStatus status = ippStsNoErr;
     Ipp16u* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
-    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the source/destination images
+    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the 
+                                                         // source/destination images
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
     Ipp32f sigma = (Ipp32f)sigma_;
     Ipp8u *pBuffer = NULL;                 // Pointer to the work buffer
@@ -216,7 +219,7 @@ GaussianFilterUINT16RGB(void * pSRC,
         roiSize, borderValue, pSpec, pBuffer));
 
 EXIT_FUNC
-  ippsFree(pBuffer);
+    ippsFree(pBuffer);
     ippsFree(pSpec);
     return (int)status;
 }
@@ -233,9 +236,10 @@ GaussianFilterINT16RGB(void * pSRC,
                        int ippBorderType,
                        float ippBorderValue)
 {
-  IppStatus status = ippStsNoErr;
+    IppStatus status = ippStsNoErr;
     Ipp16s* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
-    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the source/destination images
+    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the
+                                                         // source/destination images
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
     Ipp32f sigma = (Ipp32f)sigma_;
     Ipp8u *pBuffer = NULL;                 // Pointer to the work buffer 
@@ -259,7 +263,7 @@ GaussianFilterINT16RGB(void * pSRC,
         roiSize, borderValue, pSpec, pBuffer));
 
 EXIT_FUNC
-  ippsFree(pBuffer);
+    ippsFree(pBuffer);
     ippsFree(pSpec);
     return (int)status;
 }
@@ -276,9 +280,10 @@ GaussianFilterFLOAT32(void * pSRC,
                       int ippBorderType,
                       float ippBorderValue)
 {
-  IppStatus status = ippStsNoErr;
+    IppStatus status = ippStsNoErr;
     Ipp32f* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
-    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the source/destination images
+    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the 
+                                                         //source/destination images
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
     Ipp32f sigma = (Ipp32f)sigma_;
     Ipp8u *pBuffer = NULL;                 // Pointer to the work buffer 
@@ -302,7 +307,7 @@ GaussianFilterFLOAT32(void * pSRC,
         roiSize, borderValue, pSpec, pBuffer));
 
 EXIT_FUNC
-  ippsFree(pBuffer);
+    ippsFree(pBuffer);
     ippsFree(pSpec);
     return (int)status;
 }
@@ -319,9 +324,10 @@ GaussianFilterFLOAT32RGB(void * pSRC,
                          int ippBorderType,
                          float ippBorderValue)
 {
-  IppStatus status = ippStsNoErr;
+    IppStatus status = ippStsNoErr;
     Ipp32f* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
-    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through the source/destination images
+    int srcStep = stepSize, dstStep = stepSize;          // Steps, in bytes, through 
+                                                         //the source/destination images
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
     Ipp32f sigma = (Ipp32f)sigma_;
     Ipp8u *pBuffer = NULL;                 // Pointer to the work buffer 
@@ -345,12 +351,10 @@ GaussianFilterFLOAT32RGB(void * pSRC,
         roiSize, borderValue, pSpec, pBuffer));
 
 EXIT_FUNC
-  ippsFree(pBuffer);
+    ippsFree(pBuffer);
     ippsFree(pSpec);
     return (int)status;
 }
-
-// enum funcs
 
 static funcHandler
 gaussianFilterTable[] = { GaussianFilterUINT8,

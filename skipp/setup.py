@@ -1,22 +1,57 @@
-from distutils.core import setup, Extension
-from Cython.Build import cythonize
-from numpy import get_include
+from __future__ import division, print_function, absolute_import
+import io
+import re
 import os
-import os.path
 
-ipp_root = os.environ.get('IPPROOT', None)
-if ipp_root is None or not os.path.isdir(ipp_root):
-    raise ValueError("Set IPPROOT environment variable to point to Intel(R) Performance Primitive installation directory.")
+from os.path import join, split, dirname, abspath
+from numpy import get_include as get_numpy_include
+from distutils.sysconfig import get_python_inc as get_python_include
+
+
+def configuration(parent_package='', top_path=None):
+    from numpy.distutils.misc_util import Configuration
+
+    config = Configuration('skipp', parent_package, top_path)
+
+    ipp_root = os.environ['IPPROOT']
+
+    ipp_include_dir = [join(ipp_root, 'include')]
+    ipp_library_dirs = [join(ipp_root, 'lib')]
+    ipp_libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
+
+    filters_dir = 'filters'
+    filters_dir_w = join(filters_dir, 'src')
+
+    try:
+        from Cython.Build import cythonize
+        sources = [join(filters_dir, '_gaussian.pyx')]
+        have_cython = True
+    except ImportError as e:
+        have_cython = False
+        sources = [join(filters_dir, '_gaussian.c')]
+        if not exists(sources[0]):
+            raise ValueError(str(e) + '. ' +
+                             'Cython is required to build the initial .c file.')
+
+    include_dirs = [get_numpy_include(), get_python_include()]
+    include_dirs.extend(ipp_include_dir)
+
+    config.add_extension(
+        name='filters',
+        sources=sources,
+        language="c",
+        libraries=ipp_libraries,
+        include_dirs=include_dirs,
+        library_dirs=ipp_library_dirs
+    )
+
+    if have_cython:
+        config.ext_modules = cythonize(config.ext_modules,
+                                       include_path=[filters_dir, filters_dir_w])
+
+    return config
+
 
 if __name__ == '__main__':
-    gaussian_module = Extension("Scikit_IPP_filters", 
-                        ["_edges.pyx"], 
-                        language="c",
-                        include_dirs=[get_include(), os.path.join([ipp_root, "include"])],
-                        libraries = ["ippcv","ippcore", "ippvm", "ipps", "ippi"],
-                        library_dirs = [os.path.join([ipp_root, 'lib'])]
-                        )
-    setup (name = 'Scikit_IPP_filters',
-           version = '1.0',
-           ext_modules = cythonize([gaussian_module])
-           )
+    from numpy.distutils.core import setup
+    setup(configuration=configuration)

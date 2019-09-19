@@ -18,7 +18,7 @@ cdef extern from "ippbase.h":
     ctypedef double         pp64f
 
 
-cdef extern from "edges.c":
+cdef extern from "src/edges.c":
     int FilterBorderFLOAT32(void * pSRC,
                             int srcStep,
                             void * pDST,
