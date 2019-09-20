@@ -24,9 +24,6 @@ def test_gaussian_output_dtype(image, input_dtype, output_dtype):
     assert gaussian_image.dtype == output_dtype
 
 
-# def test_null_sigma():
-#     pass
-
 def test_default_sigma():
     a = np.zeros((3, 3))
     a[1, 1] = 1.
