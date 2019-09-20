@@ -13,12 +13,8 @@ def image():
                     dtype=np.uint8)
 
 
-@pytest.mark.parametrize(
-    "output_dtype", [np.uint8, np.uint16, np.int16, np.float32]
-)
-@pytest.mark.parametrize(
-    "input_dtype", [np.uint8, np.uint16, np.int16, np.float32]
-)
+@pytest.mark.parametrize("output_dtype", [np.uint8, np.uint16, np.int16, np.float32])
+@pytest.mark.parametrize("input_dtype", [np.uint8, np.uint16, np.int16, np.float32])
 def test_gaussian_output_dtype(image, input_dtype, output_dtype):
     gaussian_image = gaussian(image.astype(input_dtype), output=output_dtype)
     assert gaussian_image.dtype == output_dtype
