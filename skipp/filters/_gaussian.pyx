@@ -18,20 +18,30 @@ cdef extern from "src/gaussian.c":
                         float ippBorderValue)
 
 
-# from _ni_support.py scipy/ndimage/_ni_support.py :_extend_mode_to_code
 cdef int _getIppBorderType(mode):
-    """ Convert an extension mode to the corresponding integer code.
+    """ Convert an extension mode to the corresponding IPP's IppiBorderType integer code.
     """
+    # 'nearest' -----> IPP's ippBorderRepl
     if mode == 'nearest':
         return 1
+    # 'wrap' --------> IPP's ippBorderWrap
     elif mode == 'wrap':
         return 2
+    # 'mirror' ------> IPP's ippBorderMirror
     elif mode == 'mirror':
         return 3
+    # 'reflect' -----> IPP's ippBorderMirrorR
     elif mode == 'reflect':
         return 4
+    # IPP's ippBorderDefault
+    elif mode == 'default':
+        return 5
+    # 'constant' ----> IPP's ippBorderConst
     elif mode == 'constant':
         return 6
+    # IPP's ippBorderTransp
+    elif mode == 'transp':
+        return 7
     else:
         raise RuntimeError('boundary mode not supported')
 
