@@ -63,6 +63,7 @@ def _get_output(output, input, shape=None):
 
 # needed more correct version (guest_spatial_dim skimage)
 cdef int _get_number_of_channels(image):
+    cdef int channels
     if image.ndim == 2:
         channels = 1    # single (grayscale)
     elif image.ndim == 3:
@@ -83,7 +84,7 @@ cdef int _get_gaussian_filter_func_index(dtype, int numChannels):
             return 3
         else:
             raise ValueError("Currently not supported")
-    elif(numChannels == 1):
+    elif(numChannels == 3):
         if(dtype == np.uint8):
             return 4
         elif(numChannels == np.uint16):
