@@ -5,15 +5,15 @@
 
 int
 GaussianFilterIpp8u_C1(void * pSRC,
-                    void * pDST,
-                    int img_width,
-                    int img_height,
-                    int numChannels,
-                    float sigma_,
-                    int kernelSize,
-                    int stepSize,
-                    int ippBorderType, 
-                    float ippBorderValue)
+                       void * pDST,
+                       int img_width,
+                       int img_height,
+                       int numChannels,
+                       float sigma_,
+                       int kernelSize,
+                       int stepSize,
+                       int ippBorderType,
+                       float ippBorderValue)
 {
     IppStatus status = ippStsNoErr;
     Ipp8u* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
@@ -94,15 +94,15 @@ EXIT_FUNC
 
 int
 GaussianFilterIpp16u_C1(void * pSRC,
-                     void * pDST,
-                     int img_width,
-                     int img_height,
-                     int numChannels,
-                     float sigma_,
-                     int kernelSize,
-                     int stepSize,
-                     int ippBorderType,
-                     float ippBorderValue)
+                        void * pDST,
+                        int img_width,
+                        int img_height,
+                        int numChannels,
+                        float sigma_,
+                        int kernelSize,
+                        int stepSize,
+                        int ippBorderType,
+                        float ippBorderValue)
 {
     IppStatus status = ippStsNoErr;
     Ipp16u* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
@@ -138,15 +138,15 @@ EXIT_FUNC
 
 int
 GaussianFilterIpp16s_C1(void * pSRC,
-                    void * pDST,
-                    int img_width,
-                    int img_height,
-                    int numChannels,
-                    float sigma_,
-                    int kernelSize,
-                    int stepSize,
-                    int ippBorderType,
-                    float ippBorderValue)
+                        void * pDST,
+                        int img_width,
+                        int img_height,
+                        int numChannels,
+                        float sigma_,
+                        int kernelSize,
+                        int stepSize,
+                        int ippBorderType,
+                        float ippBorderValue)
 {
     IppStatus status = ippStsNoErr;
     Ipp16s* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
@@ -226,15 +226,15 @@ EXIT_FUNC
 
 int
 GaussianFilterIpp16s_C3(void * pSRC,
-                       void * pDST,
-                       int img_width,
-                       int img_height,
-                       int numChannels,
-                       float sigma_,
-                       int kernelSize,
-                       int stepSize,
-                       int ippBorderType,
-                       float ippBorderValue)
+                        void * pDST,
+                        int img_width,
+                        int img_height,
+                        int numChannels,
+                        float sigma_,
+                        int kernelSize,
+                        int stepSize,
+                        int ippBorderType,
+                        float ippBorderValue)
 {
     IppStatus status = ippStsNoErr;
     Ipp16s* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
@@ -270,15 +270,15 @@ EXIT_FUNC
 
 int
 GaussianFilterIpp32f_C1(void * pSRC,
-                      void * pDST,
-                      int img_width,
-                      int img_height,
-                      int numChannels,
-                      float sigma_,
-                      int kernelSize,
-                      int stepSize,
-                      int ippBorderType,
-                      float ippBorderValue)
+                        void * pDST,
+                        int img_width,
+                        int img_height,
+                        int numChannels,
+                        float sigma_,
+                        int kernelSize,
+                        int stepSize,
+                        int ippBorderType,
+                        float ippBorderValue)
 {
     IppStatus status = ippStsNoErr;
     Ipp32f* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
@@ -314,15 +314,15 @@ EXIT_FUNC
 
 int
 GaussianFilterIpp32f_C3(void * pSRC,
-                         void * pDST,
-                         int img_width,
-                         int img_height,
-                         int numChannels,
-                         float sigma_,
-                         int kernelSize,
-                         int stepSize,
-                         int ippBorderType,
-                         float ippBorderValue)
+                        void * pDST,
+                        int img_width,
+                        int img_height,
+                        int numChannels,
+                        float sigma_,
+                        int kernelSize,
+                        int stepSize,
+                        int ippBorderType,
+                        float ippBorderValue)
 {
     IppStatus status = ippStsNoErr;
     Ipp32f* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source/destination images
