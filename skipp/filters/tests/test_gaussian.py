@@ -32,6 +32,7 @@ def test_energy_decrease():
     gaussian_a = gaussian(a, sigma=1, mode='reflect')
     assert gaussian_a.std() < a.std()
 
+
 def test_preserve_range():
     img = np.array([[10.0, -10.0], [-4, 3]], dtype=np.float32)
     gaussian(img, 1, preserve_range=True)

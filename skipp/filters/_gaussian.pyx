@@ -98,23 +98,54 @@ cdef int _get_gaussian_filter_func_index(dtype, int numChannels):
     else:
         raise ValueError("Currently not supported")
 
+# from https://github.com/scikit-image/scikit-image/blob/master/skimage/_shared/utils.py
+# convert_to_float
+def convert_to_float(image, preserve_range):
+    """Convert input image to double image with the appropriate range.
+    Parameters
+    ----------
+    image : ndarray
+        Input image.
+    preserve_range : bool
+        Determines if the range of the image should be kept or transformed
+        using img_as_float. Also see
+        https://scikit-image.org/docs/dev/user_guide/data_types.html
+    Returns
+    -------
+    image : ndarray
+        Transformed version of the input.
+    """
+    if preserve_range:
+        return image.astype(np.float32)
+    # TODO add img_as_float32
+    else:
+        raise ValueError("Currently not supported")
 
-def gaussian(cnp.ndarray image, float sigma=1.0, output=None, mode='nearest',
-             cval=0, multichannel=None, preserve_range=False, float truncate=4.0):
-    image = np.asarray(image)
-    if not image.flags.f_contiguous:
-        image = np.ascontiguousarray(image)
-    destination = _get_output(output, image)
+
+
+cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0, 
+               multichannel=None, preserve_range=False, truncate=4.0):
+    # TODO
+    # use numpy.require to provid type that satisfies requirements.
+    # image = convert_to_float(image)
+    cdef cnp.ndarray destination = _get_output(output, image)
 
     cdef float sd = float(sigma)
     cdef float tr = float(truncate)
     cdef float ippBorderValue = float(cval)
+
+    # TODO
+    # check the equation that provides the kernelSize
     # make the radius of the filter equal to truncate standard deviations
     # as is in SciPy
-    kernelSize = int(tr * sd + 0.5) * 2 - 1
+    cdef int kernelSize = int(tr * sd + 0.5) * 2 - 1
+
     cdef void * cyimage
     cdef void * cydestination
 
+    # TODO 
+    # use IPP's ippiFilterGaussian_<> ---> platform-aware functions
+    # int kernelSize --> cnp.uint64_t or ctypedef unsigned long
     cdef int img_width
     cdef int img_height
     cdef int stepsize
