@@ -36,3 +36,9 @@ def test_energy_decrease():
 def test_preserve_range():
     img = np.array([[10.0, -10.0], [-4, 3]], dtype=np.float32)
     gaussian(img, 1, preserve_range=True)
+
+
+def test_dimensiona_error():
+    image_4d = np.arange(5*5*5*4).reshape((5, 5, 5, 4))
+    with pytest.raises(ValueError):
+        filtered_img = gaussian(image_4d, sigma=1, multichannel=True)

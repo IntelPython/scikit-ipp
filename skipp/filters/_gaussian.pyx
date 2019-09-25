@@ -18,7 +18,7 @@ cdef extern from "src/gaussian.c":
                         float ippBorderValue)
 
 
-cdef int _getIppBorderType(mode):
+def _getIppBorderType(mode):
     """ Convert an extension mode to the corresponding IPP's IppiBorderType integer code.
     """
     # 'nearest' -----> IPP's ippBorderRepl
@@ -47,9 +47,8 @@ cdef int _getIppBorderType(mode):
 
 
 # from _ni_support.py scipy/ndimage/_ni_support.py
-def _get_output(output, input, shape=None):
-    if shape is None:
-        shape = input.shape
+def _get_output(output, input):
+    shape = input.shape
     if output is None:
         # as in skimage gaussian filter logic
         # Integer arrays are converted to float.
@@ -62,41 +61,42 @@ def _get_output(output, input, shape=None):
 
 
 # needed more correct version (guest_spatial_dim skimage)
-cdef int _get_number_of_channels(image):
-    cdef int channels
+def _get_number_of_channels(image):
     if image.ndim == 2:
         channels = 1    # single (grayscale)
-    elif image.ndim == 3:
-        channels = image.shape[-1]   # RGB
+    elif image.ndim == 3 and image.shape[-1] == 3:
+        channels = 3   # 3 channels
     else:
-        raise ValueError('invalid axis')
+        ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
     return channels
 
-cdef int _get_gaussian_filter_func_index(dtype, int numChannels):
+
+def _get_gaussian_filter_func_index(dtype, int numChannels):
     if(numChannels == 1):
         if(dtype == np.uint8):
             return 0
-        elif(numChannels == np.uint16):
+        elif(dtype == np.uint16):
             return 1
-        elif(numChannels == np.int16):
+        elif(dtype == np.int16):
             return 2
-        elif(numChannels == np.float32):
+        elif(dtype == np.float32):
             return 3
         else:
             raise ValueError("Currently not supported")
     elif(numChannels == 3):
         if(dtype == np.uint8):
             return 4
-        elif(numChannels == np.uint16):
+        elif(dtype == np.uint16):
             return 5
-        elif(numChannels == np.int16):
+        elif(dtype == np.int16):
             return 6
-        elif(numChannels == np.float32):
+        elif(dtype == np.float32):
             return 7
         else:
             raise ValueError("Currently not supported")
     else:
         raise ValueError("Currently not supported")
+
 
 # from https://github.com/scikit-image/scikit-image/blob/master/skimage/_shared/utils.py
 # convert_to_float
@@ -122,12 +122,15 @@ def convert_to_float(image, preserve_range):
         raise ValueError("Currently not supported")
 
 
-
-cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0, 
+cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
                multichannel=None, preserve_range=False, truncate=4.0):
     # TODO
     # use numpy.require to provid type that satisfies requirements.
     # image = convert_to_float(image)
+
+    # TODO
+    # add warnings for multichannel
+
     cdef cnp.ndarray destination = _get_output(output, image)
 
     cdef float sd = float(sigma)
@@ -143,7 +146,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     cdef void * cyimage
     cdef void * cydestination
 
-    # TODO 
+    # TODO
     # use IPP's ippiFilterGaussian_<> ---> platform-aware functions
     # int kernelSize --> cnp.uint64_t or ctypedef unsigned long
     cdef int img_width
