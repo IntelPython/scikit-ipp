@@ -109,52 +109,71 @@ def convert_to_float(image, preserve_range):
     else:
         raise ValueError("Currently not supported")
 
+# cdef __get_ipp_error
+
+
+cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, float sigma, float truncate,
+                         int ippBorderType, float ippBorderValue):
+
+    cdef int index  # index for _get_gaussian_filter_func_index
+
+    cdef void * cysource
+    cdef void * cydestination
+
+    cysource = <void*> cnp.PyArray_DATA(source)
+    cydestination = <void*> cnp.PyArray_DATA(destination)
+
+    # TODO
+    # check the equation that provides the kernelSize
+    # make the radius of the filter equal to truncate standard deviations
+    # as is in SciPy
+    cdef int kernelSize = int(truncate * sigma + 0.5) * 2 - 1
+
+    cdef int numChannels = _get_number_of_channels(source)
+
+    # needed more correct way. Warning: conversion from 'npy_intp'
+    # to 'int', possible loss of data
+    cdef int img_width = source.shape[0]
+    cdef int img_height = source.shape[1]
+
+    # TODO change to platform aware integer
+    cdef int stepsize = source.strides[0]
+    # pass to IPP the source and destination arrays
+    index = _get_gaussian_filter_func_index(destination.dtype, numChannels)
+    # ~~~ delete number of channels from here
+    ippStatusIndex = GaussianFilter(index,
+                                    cysource,
+                                    cydestination,
+                                    img_width,
+                                    img_height,
+                                    numChannels,
+                                    sigma,
+                                    kernelSize,
+                                    stepsize,
+                                    ippBorderType,
+                                    ippBorderValue)
+    # ippStatusIndex: ipp error handler will be added
 
 cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
-                 multichannel=None, preserve_range=False, truncate=4.0):
-    # TODO
-    # use numpy.require to provid type that satisfies requirements.
-    # image = convert_to_float(image)
-
+               multichannel=None, preserve_range=False, truncate=4.0):
     # TODO
     # add warnings for multichannel
 
     # TODO
     # check input
     # is input correct array
+    # use numpy.require to provid type that satisfies requirements.
+    # image = convert_to_float(image)
 
     shape = image.shape
 
     input_dtype = image.dtype
 
-    cdef cnp.ndarray destination
-
     cdef float sd = float(sigma)
     cdef float tr = float(truncate)
     cdef float ippBorderValue = float(cval)
 
-    # TODO
-    # check the equation that provides the kernelSize
-    # make the radius of the filter equal to truncate standard deviations
-    # as is in SciPy
-    cdef int kernelSize = int(tr * sd + 0.5) * 2 - 1
-
-    cdef void * cysource
-    cdef void * cydestination
-
-    cdef int index  # index for _get_gaussian_filter_func_index
-
-    # TODO
-    # use IPP's ippiFilterGaussian_<> ---> platform-aware functions
-    # int kernelSize --> cnp.uint64_t or ctypedef unsigned long
-    cdef int img_width
-    cdef int img_height
-    cdef int stepsize
-
-    cdef int numChannels = _get_number_of_channels(image)
     cdef int ippBorderType = _getIppBorderType(mode)
-
-    cdef int ippStatusIndex = 0  # OK
 
     if output is None:
         output_dtype = None
@@ -171,62 +190,18 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
             # create output as input dtype
             output = np.zeros(shape, dtype=input_dtype)
 
-            # input is source
-            # output is destination
-            cysource = <void*> cnp.PyArray_DATA(image)
-            cydestination = <void*> cnp.PyArray_DATA(output)
-
-            # needed more correct way. Warning: conversion from 'npy_intp'
-            # to 'int', possible loss of data
-            img_width = image.shape[0]
-            img_height = image.shape[1]
-            stepsize = image.strides[0]
             # pass to IPP the source and destination arrays
-            index = _get_gaussian_filter_func_index(output.dtype, numChannels)
-            ippStatusIndex = GaussianFilter(index,
-                                            cysource,
-                                            cydestination,
-                                            img_width,
-                                            img_height,
-                                            numChannels,
-                                            sigma,
-                                            kernelSize,
-                                            stepsize,
-                                            ippBorderType,
-                                            ippBorderValue)
+            __pass_ipp_gaussian(image, output, sd, tr, ippBorderType, ippBorderValue)
 
         elif input_dtype == np.int8:
             # convert input to np.uint8 ---> converted copy of input
             image = image.astype(dtype=np.uint8, order='C', copy=True)
 
-            # converted copy of input is source
-            cysource = <void*> cnp.PyArray_DATA(image)
-
             # create output as np.uint8
             output = np.zeros(shape, dtype=np.uint8)
 
-            # needed more correct way. Warning: conversion from 'npy_intp'
-            # to 'int', possible loss of data
-            img_width = image.shape[0]
-            img_height = image.shape[1]
-            stepsize = image.strides[0]
-
-            # output is destination
-            cydestination = <void*> cnp.PyArray_DATA(output)
-
             # pass to IPP the source and destination arrays
-            index = _get_gaussian_filter_func_index(output.dtype, numChannels)
-            ippStatusIndex = GaussianFilter(index,
-                                            cysource,
-                                            cydestination,
-                                            img_width,
-                                            img_height,
-                                            numChannels,
-                                            sigma,
-                                            kernelSize,
-                                            stepsize,
-                                            ippBorderType,
-                                            ippBorderValue)
+            __pass_ipp_gaussian(image, output, sd, tr, ippBorderType, ippBorderValue)
 
             # delete source (copy of input) ---> free copy of input from mem
             del image
@@ -237,34 +212,11 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
             # convert input to np.float32 ---> converted copy of input
             image = image.astype(dtype=np.float32, order='C', copy=True)
 
-            # converted copy of input is source
-            cysource = <void*> cnp.PyArray_DATA(image)
-
             # create output as np.float32 ---> converted copy of output
             output = np.zeros(shape, dtype=np.float32)
 
-            # needed more correct way. Warning: conversion from 'npy_intp'
-            # to 'int', possible loss of data
-            img_width = image.shape[0]
-            img_height = image.shape[1]
-            stepsize = image.strides[0]
-
-            # output is destination
-            cydestination = <void*> cnp.PyArray_DATA(output)
-
             # pass to IPP the source and destination arrays
-            index = _get_gaussian_filter_func_index(output.dtype, numChannels)
-            ippStatusIndex = GaussianFilter(index,
-                                            cysource,
-                                            cydestination,
-                                            img_width,
-                                            img_height,
-                                            numChannels,
-                                            sigma,
-                                            kernelSize,
-                                            stepsize,
-                                            ippBorderType,
-                                            ippBorderValue)
+            __pass_ipp_gaussian(image, output, sd, tr, ippBorderType, ippBorderValue)
 
             # delete source (copy of input) ---> free copy of input from mem
             del image
@@ -274,28 +226,8 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     elif output_dtype in IPP_GAUSSIAN_SUPPORTED_DTYPES:
         if input_dtype in IPP_GAUSSIAN_SUPPORTED_DTYPES:
             if output_dtype == input_dtype:
-                # input is source, output is destination
-                cysource = <void*> cnp.PyArray_DATA(image)
-                cydestination = <void*> cnp.PyArray_DATA(output)
-
-                # needed more correct way. Warning: conversion from 'npy_intp'
-                # to 'int', possible loss of data
-                img_width = image.shape[0]
-                img_height = image.shape[1]
-                stepsize = image.strides[0]
                 # pass to IPP the source and destination arrays
-                index = _get_gaussian_filter_func_index(output.dtype, numChannels)
-                ippStatusIndex = GaussianFilter(index,
-                                                cysource,
-                                                cydestination,
-                                                img_width,
-                                                img_height,
-                                                numChannels,
-                                                sigma,
-                                                kernelSize,
-                                                stepsize,
-                                                ippBorderType,
-                                                ippBorderValue)
+                __pass_ipp_gaussian(image, output, sd, tr, ippBorderType, ippBorderValue)
             else:
                 # convert input to output dtype and
                 # converted input is source, output is destination
