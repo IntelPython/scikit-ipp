@@ -1,8 +1,12 @@
 import numpy as np
+from cpython.exc cimport PyErr_SetString
+from cpython.ref cimport PyObject
 cimport numpy as cnp
 cimport cython
 
 cnp.import_array()
+
+IPP_GAUSSIAN_SUPPORTED_DTYPES = [np.uint8, np.uint16, np.int16, np.float32]
 
 cdef extern from "src/gaussian.c":
     int  GaussianFilter(int index,
@@ -17,10 +21,15 @@ cdef extern from "src/gaussian.c":
                         int ippBorderType,
                         float ippBorderValue)
 
-IPP_GAUSSIAN_SUPPORTED_DTYPES = [np.uint8, np.uint16, np.int16, np.float32]
+cdef extern from "ipptypes.h":
+    ctypedef int IppStatus
 
 
-def _getIppBorderType(mode):
+cdef extern from "ippcore.h":
+    const char * ippGetStatusString(IppStatus stsCode)
+
+
+cdef int __get_IppBorderType(str mode):
     """ Convert an extension mode to the corresponding IPP's IppiBorderType integer code.
     """
     # 'nearest' -----> IPP's ippBorderRepl
@@ -45,7 +54,8 @@ def _getIppBorderType(mode):
     elif mode == 'transp':
         return 7
     else:
-        raise RuntimeError('boundary mode not supported')
+        PyErr_SetString(ValueError, "boundary mode not supported")
+        # raise RuntimeError('boundary mode not supported')
 
 
 # needed more correct version (guest_spatial_dim skimage)
@@ -87,21 +97,8 @@ def _get_gaussian_filter_func_index(dtype, int numChannels):
 
 
 # from https://github.com/scikit-image/scikit-image/blob/master/skimage/_shared/utils.py
-# convert_to_float
 def convert_to_float(image, preserve_range):
     """Convert input image to double image with the appropriate range.
-    Parameters
-    ----------
-    image : ndarray
-        Input image.
-    preserve_range : bool
-        Determines if the range of the image should be kept or transformed
-        using img_as_float. Also see
-        https://scikit-image.org/docs/dev/user_guide/data_types.html
-    Returns
-    -------
-    image : ndarray
-        Transformed version of the input.
     """
     if preserve_range:
         return image.astype(np.float32)
@@ -109,7 +106,14 @@ def convert_to_float(image, preserve_range):
     else:
         raise ValueError("Currently not supported")
 
-# cdef __get_ipp_error
+
+cdef PyObject * __get_ipp_error(int ippStatusIndex):
+    cdef const char * status_string
+    cdef PyObject * pyobject = NULL
+    if ippStatusIndex != int(0):
+        status_string = ippGetStatusString(ippStatusIndex)
+        PyErr_SetString(RuntimeError, status_string)
+        return pyobject
 
 
 cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, float sigma, float truncate,
@@ -152,10 +156,22 @@ cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, float sigm
                                     stepsize,
                                     ippBorderType,
                                     ippBorderValue)
-    # ippStatusIndex: ipp error handler will be added
+    __get_ipp_error(ippStatusIndex)
 
 cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
                multichannel=None, preserve_range=False, truncate=4.0):
+    """
+    Parameters
+    ----------
+    image :
+    sigma :
+    output :
+    mode :
+    cval :
+    multichannel :
+    preserve_range :
+    truncate :
+    """
     # TODO
     # add warnings for multichannel
 
@@ -173,7 +189,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     cdef float tr = float(truncate)
     cdef float ippBorderValue = float(cval)
 
-    cdef int ippBorderType = _getIppBorderType(mode)
+    cdef int ippBorderType = __get_IppBorderType(mode)
 
     if output is None:
         output_dtype = None
@@ -229,17 +245,17 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
                 # pass to IPP the source and destination arrays
                 __pass_ipp_gaussian(image, output, sd, tr, ippBorderType, ippBorderValue)
             else:
-                # convert input to output dtype and
-                # converted input is source, output is destination
+                # convert input to output dtype
+                image = image.astype(dtype=output_dtype, order='C', copy=True)
+
                 # pass to IPP the source and destination arrays
-                # return output
-                raise RuntimeError("currently not implemented 3")
+                __pass_ipp_gaussian(image, output, sd, tr, ippBorderType, ippBorderValue)
         else:
             # convert input to outputdtype and
+            image = image.astype(dtype=output_dtype, order='C', copy=True)
             # converted input is source, output is destination
             # pass to IPP the source and destination arrays
-            # return output
-            raise RuntimeError("currently not implemented 4")
+            __pass_ipp_gaussian(image, output, sd, tr, ippBorderType, ippBorderValue)
     elif output_dtype is np.int8 and input_dtype is np.uint8:
         # convert output to np.uint8 ---> converted copy of output
         # converted copy of output is destination
