@@ -12,21 +12,11 @@ def image():
                     dtype=np.uint8)
 
 
-@pytest.mark.parametrize("input_dtype", [np.uint8, np.uint16, np.int16, np.float32])
-def test_gaussian_output_dtype_nodefined_output_ipp_supported(image, input_dtype):
+@pytest.mark.parametrize("input_dtype", [np.uint8, np.int8, np.uint16, np.int16, np.uint32, np.int32,
+                                         np.uint64, np.int64, np.float32, np.float64, np.double])
+def test_gaussian_output_is_none(image, input_dtype):
     gaussian_image = gaussian(image.astype(input_dtype))
     assert gaussian_image.dtype == input_dtype
-
-
-def test_gaussian_output_dtype_nodefined_output_input_int8(image):
-    gaussian_image = gaussian(image=image.astype(np.int8), output=None)
-    assert gaussian_image.dtype == np.int8
-
-
-@pytest.mark.parametrize("input_dtype_not_ipp", [np.int8, np.uint32, np.int32, np.uint64, np.int64, np.float64, np.double])
-def test_gaussian_output_dtype_nodefined_output_ipp_notsupported(image, input_dtype_not_ipp):
-    gaussian_image = gaussian(image.astype(input_dtype_not_ipp))
-    assert gaussian_image.dtype == input_dtype_not_ipp
 
 """
 # not correct output use
