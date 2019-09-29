@@ -1,5 +1,6 @@
 import numpy as np
 from cpython.exc cimport PyErr_SetString
+from cpython.exc cimport PyErr_Occurred
 from cpython.ref cimport PyObject
 cimport numpy as cnp
 cimport cython
@@ -54,8 +55,8 @@ cdef int __get_IppBorderType(str mode):
     elif mode == 'transp':
         return 7
     else:
+        # TODO: set exception behavior
         PyErr_SetString(ValueError, "boundary mode not supported")
-        # raise RuntimeError('boundary mode not supported')
 
 
 # needed more correct version (guest_spatial_dim skimage)
@@ -107,13 +108,11 @@ def convert_to_float(image, preserve_range):
         raise ValueError("Currently not supported")
 
 
-cdef PyObject * __get_ipp_error(int ippStatusIndex):
+cdef PyObject * __get_ipp_error(int ippStatusIndex) except *:
     cdef const char * status_string
-    cdef PyObject * pyobject = NULL
     if ippStatusIndex != int(0):
         status_string = ippGetStatusString(ippStatusIndex)
         PyErr_SetString(RuntimeError, status_string)
-        return pyobject
 
 
 cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, float sigma, float truncate,

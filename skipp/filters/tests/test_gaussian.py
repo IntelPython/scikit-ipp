@@ -52,9 +52,9 @@ def test_energy_decrease_gaussian():
     assert gaussian_a.std() < a.std()
 
 
-def test_gaussian_unsupported_mode():
+def test_gaussian_unsupported_mode_in_IPP():
     a = np.zeros((3, 3), dtype=np.float32)
-    with pytest.raises(SystemError):
+    with pytest.raises(RuntimeError):
         gaussian_a = gaussian(a, mode='reflect')
 
 
