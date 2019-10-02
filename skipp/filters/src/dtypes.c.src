@@ -1,0 +1,244 @@
+#define NPY_NO_DEPRECATED_API NPY_API_VERSION
+
+#include "dtypes.h"
+
+#define EXIT_FUNC exitLine:                                  /* Label for Exit */
+#define check_sts(st) if((st) != ippStsNoErr) goto exitLine
+
+#define IPP_MIN_8u IPP_MIN_8U
+#define IPP_MAX_8u IPP_MAX_8U
+#define IPP_MIN_16u IPP_MIN_16U
+#define IPP_MAX_16u IPP_MAX_16U
+#define IPP_MIN_8s IPP_MIN_8S
+#define IPP_MAX_8s IPP_MAX_8S
+#define IPP_MIN_16s IPP_MIN_16S
+#define IPP_MAX_16s IPP_MAX_16S
+
+/**begin repeat
+*
+* #type_src = 8u, 8s, 16u, 16s#
+*/
+
+int
+image_@type_src@_as_32f_C1(void * pSrc,
+                           int srcStep,
+                           void * pDst,
+                           int dstStep,
+                           int img_width,
+                           int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp@type_src@ * pSRC = NULL;     // Pointers to source and
+    Ipp32f * pDST = NULL;    // destination images
+                                             
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp@type_src@ *)pSrc;
+    pDST = (Ipp32f *)pDst;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_@type_src@);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_@type_src@);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+    
+    check_sts( ippiScaleC_@type_src@32f_C1R(pSRC,
+                                            srcStep,
+                                            mVal,
+                                            aVal,
+                                            pDST,
+                                            dstStep,
+                                            roiSize,
+                                            ippAlgHintAccurate) );
+
+EXIT_FUNC
+    return (int)status;
+};
+/**end repeat**/
+
+
+// image as 8u - unsigned int 8
+/**begin repeat
+*
+* #type_src = 8s, 16u, 16s#
+* #type_dst = 8u#
+*/
+
+int
+image_@type_src@_as_@type_dst@_C1(void * pSrc,
+                                  int srcStep,
+                                  void * pDst,
+                                  int dstStep,
+                                  int img_width,
+                                  int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp@type_src@ * pSRC = NULL;     // Pointers to source and
+    Ipp@type_dst@ * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp@type_src@ *)pSrc;
+    pDST = (Ipp@type_dst@ *)pDst;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_@type_src@);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_@type_src@);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_@type_dst@);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_@type_dst@);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_@type_src@@type_dst@_C1R(pSRC,
+                                                  srcStep,
+                                                  mVal,
+                                                  aVal,
+                                                  pDST,
+                                                  dstStep,
+                                                  roiSize,
+                                                  ippAlgHintAccurate));
+
+    EXIT_FUNC
+        return (int)status;
+}
+/**end repeat**/
+
+// image as 8s - signed int 8
+/**begin repeat
+*
+* #type_src = 8u, 16u, 16s#
+* #type_dst = 8s#
+*/
+
+int
+image_@type_src@_as_@type_dst@_C1(void * pSrc,
+                                  int srcStep,
+                                  void * pDst,
+                                  int dstStep,
+                                  int img_width,
+                                  int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp@type_src@ * pSRC = NULL;     // Pointers to source and
+    Ipp@type_dst@ * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp@type_src@ *)pSrc;
+    pDST = (Ipp@type_dst@ *)pDst;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_@type_src@);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_@type_src@);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_@type_dst@);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_@type_dst@);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_@type_src@@type_dst@_C1R(pSRC,
+                                                  srcStep,
+                                                  mVal,
+                                                  aVal,
+                                                  pDST,
+                                                  dstStep,
+                                                  roiSize,
+                                                  ippAlgHintAccurate));
+
+    EXIT_FUNC
+        return (int)status;
+}
+/**end repeat**/
+
+// image as 16s - signed int 16
+/**begin repeat
+*
+* #type_src = 8u, 8s, 16u#
+* #type_dst = 16s#
+*/
+
+int
+image_@type_src@_as_@type_dst@_C1(void * pSrc,
+                                  int srcStep,
+                                  void * pDst,
+                                  int dstStep,
+                                  int img_width,
+                                  int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp@type_src@ * pSRC = NULL;     // Pointers to source and
+    Ipp@type_dst@ * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp@type_src@ *)pSrc;
+    pDST = (Ipp@type_dst@ *)pDst;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_@type_src@);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_@type_src@);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_@type_dst@);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_@type_dst@);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_@type_src@@type_dst@_C1R(pSRC,
+                                                  srcStep,
+                                                  mVal,
+                                                  aVal,
+                                                  pDST,
+                                                  dstStep,
+                                                  roiSize,
+                                                  ippAlgHintAccurate));
+
+    EXIT_FUNC
+        return (int)status;
+}
+/**end repeat**/
+
+// image as 16u - unsigned int 16
+/**begin repeat
+*
+* #type_src = 8u, 8s, 16s#
+* #type_dst = 16u#
+*/
+
+int
+image_@type_src@_as_@type_dst@_C1(void * pSrc,
+                                  int srcStep,
+                                  void * pDst,
+                                  int dstStep,
+                                  int img_width,
+                                  int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp@type_src@ * pSRC = NULL;     // Pointers to source and
+    Ipp@type_dst@ * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp@type_src@ *)pSrc;
+    pDST = (Ipp@type_dst@ *)pDst;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_@type_src@);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_@type_src@);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_@type_dst@);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_@type_dst@);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_@type_src@@type_dst@_C1R(pSRC,
+                                                  srcStep,
+                                                  mVal,
+                                                  aVal,
+                                                  pDST,
+                                                  dstStep,
+                                                  roiSize,
+                                                  ippAlgHintAccurate));
+
+    EXIT_FUNC
+        return (int)status;
+}
+/**end repeat**/

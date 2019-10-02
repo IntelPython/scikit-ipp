@@ -180,6 +180,9 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # use numpy.require to provid type that satisfies requirements.
     # image = convert_to_float(image)
 
+    # TODO
+    # add correct preserve range module
+
     shape = image.shape
 
     input_dtype = image.dtype
@@ -286,5 +289,4 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
             # return output
             raise RuntimeError("currently not implemented 7")
 
-    # ippStatusIndex: ipp error handler will be added
     return output
