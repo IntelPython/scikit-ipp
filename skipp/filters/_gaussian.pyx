@@ -268,7 +268,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         # return output
         raise RuntimeError("currently not implemented 5")
     else:
-        if input_dtype != np.float32:
+        if input_dtype == np.float32:
             # input is source
             # convert output to np.float32---> converted copy of output
             # converted copy of output is destination
