@@ -103,6 +103,40 @@ get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes) {
 };
 
 int
+image_8u_as_8s_XorC(void * pSrc,
+                    void * pDst,
+                    int numChannels,
+                    int img_width,
+                    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8u * pSRC = NULL;     // Pointers to source and
+    Ipp8s * pDST = NULL;     // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8u *)pSrc;
+    pDST = (Ipp8s *)pDst;
+
+    status = ippiXorC_8u_C1R(pSRC, sizeof(Ipp8u) * img_width, 0x80,
+                            (Ipp8u *)pDST, sizeof(Ipp8s) * img_width, roiSize);
+    check_sts(status)
+EXIT_FUNC
+        return (int)status;
+}
+
+int
 image_8s_as_8u_XorC(void * pSrc,
                     void * pDst,
                     int numChannels,
@@ -131,6 +165,40 @@ image_8s_as_8u_XorC(void * pSrc,
 
     status = ippiXorC_8u_C1R((Ipp8u *)pSRC, sizeof(Ipp8s) * img_width,
                               0x80, pDST, sizeof(Ipp8u) * img_width, roiSize);
+    check_sts(status)
+EXIT_FUNC
+        return (int)status;
+}
+
+int
+image_16u_as_16s_XorC(void * pSrc,
+                      void * pDst,
+                      int numChannels,
+                      int img_width,
+                      int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp16u * pSRC = NULL;     // Pointers to source and
+    Ipp16s * pDST = NULL;     // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp16u *)pSrc;
+    pDST = (Ipp16s *)pDst;
+
+    status = ippiXorC_16u_C1R(pSRC, sizeof(Ipp16u) * img_width, 0x8000,
+                             (Ipp16u *)pDST, sizeof(Ipp16s) * img_width, roiSize);
     check_sts(status)
 EXIT_FUNC
         return (int)status;
@@ -199,6 +267,41 @@ image_32u_as_32s_XorC(void * pSrc,
 
     status = ippiXorC_32s_C1R((Ipp32s *)pSRC, sizeof(Ipp32u) * img_width,
                               0x80000000, pDST, sizeof(Ipp32s) * img_width, roiSize);
+    check_sts(status)
+
+EXIT_FUNC
+        return (int)status;
+}
+
+int
+image_32s_as_32u_XorC(void * pSrc,
+                      void * pDst,
+                      int numChannels,
+                      int img_width,
+                      int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp32s * pSRC = NULL;     // Pointers to source and
+    Ipp32u * pDST = NULL;     // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp32s *)pSrc;
+    pDST = (Ipp32u *)pDst;
+
+    status = ippiXorC_32s_C1R(pSRC, sizeof(Ipp32s) * img_width, 0x80000000,
+                              pDST, sizeof(Ipp32u) * img_width, roiSize);
     check_sts(status)
 
 EXIT_FUNC
