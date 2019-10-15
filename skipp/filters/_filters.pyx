@@ -53,7 +53,7 @@ cdef extern from "src/edges.c":
                              int img_height,
                              int maskSize,
                              int borderType,
-                             Ipp32f borderValue);
+                             Ipp32f borderValue)
 
     int LaplaceFilterFLOAT32RGB(void * pSRC,
                                 int srcStep,
@@ -134,11 +134,11 @@ cdef extern from "src/edges.c":
 
 cdef int _getIPPNormType(normType):
     if normType == 'l1':
-      return 2
+        return 2
     elif normType == 'l2':
-      return 4
+        return 4
     else:
-      raise RuntimeError('norm type not supported')
+        raise RuntimeError('norm type not supported')
 
 
 cdef extern from "src/dtypes.c":
@@ -305,6 +305,7 @@ def convert_to_float(image, preserve_range):
 # >>> gaussian filter module
 IPP_GAUSSIAN_SUPPORTED_DTYPES = [np.uint8, np.uint16, np.int16, np.float32]
 
+
 def _get_gaussian_filter_func_index(dtype, int numChannels):
     if(numChannels == 1):
         if(dtype == np.uint8):
@@ -454,7 +455,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
                 raise ValueError("Unsupported numpy dtype")
 
             __convert(image, ipp_src, index1, index2)
-            #__convert_8s_8u(image, ipp_src)
+            # __convert_8s_8u(image, ipp_src)
 
             # create output as np.uint8
             ipp_dst = np.zeros(shape, dtype=np.uint8)
@@ -580,7 +581,7 @@ def laplace(image, ksize=3, mask=None):
 
     cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
 
     if(numChannels == 1):
         ippStatusIndex = LaplaceFilterFLOAT32(cyimage,
@@ -589,8 +590,8 @@ def laplace(image, ksize=3, mask=None):
                                               stepsize,
                                               img_width,
                                               img_height,
-                                              33, # mask size
-                                              1, # bordervalue reflect
+                                              33,  # mask size
+                                              1,   # bordervalue reflect
                                               0)
     elif(numChannels == 3):
         ippStatusIndex = LaplaceFilterFLOAT32RGB(cyimage,
@@ -599,8 +600,8 @@ def laplace(image, ksize=3, mask=None):
                                                  stepsize,
                                                  img_width,
                                                  img_height,
-                                                 33, # mask size
-                                                 1, # bordervalue reflect
+                                                 33,  # mask size
+                                                 1,   # bordervalue reflect
                                                  0)
     else:
         raise ValueError("Currently not supported")
@@ -626,7 +627,7 @@ def laplace1(image, ksize=3, mask=None):
 
     cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
 
     if(numChannels == 1):
         ippStatusIndex = FilterBorderFLOAT32(cyimage,
@@ -642,6 +643,7 @@ def laplace1(image, ksize=3, mask=None):
         raise ValueError("Currently not supported")
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
+
 
 def sobel(cnp.ndarray image, mask=None, normType='l2'):
     # currently doesnt use `mask`
@@ -664,20 +666,19 @@ def sobel(cnp.ndarray image, mask=None, normType='l2'):
 
     cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
     ippStatusIndex = SobelFilterFLOAT32(cyimage,
                                         stepsize,
                                         cydestination,
                                         stepsize,
                                         img_width,
                                         img_height,
-                                        33, # mask size
-                                        normtype, # l2 norm default
-                                        1, # bordervalue reflect
+                                        33,        # mask size
+                                        normtype,  # l2 norm default
+                                        1,         # bordervalue reflect
                                         0)
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
-
 
 
 def sobel_h(cnp.ndarray image, mask=None):
@@ -700,7 +701,7 @@ def sobel_h(cnp.ndarray image, mask=None):
 
     cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
 
     ippStatusIndex = SobelFilterHorizonFLOAT32(cyimage,
                                                stepsize,
@@ -708,8 +709,8 @@ def sobel_h(cnp.ndarray image, mask=None):
                                                stepsize,
                                                img_width,
                                                img_height,
-                                               33, # mask size
-                                               1, # bordervalue reflect
+                                               33,   # mask size
+                                               1,    # bordervalue reflect
                                                0)
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
@@ -735,7 +736,7 @@ def sobel_v(cnp.ndarray image, mask=None):
 
     cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
 
     ippStatusIndex = SobelFilterVertFLOAT32(cyimage,
                                             stepsize,
@@ -743,8 +744,8 @@ def sobel_v(cnp.ndarray image, mask=None):
                                             stepsize,
                                             img_width,
                                             img_height,
-                                            33, # mask size
-                                            1, # bordervalue reflect
+                                            33,    # mask size
+                                            1,     # bordervalue reflect
                                             0)
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
@@ -770,17 +771,17 @@ def sobel_c(cnp.ndarray image, mask=None):
 
     cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
 
     ippStatusIndex = SobelFilterCrossFLOAT32(cyimage,
-                                            stepsize,
-                                            cydestination,
-                                            stepsize,
-                                            img_width,
-                                            img_height,
-                                            33, # mask size
-                                            1, # bordervalue reflect
-                                            0)
+                                             stepsize,
+                                             cydestination,
+                                             stepsize,
+                                             img_width,
+                                             img_height,
+                                             33,    # mask size
+                                             1,     # bordervalue reflect
+                                             0)
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
 
@@ -794,10 +795,11 @@ def prewitt(image, mask=None):
         image = np.ascontiguousarray(image)
     if _get_number_of_channels(image) is not 1:
         raise ValueError('invalid axis')
-    
+
     out = np.sqrt(prewitt_h(image, mask) ** 2 + prewitt_v(image, mask) ** 2)
     out /= np.sqrt(2)
     return out
+
 
 def prewitt_proto(image, mask=None):
     """
@@ -822,7 +824,7 @@ def prewitt_proto(image, mask=None):
     cdef void * cyimage = <void * > cnp.PyArray_DATA(A)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(B)
 
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
     ippStatusIndex = PrewittFilterFLOAT32(cyimage,
                                           cydestination,
                                           stepsize,
@@ -852,18 +854,19 @@ def prewitt_h(image, mask=None):
 
     cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
     ippStatusIndex = PrewittFilterHorizonFLOAT32(cyimage,
                                                  stepsize,
                                                  cydestination,
                                                  stepsize,
                                                  img_width,
                                                  img_height,
-                                                 33, # mask size
-                                                 1, # bordervalue reflect
+                                                 33,    # mask size
+                                                 1,     # bordervalue reflect
                                                  0)
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
+
 
 def prewitt_v(image, mask=None):
     # currently doesnt use `mask`
@@ -885,31 +888,33 @@ def prewitt_v(image, mask=None):
 
     cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
     cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
     ippStatusIndex = PrewittFilterVertFLOAT32(cyimage,
-                                             stepsize,
-                                             cydestination,
-                                             stepsize,
-                                             img_width,
-                                             img_height,
-                                             33, # mask size
-                                             1, # bordervalue reflect
-                                             0)
+                                              stepsize,
+                                              cydestination,
+                                              stepsize,
+                                              img_width,
+                                              img_height,
+                                              33,    # mask size
+                                              1,     # bordervalue reflect
+                                              0)
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
 # <<< edges module
 
-# >>> for tests
 
+# >>> for tests
 def _get_cy__convert(source, destination, index1, index2):
     # __convert(cnp.ndarray source, cnp.ndarray destination, int index)
     # for the tests
     return __convert(source, destination, index1, index2)
 
+
 def _get_cy__ipp_equalent_number_for_numpy(image):
     # cdef int __ipp_equalent_number_fornumpy(cnp.ndarray image):
     # for tests
     return __ipp_equalent_number_for_numpy(image)
+
 
 def _get_cy__get_IppBorderType(mode):
     # cdef int __get_IppBorderType(str mode)
