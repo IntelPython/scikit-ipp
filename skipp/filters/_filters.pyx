@@ -8,6 +8,7 @@ cimport cython
 
 cnp.import_array()
 
+
 cdef extern from "ippbase.h":
     ctypedef unsigned char  Ipp8u
     ctypedef unsigned short Ipp16u
@@ -141,7 +142,8 @@ cdef int _getIPPNormType(normType):
 
 
 cdef extern from "src/dtypes.c":
-    int convert(int index,
+    int convert(int index1,
+                int index2,
                 void * pSrc,
                 int srcStep,
                 void * pDst,
@@ -158,6 +160,63 @@ cdef extern from "ippcore.h":
     const char * ippGetStatusString(IppStatus stsCode)
 
 # >>> utiles module
+"""
+ctypedef struct dtype_meta:
+    cdef int IppDataType
+    cdef int ippNumpyTableIndex
+"""
+
+cdef int __ipp_equalent_number_for_numpy(cnp.ndarray image):
+    # change str ->
+    cdef str kind = image.dtype.kind
+    cdef int elemSize = image.dtype.itemsize
+    if kind == str('u'):
+        if elemSize == 1:
+            # Ipp8u
+            return 0
+        elif elemSize == 2:
+            # Ipp16u
+            return 2
+        elif elemSize == 4:
+            # Ipp32u
+            return 4
+        elif elemSize == 8:
+            # Ipp64u
+            return 6
+        else:
+            # ippUndef
+            return -1
+    elif kind == str('i'):
+        if elemSize == 1:
+            # Ipp8s
+            return 1
+        elif elemSize == 2:
+            # Ipp16s
+            return 3
+        elif elemSize == 4:
+            # Ipp32s
+            return 5
+        elif elemSize == 8:
+            # Ipp64s
+            return 7
+        else:
+            # ippUndef
+            return -1
+    elif kind == str('f'):
+        if elemSize == 4:
+            # Ipp32f
+            return 8
+        elif elemSize == 8:
+            # Ipp64f
+            return 9
+        else:
+            # ippUndef
+            return -1
+    else:
+        # ippUndef
+        return -1
+
+
 cdef int __get_IppBorderType(str mode):
     """ Convert an extension mode to the corresponding IPP's IppiBorderType integer code.
     """
@@ -203,7 +262,8 @@ def _get_number_of_channels(image):
         ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
     return channels
 
-cdef __convert(cnp.ndarray source, cnp.ndarray destination, int index):
+
+cdef __convert(cnp.ndarray source, cnp.ndarray destination, int index1, int index2):
     cdef int ippStatusIndex = 0
     cdef int img_width = source.shape[0]
     cdef int img_height = source.shape[1]
@@ -219,7 +279,8 @@ cdef __convert(cnp.ndarray source, cnp.ndarray destination, int index):
     cysource = <void*> cnp.PyArray_DATA(source)
     cydestination = <void*> cnp.PyArray_DATA(destination)
 
-    ippStatusIndex = convert(index,
+    ippStatusIndex = convert(index1,
+                             index2,
                              cysource,
                              stepsize,
                              cydestination,
@@ -365,6 +426,9 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
 
     cdef int ippBorderType = __get_IppBorderType(mode)
 
+    cdef int index1
+    cdef int index2
+
     if output_dtype is None:
         if input_dtype in IPP_GAUSSIAN_SUPPORTED_DTYPES:
             # create output as input dtype
@@ -379,11 +443,17 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
             # incorrect convert
             # image = image.astype(dtype=np.uint8, order='C', copy=True)
 
-            # ~~~~~~~
-            # call func
             ipp_src = np.zeros(shape, dtype=np.uint8)
-            __convert(image, ipp_src, 0)
 
+            index1 = __ipp_equalent_number_for_numpy(image)
+            if index1 == -1:
+                raise ValueError("Unsupported numpy dtype")
+
+            index2 = __ipp_equalent_number_for_numpy(ipp_src)
+            if index2 == -1:
+                raise ValueError("Unsupported numpy dtype")
+
+            __convert(image, ipp_src, index1, index2)
             #__convert_8s_8u(image, ipp_src)
 
             # create output as np.uint8
@@ -398,7 +468,14 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
             # convert destination to np.int8
             output = np.zeros(shape, dtype=input_dtype)
             # __convert_8u_8s(ipp_dst, output)
-            __convert(ipp_dst, output, 1)
+
+            index1 = __ipp_equalent_number_for_numpy(ipp_dst)
+            if index1 == -1:
+                raise ValueError("Unsupported numpy dtype")
+            index2 = __ipp_equalent_number_for_numpy(output)
+            if index2 == -1:
+                raise ValueError("Unsupported numpy dtype")
+            __convert(ipp_dst, output, index1, index2)
 
         else:
             # convert input to np.float32 ---> converted copy of input
@@ -821,3 +898,21 @@ def prewitt_v(image, mask=None):
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
 # <<< edges module
+
+# >>> for tests
+
+def _get_cy__convert(source, destination, index1, index2):
+    # __convert(cnp.ndarray source, cnp.ndarray destination, int index)
+    # for the tests
+    return __convert(source, destination, index1, index2)
+
+def _get_cy__ipp_equalent_number_for_numpy(image):
+    # cdef int __ipp_equalent_number_fornumpy(cnp.ndarray image):
+    # for tests
+    return __ipp_equalent_number_for_numpy(image)
+
+def _get_cy__get_IppBorderType(mode):
+    # cdef int __get_IppBorderType(str mode)
+    return __get_IppBorderType(mode)
+
+# <<< for tests
