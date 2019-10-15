@@ -487,7 +487,6 @@ EXIT_FUNC
         return (int)status;
 }
 
-
 /*
 static covertHandler
 covertTable[10][10] = { {image_8u_as_8u_C1,
@@ -603,18 +602,7 @@ covertTable[10][10] = { {image_8u_as_8u_C1,
                 };
 */
 // ~~~~ temp var for 
-int
-image_no_convert(void * pSrc,
-                 int srcStep,
-                 void * pDst,
-                 int dstStep,
-                 int img_width,
-                 int img_height)
-{
-    IppStatus status = ippStsErr;
-    // currently not supported
-    return (int)status;
-}
+
 static covertHandler
 covertTable[10][10] = { {image_no_convert,
                          image_8u_as_8s_C1,
