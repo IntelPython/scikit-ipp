@@ -130,7 +130,7 @@ image_8s_as_8u_XorC(void * pSrc,
     pDST = (Ipp8u *)pDst;
 
     status = ippiXorC_8u_C1R((Ipp8u *)pSRC, sizeof(Ipp8s) * img_width,
-                              0x8000, pDST, sizeof(Ipp8u) * img_width, roiSize);
+                              0x80, pDST, sizeof(Ipp8u) * img_width, roiSize);
     check_sts(status)
 EXIT_FUNC
         return (int)status;
