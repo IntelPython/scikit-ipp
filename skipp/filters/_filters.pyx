@@ -145,9 +145,8 @@ cdef extern from "src/dtypes.c":
     int convert(int index1,
                 int index2,
                 void * pSrc,
-                int srcStep,
                 void * pDst,
-                int dstStep,
+                int numChannels,
                 int img_width,
                 int img_height)
 
@@ -253,17 +252,18 @@ cdef PyObject * __get_ipp_error(int ippStatusIndex) except *:
         PyErr_SetString(RuntimeError, status_string)
 
 
-def _get_number_of_channels(image):
+cdef int _get_number_of_channels(cnp.ndarray image):
+    cdef int numChannels
     if image.ndim == 2:
-        channels = 1    # single (grayscale)
+        numChannels = 1    # single (grayscale)
     elif image.ndim == 3 and image.shape[-1] == 3:
-        channels = 3   # 3 channels
+        numChannels = 3   # 3 channels
     else:
-        ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
-    return channels
+        numChannels = -1
+    return numChannels
 
 
-cdef __convert(cnp.ndarray source, cnp.ndarray destination, int index1, int index2):
+cdef __convert(cnp.ndarray source, cnp.ndarray destination, int numChannels, int index1, int index2):
     cdef int ippStatusIndex = 0
     cdef int img_width = source.shape[0]
     cdef int img_height = source.shape[1]
@@ -282,9 +282,8 @@ cdef __convert(cnp.ndarray source, cnp.ndarray destination, int index1, int inde
     ippStatusIndex = convert(index1,
                              index2,
                              cysource,
-                             stepsize,
                              cydestination,
-                             stepsize,
+                             numChannels,
                              img_width,
                              img_height)
     __get_ipp_error(ippStatusIndex)
@@ -425,6 +424,10 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # if sigma == 0:
     #    pass
 
+    cdef int numChannels = _get_number_of_channels(image)
+    if(numChannels == -1):
+        ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
     cdef int ippBorderType = __get_IppBorderType(mode)
 
     cdef int index1
@@ -454,7 +457,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
             if index2 == -1:
                 raise ValueError("Unsupported numpy dtype")
 
-            __convert(image, ipp_src, index1, index2)
+            __convert(image, ipp_src, numChannels, index1, index2)
             # __convert_8s_8u(image, ipp_src)
 
             # create output as np.uint8
@@ -476,7 +479,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
             index2 = __ipp_equalent_number_for_numpy(output)
             if index2 == -1:
                 raise ValueError("Unsupported numpy dtype")
-            __convert(ipp_dst, output, index1, index2)
+            __convert(ipp_dst, output, numChannels, index1, index2)
 
         else:
             # convert input to np.float32 ---> converted copy of input
@@ -907,7 +910,10 @@ def prewitt_v(image, mask=None):
 def _get_cy__convert(source, destination, index1, index2):
     # __convert(cnp.ndarray source, cnp.ndarray destination, int index)
     # for the tests
-    return __convert(source, destination, index1, index2)
+    cdef int numChannels = _get_number_of_channels(source)
+    if(numChannels == -1):
+        ValueError("Expected 2D array with 1 or 3 channels, got %iD." % source.ndim)
+    return __convert(source, destination, numChannels, index1, index2)
 
 
 def _get_cy__ipp_equalent_number_for_numpy(image):
@@ -920,4 +926,8 @@ def _get_cy__get_IppBorderType(mode):
     # cdef int __get_IppBorderType(str mode)
     return __get_IppBorderType(mode)
 
+
+def _get_cy__get_number_of_channels(image):
+    # cdef _get_number_of_channels(cnp.ndarray image):
+    return _get_number_of_channels(image)
 # <<< for tests
