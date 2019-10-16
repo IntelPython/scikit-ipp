@@ -7,6 +7,8 @@
 
 #define MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE 0x2AAAAAAA
 
+#define IPP_TYPES_NUMBER 10
+
 typedef enum {
     ipp8u_c = 512,     // 1000000000
     ipp8s_c = 256,     // 0100000000
@@ -198,7 +200,7 @@ int(*covertHandler)(
     int img_width,
     int img_height);
 
-static covertHandler covertTable[10][10];
+static covertHandler covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER];
 
 int
 convert(int index1,

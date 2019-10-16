@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 // #include "numpy/npy_common.h" /* npy_intp */
 #include "dtypes.h"
 
@@ -7,29 +5,29 @@
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine;
 
 static
-int IppDataTypeMaskArray[10] = {ipp8u_c,
-                                ipp8s_c,
-                                ipp16u_c,
-                                ipp16s_c,
-                                ipp32u_c,
-                                ipp32s_c,
-                                ipp64u_c,
-                                ipp64s_c,
-                                ipp32f_c,
-                                ipp64f_c
+int IppDataTypeMaskArray[IPP_TYPES_NUMBER] = {ipp8u_c,
+                                              ipp8s_c,
+                                              ipp16u_c,
+                                              ipp16s_c,
+                                              ipp32u_c,
+                                              ipp32s_c,
+                                              ipp64u_c,
+                                              ipp64s_c,
+                                              ipp32f_c,
+                                              ipp64f_c
 };
 
 static
-int IppDataTypeConversionRecomendationMaskArray[10] = {ipp8u_r,
-                                                       ipp8s_r,
-                                                       ipp16u_r,
-                                                       ipp16s_r,
-                                                       ipp32u_r,
-                                                       ipp32s_r,
-                                                       ipp64u_r,
-                                                       ipp64s_r,
-                                                       ipp32f_r,
-                                                       ipp64f_r
+int IppDataTypeConversionRecomendationMaskArray[IPP_TYPES_NUMBER] = {ipp8u_r,
+                                                                     ipp8s_r,
+                                                                     ipp16u_r,
+                                                                     ipp16s_r,
+                                                                     ipp32u_r,
+                                                                     ipp32s_r,
+                                                                     ipp64u_r,
+                                                                     ipp64s_r,
+                                                                     ipp32f_r,
+                                                                     ipp64f_r
 };
 
 int
@@ -777,7 +775,8 @@ convert(int index1,
 }
 
 static covertHandler
-covertTable[10][10] = { {image_no_convert,  // from Ipp8u
+covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = { 
+                        {image_no_convert,  // from Ipp8u
                          image_8u_as_8s_XorC,
                          image_no_convert,
                          image_no_convert,
