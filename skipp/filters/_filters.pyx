@@ -23,8 +23,10 @@ cdef extern from "ippbase.h":
 
 # gaussian
 cdef extern from "src/gaussian.c":
-    int  GaussianFilter(void * pSRC,
-                        void * pDST,
+    int  GaussianFilter(int input_index,
+                        int output_index,
+                        void * pInput,
+                        void * pOutput,
                         int img_width,
                         int img_height,
                         int numChannels,
@@ -334,6 +336,9 @@ cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, float sigm
 
     cdef int numChannels = _get_number_of_channels(source)
 
+    cdef int source_index = __ipp_equalent_number_for_numpy(source)
+    cdef int destination_index = __ipp_equalent_number_for_numpy(destination)
+
     # needed more correct way. Warning: conversion from 'npy_intp'
     # to 'int', possible loss of data
     cdef int img_width = source.shape[0]
@@ -342,7 +347,9 @@ cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, float sigm
     # TODO change to platform aware integer
     cdef int stepsize = source.strides[0]
     # pass to IPP the source and destination arrays
-    ippStatusIndex = GaussianFilter(cysource,
+    ippStatusIndex = GaussianFilter(source_index,
+                                    destination_index,
+                                    cysource,
                                     cydestination,
                                     img_width,
                                     img_height,

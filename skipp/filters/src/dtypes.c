@@ -5,7 +5,7 @@
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine;
 
 static
-int IppDataTypeMaskArray[IPP_TYPES_NUMBER] = { ipp8u_c,
+int IppDataTypeMaskArray[IPP_TYPES_NUMBER] = {ipp8u_c,
                                               ipp8s_c,
                                               ipp16u_c,
                                               ipp16s_c,
@@ -18,7 +18,7 @@ int IppDataTypeMaskArray[IPP_TYPES_NUMBER] = { ipp8u_c,
 };
 
 static
-int IppDataTypeConversionRecomendationMaskArray[IPP_TYPES_NUMBER] = { ipp8u_r,
+int IppDataTypeConversionRecomendationMaskArray[IPP_TYPES_NUMBER] = {ipp8u_r,
                                                                      ipp8s_r,
                                                                      ipp16u_r,
                                                                      ipp16s_r,
@@ -145,7 +145,6 @@ malloc_by_dtype_index(
     void * ipp_arr_p = NULL;
     int sizeofIppDataType = 0;
 
-    IppStatus status = ippStsNoErr;
     // better use array with sizeof(IppDtype)
     if (index == ipp8u_index)
     {
@@ -238,8 +237,8 @@ image_8u_as_8s_XorC(void * pSrc,
     status = ippiXorC_8u_C1R(pSRC, sizeof(Ipp8u) * img_width, 0x80,
         (Ipp8u *)pDST, sizeof(Ipp8s) * img_width, roiSize);
     check_sts(status)
-        EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -281,8 +280,8 @@ image_8u_as_8s_ScaleC(
     status = ippiScaleC_8u8s_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal, pDST, sizeof(Ipp8s) * img_width, roiSize, ippAlgHintAccurate);
     check_sts(status);
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -324,8 +323,8 @@ image_8u_as_16u_ScaleC(
     status = ippiScaleC_8u16u_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal, pDST, sizeof(Ipp16u) * img_width, roiSize, ippAlgHintAccurate);
     check_sts(status);
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -368,8 +367,8 @@ image_8u_as_16s_ScaleC(
     status = ippiScaleC_8u16s_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal, pDST, sizeof(Ipp16s) * img_width, roiSize, ippAlgHintAccurate);
     check_sts(status);
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -419,8 +418,8 @@ image_8u_as_32s_Convert(void * pSrc,
 
     check_sts(status)
 
-        EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -456,8 +455,8 @@ image_8u_as_32s_Scale(
         pDST, img_width * sizeof(Ipp32s), roiSize);
     check_sts(status);
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -501,8 +500,8 @@ image_8u_as_32s_ScaleC(
         img_width * sizeof(Ipp32s), roiSize, ippAlgHintAccurate);
     check_sts(status);
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -544,8 +543,8 @@ image_8s_as_8u_ScaleC(
     status = ippiScaleC_8s8u_C1R(pSRC, sizeof(Ipp8s) * img_width, mVal, aVal, pDST, sizeof(Ipp8u) * img_width, roiSize, ippAlgHintAccurate);
     check_sts(status);
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -579,8 +578,8 @@ image_8s_as_8u_XorC(
     status = ippiXorC_8u_C1R((Ipp8u *)pSRC, sizeof(Ipp8s) * img_width,
         0x80, pDST, sizeof(Ipp8u) * img_width, roiSize);
     check_sts(status)
-        EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -649,8 +648,8 @@ image_16s_as_16u_XorC(
     status = ippiXorC_16u_C1R((Ipp16u *)pSRC, sizeof(Ipp16s) * img_width,
         0x8000, pDST, sizeof(Ipp16u) * img_width, roiSize);
     check_sts(status)
-        EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -685,8 +684,8 @@ image_32u_as_32s_XorC(
         0x80000000, pDST, sizeof(Ipp32s) * img_width, roiSize);
     check_sts(status)
 
-        EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -721,8 +720,8 @@ image_32s_as_32u_XorC(
         (Ipp32s *)pDST, sizeof(Ipp32s) * img_width, roiSize);
     check_sts(status)
 
-        EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 // image_as_float32
@@ -761,8 +760,8 @@ image_UINT8_as_float32(
         roiSize,
         ippAlgHintAccurate));
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 };
 
 int
@@ -800,8 +799,8 @@ image_INT8_as_float32(
         roiSize,
         ippAlgHintAccurate));
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
@@ -839,8 +838,8 @@ image_UINT16_as_float32(
         roiSize,
         ippAlgHintAccurate));
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 };
 
 int
@@ -878,8 +877,8 @@ image_INT16_as_float32(
         roiSize,
         ippAlgHintAccurate));
 
-    EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 static covertHandler

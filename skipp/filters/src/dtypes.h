@@ -191,7 +191,8 @@ image_UINT8_as_float32(
     int img_height);
 
 int
-image_INT8_as_float32(void * pSrc,
+image_INT8_as_float32(
+    void * pSrc,
     int srcStep,
     void * pDst,
     int dstStep,
@@ -199,7 +200,8 @@ image_INT8_as_float32(void * pSrc,
     int img_height);
 
 int
-image_UINT16_as_float32(void * pSrc,
+image_UINT16_as_float32(
+    void * pSrc,
     int srcStep,
     void * pDst,
     int dstStep,
@@ -207,7 +209,8 @@ image_UINT16_as_float32(void * pSrc,
     int img_height);
 
 int
-image_INT16_as_float32(void * pSrc,
+image_INT16_as_float32(
+    void * pSrc,
     int srcStep,
     void * pDst,
     int dstStep,
