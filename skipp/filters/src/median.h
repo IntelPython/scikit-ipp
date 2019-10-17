@@ -3,27 +3,24 @@
 #define MEDIAN_H
 
 int
-MedianFilterFLOAT32_3D(void * pSRC,
-                       int srcStep,
-                       void * pDST,
-                       int dstStep,
-                       int img_width,
-                       int img_height,
-                       int img_depth,
-                       int kSize,
-                       IpprBorderType borderType,
-                       const Ipp32f * pBorderValue);
+MedianFilter_32f_C1_3D(
+    void * pSRC,
+    void * pDST,
+    int img_width,
+    int img_height,
+    int img_depth,
+    int mask_width,
+    int mask_height,
+    int mask_depth,
+    int borderType);
 
 int
-MedianFilterUINT8_3D(void * pSRC,
-                     int srcStep,
-                     void * pDST,
-                     int dstStep,
-                     int img_width,
-                     int img_height,
-                     int img_depth,
-                     int kSize,
-                     IpprBorderType borderType,
-                     const Ipp8u * pBorderValue);
-
+MedianFilterFLOAT32(void * pSRC,
+                    int stepSize,
+                    void * pDST,
+                    int img_width,
+                    int img_height,
+                    int mask_width,
+                    int mask_height,
+                    int borderType); // const float * pBorderValue) <-----~~
 #endif
