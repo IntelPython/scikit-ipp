@@ -3,11 +3,22 @@
 #ifndef DTYPES_H
 #define DTYPES_H
 
-#define IPP_GAUSSIAN_SUPPORTED_DTYPES  0x2C2 // 1011000010
-
 #define MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE 0x2AAAAAAA
 
 #define IPP_TYPES_NUMBER 10
+
+typedef enum {
+    ipp8u_index = 0,
+    ipp8s_index = 1,
+    ipp16u_index = 2,
+    ipp16s_index = 3,
+    ipp32u_index = 4,
+    ipp32s_index = 5,
+    ipp64u_index = 6,
+    ipp64s_index = 7,
+    ipp32f_index = 8,
+    ipp64f_index = 9,
+} IppDataTypeIndex;
 
 typedef enum {
     ipp8u_c = 512,     // 1000000000
@@ -37,6 +48,17 @@ typedef enum {
 
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes);
+
+int
+ippDtypeMask_as_ippDtypeIndex(int ippDtypeMask);
+
+void *
+malloc_by_dtype_index(
+    int index,
+    int numChannels,
+    int img_width,
+    int img_height
+);
 
 int
 image_no_convert(

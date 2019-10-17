@@ -23,15 +23,13 @@ cdef extern from "ippbase.h":
 
 # gaussian
 cdef extern from "src/gaussian.c":
-    int  GaussianFilter(int index,
-                        void * pSRC,
+    int  GaussianFilter(void * pSRC,
                         void * pDST,
                         int img_width,
                         int img_height,
                         int numChannels,
                         float sigma_,
                         int kernelSize,
-                        int stepSize,
                         int ippBorderType,
                         float ippBorderValue)
 
@@ -305,37 +303,9 @@ def convert_to_float(image, preserve_range):
 IPP_GAUSSIAN_SUPPORTED_DTYPES = [np.uint8, np.uint16, np.int16, np.float32]
 
 
-def _get_gaussian_filter_func_index(dtype, int numChannels):
-    if(numChannels == 1):
-        if(dtype == np.uint8):
-            return 0
-        elif(dtype == np.uint16):
-            return 1
-        elif(dtype == np.int16):
-            return 2
-        elif(dtype == np.float32):
-            return 3
-        else:
-            raise ValueError("Currently not supported")
-    elif(numChannels == 3):
-        if(dtype == np.uint8):
-            return 4
-        elif(dtype == np.uint16):
-            return 5
-        elif(dtype == np.int16):
-            return 6
-        elif(dtype == np.float32):
-            return 7
-        else:
-            raise ValueError("Currently not supported")
-    else:
-        raise ValueError("Currently not supported")
-
-
 cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, float sigma, float truncate,
                          int ippBorderType, float ippBorderValue):
 
-    cdef int index  # index for _get_gaussian_filter_func_index
     cdef int ippStatusIndex = 0
 
     cdef void * cysource
@@ -359,17 +329,13 @@ cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, float sigm
     # TODO change to platform aware integer
     cdef int stepsize = source.strides[0]
     # pass to IPP the source and destination arrays
-    index = _get_gaussian_filter_func_index(destination.dtype, numChannels)
-    # ~~~ delete number of channels from here
-    ippStatusIndex = GaussianFilter(index,
-                                    cysource,
+    ippStatusIndex = GaussianFilter(cysource,
                                     cydestination,
                                     img_width,
                                     img_height,
                                     numChannels,
                                     sigma,
                                     kernelSize,
-                                    stepsize,
                                     ippBorderType,
                                     ippBorderValue)
     __get_ipp_error(ippStatusIndex)
@@ -904,6 +870,7 @@ def prewitt_v(image, mask=None):
     # ippStatusIndex: ipp error handler will be added
     return _mask_filter_result(destination, mask)
 # <<< edges module
+
 
 # >>> median filter module
 cdef extern from "src/median.c":

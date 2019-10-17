@@ -58,14 +58,12 @@ MedianFilter_32f_C1_3D(
     pSpec = (IpprFilterMedianSpec *)ippsMalloc_8u(pSpecSize);
     if (pSpec == NULL)
     {
-        printf("here 1\n");
         check_sts(status = ippStsMemAllocErr);
     };
 
     pBuffer = ippsMalloc_8u(pBufferSize);
     if (NULL == pBuffer)
     {
-        printf("here 2\n");
         check_sts(status = ippStsMemAllocErr);
     };
 
