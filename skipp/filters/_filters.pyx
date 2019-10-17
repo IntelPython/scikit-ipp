@@ -152,6 +152,16 @@ cdef extern from "src/dtypes.c":
 cdef extern from "ipptypes.h":
     ctypedef int IppStatus
 
+cdef extern from "ipptypes.h":
+    ctypedef enum IppiBorderType:
+        ippBorderRepl         =  1
+        ippBorderWrap         =  2
+        ippBorderMirror       =  3  # left border: 012... -> 21012... 
+        ippBorderMirrorR      =  4  # left border: 012... -> 210012...
+        ippBorderDefault      =  5
+        ippBorderConst        =  6
+        ippBorderTransp       =  7
+
 
 cdef extern from "ippcore.h":
     const char * ippGetStatusString(IppStatus stsCode)
@@ -217,30 +227,33 @@ cdef int __ipp_equalent_number_for_numpy(cnp.ndarray image):
 cdef int __get_IppBorderType(str mode):
     """ Convert an extension mode to the corresponding IPP's IppiBorderType integer code.
     """
+    # add border types defenitions from ipptypes.h
+    cdef int borderType
     # 'nearest' -----> IPP's ippBorderRepl
     if mode == 'nearest':
-        return 1
+        borderType = 1
     # 'wrap' --------> IPP's ippBorderWrap
     elif mode == 'wrap':
-        return 2
+        borderType = 2
     # 'mirror' ------> IPP's ippBorderMirror
     elif mode == 'mirror':
-        return 3
+        borderType = 3
     # 'reflect' -----> IPP's ippBorderMirrorR
     elif mode == 'reflect':
-        return 4
+        borderType = 4
     # IPP's ippBorderDefault
     elif mode == 'default':
-        return 5
+        borderType = 5
     # 'constant' ----> IPP's ippBorderConst
     elif mode == 'constant':
-        return 6
+        borderType = 6
     # IPP's ippBorderTransp
     elif mode == 'transp':
-        return 7
+        borderType = 7
     else:
-        # TODO: set exception behavior
-        PyErr_SetString(ValueError, "boundary mode not supported")
+        # Undef boundary mode
+        borderType = -1
+    return borderType
 
 # needed more correct version (guest_spatial_dim skimage)
 cdef PyObject * __get_ipp_error(int ippStatusIndex) except *:
@@ -395,6 +408,8 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
 
     cdef int ippBorderType = __get_IppBorderType(mode)
+    if(ippBorderType == -1):
+        ValueError("boundary mode not supported")
 
     cdef int index1
     cdef int index2
