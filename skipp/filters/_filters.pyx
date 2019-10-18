@@ -176,6 +176,8 @@ ctypedef struct dtype_meta:
 """
 
 cdef int __ipp_equalent_number_for_numpy(cnp.ndarray image):
+    # TODO
+    # return int -> ctypedef enum elems
     # change str ->
     cdef str kind = image.dtype.kind
     cdef int elemSize = image.dtype.itemsize
@@ -383,13 +385,13 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         output_dtype = image.dtype.name
         output = np.empty_like(image, dtype=output_dtype, order='C')
     # TODO
-    # fails, 
-    elif isinstance(output, np.dtype):
+    elif type(output) in [type(type), type(np.zeros((4,)).dtype)]:
         output_dtype = output
         output = np.zeros(shape, dtype=output_dtype)
     elif isinstance(output, np.ndarray):
         output_dtype = output.dtype
-        # TODO module with numpy.require to provid type that satisfies requirements.
+        # TODO 
+        # module with numpy.require to provid type that satisfies requirements.
     else:
         raise ValueError("Incorrect output value")
 
