@@ -48,8 +48,9 @@ GaussianFilter_Ipp8u(
     pSrc = (Ipp8u *)pSRC;
     pDst = (Ipp8u *)pDST;
 
-    check_sts(status = ippiFilterGaussianGetBufferSize(roiSize, kernelSize, ipp8u,
-                                               numChannels, &iSpecSize, &iTmpBufSize));
+    status = ippiFilterGaussianGetBufferSize(roiSize, kernelSize, ipp8u,
+                                             numChannels, &iSpecSize, &iTmpBufSize);
+    check_sts(status);
     pSpec = (IppFilterGaussianSpec *)ippsMalloc_8u(iSpecSize);
     if (NULL == pSpec)
     {
@@ -129,8 +130,9 @@ GaussianFilter_Ipp16u(
     pSrc = (Ipp16u *)pSRC;
     pDst = (Ipp16u *)pDST;
 
-    check_sts(status = ippiFilterGaussianGetBufferSize(roiSize, kernelSize, ipp16u,
-        numChannels, &iSpecSize, &iTmpBufSize));
+    status = ippiFilterGaussianGetBufferSize(roiSize, kernelSize, ipp16u,
+        numChannels, &iSpecSize, &iTmpBufSize);
+    check_sts(status);
     pSpec = (IppFilterGaussianSpec *)ippsMalloc_8u(iSpecSize);
     if (NULL == pSpec)
     {

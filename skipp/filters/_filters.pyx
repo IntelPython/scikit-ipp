@@ -269,10 +269,12 @@ cdef PyObject * __get_ipp_error(int ippStatusIndex) except *:
 
 cdef int _get_number_of_channels(cnp.ndarray image):
     cdef int numChannels
-    if image.ndim == 2:
-        numChannels = 1    # single (grayscale)
-    elif image.ndim == 3 and image.shape[-1] == 3:
-        numChannels = 3   # 3 channels
+    cdef int image_ndim = image.ndim
+    cdef int shape_last_value = image.shape[-1]
+    if(image.ndim == 2):
+        numChannels = 1
+    elif(image.ndim==3) & (image.shape[-1]==3):
+        numChannels = 3
     else:
         numChannels = -1
     return numChannels
@@ -405,24 +407,30 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # TODO
     # add case when dtype is np.int64, np.uint64
 
-    cdef int numChannels = _get_number_of_channels(image)
-    if(numChannels == -1):
-        ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+    # TODO
+    # in separate cdef func
+    cdef int numChannels
+    if(image.ndim == 2):
+        numChannels = 1
+    elif(image.ndim==3) & (image.shape[-1]==3):
+        numChannels = 3
+    else:
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
     cdef int ippBorderType = __get_IppBorderType(mode)
     if(ippBorderType == -1):
-        ValueError("Boundary mode not supported")
+        raise ValueError("Boundary mode not supported")
 
     cdef int image_index = __ipp_equalent_number_for_numpy(image)
     if(image_index == -1):
-        ValueError("Undefined ipp data type")
+        raise ValueError("Undefined ipp data type")
     cdef int output_index = __ipp_equalent_number_for_numpy(output)
     if(output_index == -1):
-        ValueError("Undefined ipp data type")
+        raise ValueError("Undefined ipp data type")
 
     cdef float sd = float(sigma)
     cdef float tr = float(truncate)
     cdef float ippBorderValue = float(cval)
-
     __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
     return output
 # <<< gaussian filter module
