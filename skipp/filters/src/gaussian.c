@@ -33,7 +33,7 @@ GaussianFilter_Ipp8u(
     if (numChannels == 1) {
         borderValue_C1 = (Ipp8u)ippBorderValue;
     }
-    else if (numChannels == 3)
+    else if(numChannels == 3)
     {
         borderValue_C3[0] = (Ipp8u)ippBorderValue;
         borderValue_C3[1] = (Ipp8u)ippBorderValue;
