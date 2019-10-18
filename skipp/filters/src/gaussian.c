@@ -100,7 +100,7 @@ GaussianFilter_Ipp16u(
     IppStatus status = ippStsNoErr;
     Ipp16u * pSrc = NULL;     // Pointers to source
     Ipp16u * pDst = NULL;     // and destination images       
-    int srcStep = numChannels * img_width * sizeof(Ipp8u);   // Steps, in bytes, through the
+    int srcStep = numChannels * img_width * sizeof(Ipp16u);   // Steps, in bytes, through the
     int dstStep = srcStep;                                   //source/destination images
 
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
@@ -181,7 +181,7 @@ GaussianFilter_Ipp16s(
     IppStatus status = ippStsNoErr;
     Ipp16s * pSrc = NULL;     // Pointers to source
     Ipp16s * pDst = NULL;     // and destination images       
-    int srcStep = numChannels * img_width * sizeof(Ipp8u);   // Steps, in bytes, through the
+    int srcStep = numChannels * img_width * sizeof(Ipp16s);   // Steps, in bytes, through the
     int dstStep = srcStep;                                   //source/destination images
 
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
@@ -262,7 +262,7 @@ GaussianFilter_Ipp32f(
     IppStatus status = ippStsNoErr;
     Ipp32f * pSrc = NULL;     // Pointers to source
     Ipp32f * pDst = NULL;     // and destination images       
-    int srcStep = numChannels * img_width * sizeof(Ipp8u);   // Steps, in bytes, through the
+    int srcStep = numChannels * img_width * sizeof(Ipp32f);   // Steps, in bytes, through the
     int dstStep = srcStep;                                   //source/destination images
 
     IppiSize roiSize = { img_width, img_height };  // Size of source/destination ROI in pixels
