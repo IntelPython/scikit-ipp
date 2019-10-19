@@ -156,13 +156,13 @@ cdef extern from "ipptypes.h":
 
 cdef extern from "ipptypes.h":
     ctypedef enum IppiBorderType:
-        ippBorderRepl         =  1
-        ippBorderWrap         =  2
-        ippBorderMirror       =  3  # left border: 012... -> 21012... 
-        ippBorderMirrorR      =  4  # left border: 012... -> 210012...
-        ippBorderDefault      =  5
-        ippBorderConst        =  6
-        ippBorderTransp       =  7
+        ippBorderRepl = 1
+        ippBorderWrap = 2
+        ippBorderMirror = 3    # left border: 012... -> 21012...
+        ippBorderMirrorR = 4  # left border: 012... -> 210012...
+        ippBorderDefault = 5
+        ippBorderConst = 6
+        ippBorderTransp = 7
 
 
 cdef extern from "ippcore.h":
@@ -266,14 +266,16 @@ cdef PyObject * __get_ipp_error(int ippStatusIndex) except *:
         status_string = ippGetStatusString(ippStatusIndex)
         PyErr_SetString(RuntimeError, status_string)
 
-
+# TODO
+# update
 cdef int _get_number_of_channels(cnp.ndarray image):
     cdef int numChannels
     cdef int image_ndim = image.ndim
     cdef int shape_last_value = image.shape[-1]
     if(image.ndim == 2):
         numChannels = 1
-    elif(image.ndim==3) & (image.shape[-1]==3):
+        # TODO image.shape[-1]
+    elif(image.ndim == 3) & (image.shape[3] == 3):
         numChannels = 3
     else:
         numChannels = -1
@@ -319,11 +321,10 @@ def convert_to_float(image, preserve_range):
 
 
 # >>> gaussian filter module
-
 cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, int source_index, int destination_index,
                          int numChannels, float sigma, float truncate, int ippBorderType, float ippBorderValue):
 
-    cdef int ippStatusIndex = 0 # OK
+    cdef int ippStatusIndex = 0   # OK
 
     cdef void * cysource
     cdef void * cydestination
@@ -380,7 +381,6 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # get input require
     # TODO module with numpy.require to provid type that satisfies requirements.
 
-
     # get output
     shape = image.shape
     if output is None:
@@ -392,7 +392,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         output = np.zeros(shape, dtype=output_dtype)
     elif isinstance(output, np.ndarray):
         output_dtype = output.dtype
-        # TODO 
+        # TODO
         # module with numpy.require to provid type that satisfies requirements.
     else:
         raise ValueError("Incorrect output value")
@@ -412,7 +412,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     cdef int numChannels
     if(image.ndim == 2):
         numChannels = 1
-    elif(image.ndim==3) & (image.shape[-1]==3):
+    elif(image.ndim == 3) & (image.shape[-1] == 3):
         numChannels = 3
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
@@ -813,9 +813,10 @@ cdef extern from "src/median.c":
                             int img_height,
                             int mask_width,
                             int mask_height,
-                            int borderType); # const float * pBorderValue) <-----~~
+                            int borderType)  # const float * pBorderValue) <-----~~
 
 __all__ = ['median', 'median_1']
+
 
 # from _ni_support.py scipy/ndimage/_ni_support.py
 def _get_output(output, input, shape=None):
@@ -841,8 +842,8 @@ def median(image, selem=None, out=None, mask=None, shift_x=False,
 
     # warn about selem and mask
 
-    cdef void* cyimage
-    cdef void* cydestination
+    cdef void * cyimage
+    cdef void * cydestination
 
     cdef int img_width
     cdef int img_height
@@ -858,7 +859,6 @@ def median(image, selem=None, out=None, mask=None, shift_x=False,
     cdef int selem_width = selem.shape[0]
     cdef int selem_height = selem.shape[1]
     cdef int selem_depth = 1
-    
 
     # needed more correct way. Warning: conversion from 'npy_intp' to 'int', possible loss of data
     img_width = image.shape[0]
@@ -868,20 +868,20 @@ def median(image, selem=None, out=None, mask=None, shift_x=False,
     cyimage = <void*> cnp.PyArray_DATA(image)
     cydestination = <void*> cnp.PyArray_DATA(destination)
 
-
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
 
     ippStatusIndex = MedianFilter_32f_C1_3D(cyimage,
-                                           cydestination,
-                                           img_width,
-                                           img_height,
-                                           img_depth,
-                                           selem_width,
-                                           selem_height,
-                                           selem_depth,
-                                           ippBorderType)
+                                            cydestination,
+                                            img_width,
+                                            img_height,
+                                            img_depth,
+                                            selem_width,
+                                            selem_height,
+                                            selem_depth,
+                                            ippBorderType)
     __get_ipp_error(ippStatusIndex)
     return destination
+
 
 def median_1(image, selem=None, out=None, mask=None, shift_x=False,
              shift_y=False, mode='nearest', cval=0.0, behavior='ipp'):
@@ -892,8 +892,8 @@ def median_1(image, selem=None, out=None, mask=None, shift_x=False,
 
     # warn about selem and mask
 
-    cdef void* cyimage
-    cdef void* cydestination
+    cdef void * cyimage
+    cdef void * cydestination
 
     cdef int img_width
     cdef int img_height
@@ -906,7 +906,7 @@ def median_1(image, selem=None, out=None, mask=None, shift_x=False,
 
     cdef int selem_width = selem.shape[0]
     cdef int selem_height = selem.shape[1]
-    
+
     img_width = image.shape[0]
     img_height = image.shape[1]
     stepsize = image.strides[0]
@@ -914,8 +914,7 @@ def median_1(image, selem=None, out=None, mask=None, shift_x=False,
     cyimage = <void*> cnp.PyArray_DATA(image)
     cydestination = <void*> cnp.PyArray_DATA(destination)
 
-
-    cdef int ippStatusIndex = 0  # OK 
+    cdef int ippStatusIndex = 0  # OK
 
     ippStatusIndex = MedianFilterFLOAT32(cyimage,
                                          stepsize,
@@ -926,7 +925,7 @@ def median_1(image, selem=None, out=None, mask=None, shift_x=False,
                                          selem_height,
                                          ippBorderType)
     __get_ipp_error(ippStatusIndex)
-    return destination 
+    return destination
 # <<< median filter module
 
 
