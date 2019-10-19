@@ -401,8 +401,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # add correct preserve range module
     # image = convert_to_float(image)
 
-    # TODO
-    # add case when sigma is zero -> IPP funcs raises error
+
 
     # TODO
     # add case when dtype is np.int64, np.uint64
@@ -416,6 +415,11 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         numChannels = 3
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+    # case when sigma is zero -> IPP funcs raises error
+    if sigma == 0.0:
+        output[...] = image[...]
+        return output
 
     cdef int ippBorderType = __get_IppBorderType(mode)
     if(ippBorderType == -1):

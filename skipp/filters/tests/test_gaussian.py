@@ -43,9 +43,6 @@ def test_given_and_returned_output_gaussian(ipp_supported):
     assert id(output_image) == id(returned_image)
 
 
-# skipped: fails
-# TODO
-@pytest.mark.skip(reason="requires investigation")
 def test_null_sigma():
     a = np.zeros((3, 3))
     a[1, 1] = 1.
