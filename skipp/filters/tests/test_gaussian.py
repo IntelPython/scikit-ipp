@@ -70,10 +70,10 @@ def test_preserve_range_gaussian():
     img = np.array([[10.0, -10.0], [-4, 3]], dtype=np.float32)
     gaussian(img, 1, preserve_range=True)
 
-# skipped: fails
+
 # TODO
-@pytest.mark.skip(reason="dev in progress")
-def test_dimensiona_error_gaussian():
+# update
+def test_dimension_error_gaussian():
     image_4d = np.arange(5*5*5*4, dtype=np.uint8).reshape((5, 5, 5, 4))
     with pytest.raises(ValueError):
         filtered_img = gaussian(image_4d, sigma=1, multichannel=True)
