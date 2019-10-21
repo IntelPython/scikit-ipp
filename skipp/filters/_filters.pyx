@@ -402,9 +402,6 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # image = convert_to_float(image)
 
     # TODO
-    # add case when dtype is np.int64, np.uint64
-
-    # TODO
     # in separate cdef func
     cdef int numChannels
     if(image.ndim == 2):
@@ -423,17 +420,41 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     if(ippBorderType == -1):
         raise ValueError("Boundary mode not supported")
 
+    cdef float sd = float(sigma)
+    cdef float tr = float(truncate)
+    cdef float ippBorderValue = float(cval)    
+
     cdef int image_index = __ipp_equalent_number_for_numpy(image)
     if(image_index == -1):
         raise ValueError("Undefined ipp data type")
+    elif(image_index == 6):   # if input image np.uint64
+        # make a np.float32 copy
+        # ~~ maybe it is better to np.uint64
+        image = image.astype(np.float32, order='C')
+        image_index = 4
+    elif(image_index == 7):   # if input image np.int64
+        # make a np.float32 copy
+        # ~~ maybe it is better to np.int64
+        image = image.astype(np.float32, order='C')
+        image_index = 5
+
     cdef int output_index = __ipp_equalent_number_for_numpy(output)
     if(output_index == -1):
         raise ValueError("Undefined ipp data type")
-
-    cdef float sd = float(sigma)
-    cdef float tr = float(truncate)
-    cdef float ippBorderValue = float(cval)
-    __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
+    elif(output_index == 6):  # if output np.uint64
+        # make a np.uint32 copy
+        # TODO
+        # add case when dtype is np.int64, np.uint64
+        # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
+        raise ValueError("output 64 bit uint is currently not supported")
+    elif(output_index == 7):  # if output np.int64
+        # make a np.int32 copy
+        # TODO
+        # add case when dtype is np.int64, np.uint64
+        # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
+        raise ValueError("output 64 bit int is currently not supported")
+    else:
+        __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
     return output
 # <<< gaussian filter module
 
