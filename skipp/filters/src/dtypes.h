@@ -68,8 +68,15 @@ image_no_convert(
     int img_width,
     int img_height);
 
+// image scaling and converting funcs
+// functions naming rule
+// image_<from dtype>_<to dtype>_<Functionality>_<backend function(s) from IPP>
+//
+// E.g. image_8u_as_8s_Converting_XorC: functions that does convertation
+// from Ipp8u to Ipp8s by using IPP's XorC library func
+
 int
-image_8u_as_8s_XorC(
+image_8u_as_8s_Converting_XorC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -93,7 +100,23 @@ image_8u_as_16u_ScaleC(
     int img_height);
 
 int
+image_8u_as_16u_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
 image_8u_as_16s_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_8u_as_16s_Converting_ScaleC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -133,6 +156,30 @@ image_8u_as_32s_ScaleC(
     int img_height);
 
 int
+image_8u_as_32f_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_8u_as_32f_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_8u_as_64f_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
 image_8s_as_8u_ScaleC(
     void * pSrc,
     void * pDst,
@@ -141,7 +188,7 @@ image_8s_as_8u_ScaleC(
     int img_height);
 
 int
-image_8s_as_8u_XorC(
+image_8s_as_8u_Converting_XorC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -149,7 +196,7 @@ image_8s_as_8u_XorC(
     int img_height);
 
 int
-image_16u_as_16s_XorC(
+image_8s_as_16u_Converting_ScaleC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -157,7 +204,16 @@ image_16u_as_16s_XorC(
     int img_height);
 
 int
-image_16s_as_16u_XorC(
+image_8s_as_16s_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+//~~~ doesn't work correct unsafe convert
+int
+image_8s_as_32u_Convert(   // 8s32u_C1Rs
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -165,7 +221,7 @@ image_16s_as_16u_XorC(
     int img_height);
 
 int
-image_32u_as_32s_XorC(
+image_8s_as_32s_Converting_ScaleC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -173,7 +229,47 @@ image_32u_as_32s_XorC(
     int img_height);
 
 int
-image_32s_as_32u_XorC(
+image_16u_as_8s_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_16u_as_16s_Converting_XorC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_16s_as_8s_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_16s_as_16u_Converting_XorC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_32u_as_32s_Converting_XorC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_32s_as_32u_Converting_XorC(
     void * pSrc,
     void * pDst,
     int numChannels,

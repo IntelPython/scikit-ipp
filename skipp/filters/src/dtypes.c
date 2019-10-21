@@ -92,7 +92,7 @@ ippDtypeMask_as_ippDtypeIndex(int ippDtypeMask)
     if (ippDtypeMask == ipp8u_c)
         ippDtypeIndex = ipp8u_index;
 
-    else if(ippDtypeMask == ipp8s_c)
+    else if (ippDtypeMask == ipp8s_c)
         ippDtypeIndex = ipp8s_index;
 
     else if (ippDtypeMask == ipp16u_c)
@@ -207,8 +207,16 @@ image_no_convert(
     return (int)status;
 };
 
+// Image scaling and converting funcs
+// functions naming rule
+// image_<from dtype>_<to dtype>_<Functionality>_<backend function(s) from IPP>
+//
+// E.g. image_8u_as_8s_Converting_XorC: functions that does convertation
+// from Ipp8u to Ipp8s by using IPP's XorC library func
+
 int
-image_8u_as_8s_XorC(void * pSrc,
+image_8u_as_8s_Converting_XorC(
+    void * pSrc,
     void * pDst,
     int numChannels,
     int img_width,
@@ -277,7 +285,8 @@ image_8u_as_8s_ScaleC(
     Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
     Ipp64f aVal = minDst - minSrc * mVal;
 
-    status = ippiScaleC_8u8s_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal, pDST, sizeof(Ipp8s) * img_width, roiSize, ippAlgHintAccurate);
+    status = ippiScaleC_8u8s_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal,
+                                 pDST, sizeof(Ipp8s) * img_width, roiSize, ippAlgHintAccurate);
     check_sts(status);
 
 EXIT_FUNC
@@ -320,7 +329,50 @@ image_8u_as_16u_ScaleC(
     Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
     Ipp64f aVal = minDst - minSrc * mVal;
 
-    status = ippiScaleC_8u16u_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal, pDST, sizeof(Ipp16u) * img_width, roiSize, ippAlgHintAccurate);
+    status = ippiScaleC_8u16u_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal,
+                                  pDST, sizeof(Ipp16u) * img_width, roiSize, ippAlgHintAccurate);
+    check_sts(status);
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_8u_as_16u_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8u * pSRC = NULL;     // Pointers to source and
+    Ipp16u * pDST = NULL;    // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8u *)pSrc;
+    pDST = (Ipp16u *)pDst;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8U);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8U);
+
+    Ipp64f mVal = 1;
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    status = ippiScaleC_8u16u_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal,
+                                  pDST, sizeof(Ipp16u) * img_width, roiSize, ippAlgHintAccurate);
     check_sts(status);
 
 EXIT_FUNC
@@ -364,7 +416,52 @@ image_8u_as_16s_ScaleC(
     Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
     Ipp64f aVal = minDst - minSrc * mVal;
 
-    status = ippiScaleC_8u16s_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal, pDST, sizeof(Ipp16s) * img_width, roiSize, ippAlgHintAccurate);
+    status = ippiScaleC_8u16s_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal,
+                                  pDST, sizeof(Ipp16s) * img_width, roiSize, ippAlgHintAccurate);
+    check_sts(status);
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_8u_as_16s_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8u * pSRC = NULL;     // Pointers to source and
+    Ipp16s * pDST = NULL;    // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+
+    pSRC = (Ipp8u *)pSrc;
+    pDST = (Ipp16s *)pDst;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8U);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8U);
+
+
+    Ipp64f mVal = 1;
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    status = ippiScaleC_8u16s_C1R(pSRC, sizeof(Ipp8u) * img_width, mVal, aVal,
+                                  pDST, sizeof(Ipp16s) * img_width, roiSize, ippAlgHintAccurate);
     check_sts(status);
 
 EXIT_FUNC
@@ -505,6 +602,127 @@ EXIT_FUNC
 }
 
 int
+image_8u_as_32f_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8u * pSRC = NULL;     // Pointers to source and
+    Ipp32f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8u *)pSrc;
+    pDST = (Ipp32f *)pDst;
+
+    int srcStep = sizeof(Ipp8u) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8U);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8U);
+    Ipp64f minDst = (Ipp64f)(IPP_MINABS_32F);  // IPP_MINABS_32F
+    Ipp64f maxDst = (Ipp64f)(IPP_MAXABS_32F);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_8u32f_C1R(pSRC,
+        srcStep,
+        mVal,
+        aVal,
+        pDST,
+        dstStep,
+        roiSize,
+        ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+};
+
+int
+image_8u_as_32f_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8u * pSRC = NULL;     // Pointers to source and
+    Ipp32f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8u *)pSrc;
+    pDST = (Ipp32f *)pDst;
+
+    int srcStep = sizeof(Ipp8u) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8U);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8U); // IPP_MINABS_32F
+
+
+    Ipp64f mVal = 1;
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_8u32f_C1R(pSRC,
+        srcStep,
+        mVal,
+        aVal,
+        pDST,
+        dstStep,
+        roiSize,
+        ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+};
+
+int
+image_8u_as_64f_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8u * pSRC = NULL;     // Pointers to source and
+    Ipp64f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8u *)pSrc;
+    pDST = (Ipp64f *)pDst;
+
+    int srcStep = sizeof(Ipp8u) * img_width * numChannels;
+    int dstStep = sizeof(Ipp64f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8U);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8U); // IPP_MINABS_32F
+
+
+    Ipp64f mVal = 1;
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_8u64f_C1R(pSRC,
+        srcStep,
+        mVal,
+        aVal,
+        pDST,
+        dstStep,
+        roiSize,
+        ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+};
+
+int
 image_8s_as_8u_ScaleC(
     void * pSrc,
     void * pDst,
@@ -540,15 +758,17 @@ image_8s_as_8u_ScaleC(
     Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
     Ipp64f aVal = minDst - minSrc * mVal;
 
-    status = ippiScaleC_8s8u_C1R(pSRC, sizeof(Ipp8s) * img_width, mVal, aVal, pDST, sizeof(Ipp8u) * img_width, roiSize, ippAlgHintAccurate);
+    status = ippiScaleC_8s8u_C1R(pSRC, sizeof(Ipp8s) * img_width, mVal, aVal,
+                                 pDST, sizeof(Ipp8u) * img_width, roiSize, ippAlgHintAccurate);
     check_sts(status);
 
 EXIT_FUNC
     return (int)status;
 }
 
+
 int
-image_8s_as_8u_XorC(
+image_8s_as_8u_Converting_XorC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -583,7 +803,230 @@ EXIT_FUNC
 }
 
 int
-image_16u_as_16s_XorC(
+image_8s_as_16u_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8s * pSRC = NULL;     // Pointers to source and
+    Ipp16u * pDST = NULL;     // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8s *)pSrc;
+    pDST = (Ipp16u *)pDst;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8S);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8U);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_8U);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    status = ippiScaleC_8s16u_C1R(pSRC, sizeof(Ipp8s) * img_width, mVal, aVal, pDST,
+                                  sizeof(Ipp16u) * img_width, roiSize, ippAlgHintAccurate);
+    check_sts(status);
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_8s_as_16s_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8s * pSRC = NULL;     // Pointers to source and
+    Ipp16s * pDST = NULL;     // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8s *)pSrc;
+    pDST = (Ipp16s *)pDst;
+
+    int srcStep = sizeof(Ipp8s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp16s) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8S);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_8S);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    status = ippiScaleC_8s16s_C1R(pSRC, srcStep, mVal, aVal, pDST, dstStep, roiSize, ippAlgHintAccurate);
+    check_sts(status);
+
+EXIT_FUNC
+    return (int)status;
+}
+
+//~~~ doesn't work correct unsafe convert
+int
+image_8s_as_32u_Convert(   // 8s32u_C1Rs
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    // ** Doesn't take the range of values **
+    IppStatus status = ippStsNoErr;
+    Ipp8s * pSRC = NULL;     // Pointers to source and
+    Ipp32u * pDST = NULL;    // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8s *)pSrc;
+    pDST = (Ipp32u *)pDst;
+
+    int srcStep = sizeof(Ipp8s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32u) * img_width * numChannels;
+
+    status = ippiConvert_8s32u_C1Rs(pSRC, srcStep, pDST, dstStep, roiSize);
+
+    check_sts(status)
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_8s_as_32s_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8s * pSRC = NULL;     // Pointers to source and
+    Ipp32s * pDST = NULL;     // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8s *)pSrc;
+    pDST = (Ipp32s *)pDst;
+
+    int srcStep = sizeof(Ipp8s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32s) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8S);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_8S);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    status = ippiScaleC_8s32s_C1R(pSRC, srcStep, mVal, aVal, pDST, dstStep, roiSize, ippAlgHintAccurate);
+    check_sts(status);
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_16u_as_8s_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp16u * pSRC = NULL;     // Pointers to source and
+    Ipp8s * pDST = NULL;     // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp16u *)pSrc;
+    pDST = (Ipp8s *)pDst;
+
+    int srcStep = sizeof(Ipp16u) * img_width * numChannels;
+    int dstStep = sizeof(Ipp8s) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_16U);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16U);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_8S);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    status = ippiScaleC_16u8s_C1R(pSRC, srcStep, mVal, aVal, pDST, dstStep, roiSize, ippAlgHintAccurate);
+    check_sts(status);
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_16u_as_16s_Converting_XorC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -613,12 +1056,57 @@ image_16u_as_16s_XorC(
     status = ippiXorC_16u_C1R(pSRC, sizeof(Ipp16u) * img_width, 0x8000,
         (Ipp16u *)pDST, sizeof(Ipp16s) * img_width, roiSize);
     check_sts(status)
-        EXIT_FUNC
-        return (int)status;
+EXIT_FUNC
+    return (int)status;
 }
 
 int
-image_16s_as_16u_XorC(
+image_16s_as_8s_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp16s * pSRC = NULL;     // Pointers to source and
+    Ipp8s * pDST = NULL;      // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp16s *)pSrc;
+    pDST = (Ipp8s *)pDst;
+
+    int srcStep = sizeof(Ipp16s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp8s) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_16S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16S);
+    Ipp64f minDst = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxDst = (Ipp64f)(IPP_MAX_8S);
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    status = ippiScaleC_16s8s_C1R(pSRC, srcStep, mVal, aVal, pDST, dstStep, roiSize, ippAlgHintAccurate);
+    check_sts(status);
+
+EXIT_FUNC
+    return (int)status;
+}
+int
+image_16s_as_16u_Converting_XorC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -653,7 +1141,7 @@ EXIT_FUNC
 }
 
 int
-image_32u_as_32s_XorC(
+image_32u_as_32s_Converting_XorC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -689,7 +1177,7 @@ EXIT_FUNC
 }
 
 int
-image_32s_as_32u_XorC(
+image_32s_as_32u_Converting_XorC(
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -882,10 +1370,43 @@ EXIT_FUNC
 }
 
 static covertHandler
-covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = { 
-                        {image_no_convert,  // from Ipp8u
-                         image_8u_as_8s_XorC,
+covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = {
+                        {image_no_convert,                // from Ipp8u
+                         image_8u_as_8s_Converting_XorC,
+                         image_8u_as_16u_ScaleC,
+                         image_8u_as_16s_Converting_ScaleC,
+                         image_8u_as_32u_Convert,
+                         image_8u_as_32s_Convert,
                          image_no_convert,
+                         image_no_convert,
+                         image_8u_as_32f_Converting_ScaleC,
+                         image_8u_as_64f_Converting_ScaleC
+                       },
+                        {image_8s_as_8u_Converting_XorC,  // from Ipp8s
+                         image_no_convert,
+                         image_8s_as_16u_Converting_ScaleC,
+                         image_8s_as_16s_Converting_ScaleC,
+                         image_no_convert,
+                         image_8s_as_32s_Converting_ScaleC,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert
+                       },
+                        {image_no_convert,               // from Ipp16u
+                         image_16u_as_8s_Converting_ScaleC,
+                         image_no_convert,
+                         image_16u_as_16s_Converting_XorC,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert
+                       },
+                        {image_no_convert,               // from Ipp16s
+                         image_16s_as_8s_Converting_ScaleC,
+                         image_16s_as_16u_Converting_XorC,
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
@@ -894,73 +1415,29 @@ covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = {
                          image_no_convert,
                          image_no_convert
                        },
-                        {image_8s_as_8u_XorC,  // from Ipp8s
+                        {image_no_convert,               // from Ipp32u
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
+                         image_32u_as_32s_Converting_XorC,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert
+                       },
+                        {image_no_convert,               // from Ipp32s
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_32s_as_32u_Converting_XorC,
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
                          image_no_convert
                        },
-                        {image_no_convert,   // from Ipp16u
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert
-                       },
-                        {image_no_convert,   // from Ipp16s
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert
-                       },
-                        {image_no_convert,   // from Ipp32u
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert
-                       },
-                        {image_no_convert,   // from Ipp32s
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert
-                       },
-                        {image_no_convert,   // from Ipp64u
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert,
-                         image_no_convert
-                       },
-                        {image_no_convert,   // from Ipp64s
+                        {image_no_convert,               // from Ipp64u
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
@@ -971,7 +1448,7 @@ covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = {
                          image_no_convert,
                          image_no_convert
                        },
-                        {image_no_convert,   // from Ipp32f
+                        {image_no_convert,               // from Ipp64s
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
@@ -982,7 +1459,18 @@ covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = {
                          image_no_convert,
                          image_no_convert
                        },
-                        {image_no_convert,   // from Ipp64f
+                        {image_no_convert,              // from Ipp32f
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert,
+                         image_no_convert
+                       },
+                        {image_no_convert,              // from Ipp64f
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
