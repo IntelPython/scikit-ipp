@@ -276,43 +276,6 @@ image_32s_as_32u_Converting_XorC(
     int img_width,
     int img_height);
 
-// image_as_float32
-int
-image_UINT8_as_float32(
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    int img_width,
-    int img_height);
-
-int
-image_INT8_as_float32(
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    int img_width,
-    int img_height);
-
-int
-image_UINT16_as_float32(
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    int img_width,
-    int img_height);
-
-int
-image_INT16_as_float32(
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    int img_width,
-    int img_height);
-
 typedef
 int(*covertHandler)(
     void * pSrc,
@@ -326,6 +289,79 @@ static covertHandler covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER];
 int
 convert(int index1,
     int index2,
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+
+// Image as float
+//
+// The range of a floating point image is [0.0, 1.0] or [-1.0, 1.0] when
+// converting from unsigned or signed datatypes, respectively.
+//
+// functions naming rule
+// image_<from dtype>_<to dtype>_<Functionality>_<backend function(s) from IPP>
+//
+// E.g. image_8u_as_32f_Converting_range_01_ScaleC: function that does scaling
+// conv range [0.0, 1.0] from Ipp8u to Ipp32f by using IPP's ScaleC library func
+
+int
+image_8u_as_32f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_8u_as_64f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_8s_as_32f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+int
+image_8s_as_64f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_16u_as_32f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+int
+image_16u_as_64f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+int
+image_16s_as_32f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_16s_as_64f_Converting_range_11_ScaleC(
     void * pSrc,
     void * pDst,
     int numChannels,

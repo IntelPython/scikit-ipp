@@ -1212,163 +1212,6 @@ EXIT_FUNC
     return (int)status;
 }
 
-// image_as_float32
-int
-image_UINT8_as_float32(
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    int img_width,
-    int img_height)
-{
-    IppStatus status = ippStsNoErr;
-    Ipp8u * pSRC = NULL;     // Pointers to source and
-    Ipp32f * pDST = NULL;    // destination images
-
-    IppiSize roiSize = { img_width, img_height }; // Size of source and
-                                                  // destination ROI in pixels
-    pSRC = (Ipp8u *)pSrc;
-    pDST = (Ipp32f *)pDst;
-
-    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8U);
-    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8U);
-    Ipp64f minDst = 0;
-    Ipp64f maxDst = 1;
-
-    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
-    Ipp64f aVal = minDst - minSrc * mVal;
-
-    check_sts(ippiScaleC_8u32f_C1R(pSRC,
-        srcStep,
-        mVal,
-        aVal,
-        pDST,
-        dstStep,
-        roiSize,
-        ippAlgHintAccurate));
-
-EXIT_FUNC
-    return (int)status;
-};
-
-int
-image_INT8_as_float32(
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    int img_width,
-    int img_height)
-{
-    IppStatus status = ippStsNoErr;
-    Ipp8s * pSRC = NULL;     // Pointers to source and
-    Ipp32f * pDST = NULL;    // destination images
-
-    IppiSize roiSize = { img_width, img_height }; // Size of source and
-                                                  // destination ROI in pixels
-    pSRC = (Ipp8s *)pSrc;
-    pDST = (Ipp32f *)pDst;
-
-    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8S);
-    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8S);
-    Ipp64f minDst = 0;
-    Ipp64f maxDst = 1;
-
-    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
-    Ipp64f aVal = minDst - minSrc * mVal;
-
-    check_sts(ippiScaleC_8s32f_C1R(pSRC,
-        srcStep,
-        mVal,
-        aVal,
-        pDST,
-        dstStep,
-        roiSize,
-        ippAlgHintAccurate));
-
-EXIT_FUNC
-    return (int)status;
-}
-
-int
-image_UINT16_as_float32(
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    int img_width,
-    int img_height)
-{
-    IppStatus status = ippStsNoErr;
-    Ipp16u * pSRC = NULL;     // Pointers to source and
-    Ipp32f * pDST = NULL;    // destination images
-
-    IppiSize roiSize = { img_width, img_height }; // Size of source and
-                                                  // destination ROI in pixels
-    pSRC = (Ipp16u *)pSrc;
-    pDST = (Ipp32f *)pDst;
-
-    Ipp64f minSrc = (Ipp64f)(IPP_MIN_16U);
-    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16U);
-    Ipp64f minDst = 0;
-    Ipp64f maxDst = 1;
-
-    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
-    Ipp64f aVal = minDst - minSrc * mVal;
-
-    check_sts(ippiScaleC_16u32f_C1R(pSRC,
-        srcStep,
-        mVal,
-        aVal,
-        pDST,
-        dstStep,
-        roiSize,
-        ippAlgHintAccurate));
-
-EXIT_FUNC
-    return (int)status;
-};
-
-int
-image_INT16_as_float32(
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    int img_width,
-    int img_height)
-{
-    IppStatus status = ippStsNoErr;
-    Ipp16s * pSRC = NULL;     // Pointers to source and
-    Ipp32f * pDST = NULL;    // destination images
-
-    IppiSize roiSize = { img_width, img_height }; // Size of source and
-                                                  // destination ROI in pixels
-    pSRC = (Ipp16s *)pSrc;
-    pDST = (Ipp32f *)pDst;
-
-    Ipp64f minSrc = (Ipp64f)(IPP_MIN_16S);
-    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16S);
-    Ipp64f minDst = 0;
-    Ipp64f maxDst = 1;
-
-    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
-    Ipp64f aVal = minDst - minSrc * mVal;
-
-    check_sts(ippiScaleC_16s32f_C1R(pSRC,
-        srcStep,
-        mVal,
-        aVal,
-        pDST,
-        dstStep,
-        roiSize,
-        ippAlgHintAccurate));
-
-EXIT_FUNC
-    return (int)status;
-}
-
 static covertHandler
 covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = {
                         {image_no_convert,                // from Ipp8u
@@ -1495,5 +1338,383 @@ convert(
 {
     IppStatus status = ippStsNoErr;
     status = covertTable[index1][index2](pSrc, pDst, numChannels, img_width, img_height);
+    return (int)status;
+}
+
+
+// Image as float 
+// The range of a floating point image is [0.0, 1.0] or [-1.0, 1.0] when
+// converting from unsigned or signed datatypes, respectively.
+//
+// functions naming rule
+// image_<from dtype>_<to dtype>_<Functionality>_<backend function(s) from IPP>
+//
+// E.g. image_8u_as_32f_Converting_range_01_ScaleC: function that does scaling 
+// conv range [0.0, 1.0] from Ipp8u to Ipp32f by using IPP's ScaleC library func
+
+int
+image_8u_as_32f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8u * pSRC = NULL;     // Pointers to source and
+    Ipp32f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8u *)pSrc;
+    pDST = (Ipp32f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    int srcStep = sizeof(Ipp8u) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8U);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8U);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_8u32f_C1R(pSRC, srcStep, mVal, aVal, pDST,
+                                   dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_8u_as_64f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8u * pSRC = NULL;     // Pointers to source and
+    Ipp64f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8u *)pSrc;
+    pDST = (Ipp64f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    int srcStep = sizeof(Ipp8u) * img_width * numChannels;
+    int dstStep = sizeof(Ipp64f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8U);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8U);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_8u64f_C1R(pSRC, srcStep, mVal, aVal, pDST,
+                                   dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_8s_as_32f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8s * pSRC = NULL;     // Pointers to source and
+    Ipp32f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8s *)pSrc;
+    pDST = (Ipp32f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    int srcStep = sizeof(Ipp8s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8S);
+    Ipp64f minDst = -1;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_8s32f_C1R(pSRC, srcStep, mVal, aVal,
+                                   pDST, dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_8s_as_64f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp8s * pSRC = NULL;     // Pointers to source and
+    Ipp64f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp8s *)pSrc;
+    pDST = (Ipp64f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    int srcStep = sizeof(Ipp8s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp64f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_8S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8S);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_8s64f_C1R(pSRC, srcStep, mVal, aVal, pDST,
+                                   dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_16u_as_32f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp16u * pSRC = NULL;     // Pointers to source and
+    Ipp32f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp16u *)pSrc;
+    pDST = (Ipp32f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    int srcStep = sizeof(Ipp16u) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_16U);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16U);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_16u32f_C1R(pSRC, srcStep, mVal, aVal,
+                                    pDST, dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_16u_as_64f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp16u * pSRC = NULL;     // Pointers to source and
+    Ipp64f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp16u *)pSrc;
+    pDST = (Ipp64f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    int srcStep = sizeof(Ipp16u) * img_width * numChannels;
+    int dstStep = sizeof(Ipp64f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_16U);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16U);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_16u64f_C1R(pSRC, srcStep, mVal, aVal,
+                                    pDST, dstStep, roiSize, ippAlgHintAccurate));
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_16s_as_32f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp16s * pSRC = NULL;     // Pointers to source and
+    Ipp32f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp16s *)pSrc;
+    pDST = (Ipp32f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    int srcStep = sizeof(Ipp16s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_16S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16S);
+    Ipp64f minDst = -1;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_16s32f_C1R(pSRC, srcStep, mVal, aVal, pDST,
+                                    dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
+    return (int)status;
+}
+
+int
+image_16s_as_64f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp16s * pSRC = NULL;     // Pointers to source and
+    Ipp64f * pDST = NULL;    // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp16s *)pSrc;
+    pDST = (Ipp64f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    int srcStep = sizeof(Ipp16s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp64f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_16S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16S);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_16s64f_C1R(pSRC, srcStep, mVal, aVal, pDST,
+                                    dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
     return (int)status;
 }
