@@ -150,6 +150,20 @@ cdef extern from "src/dtypes.c":
                 int img_width,
                 int img_height)
 
+cdef extern from "src/dtypes.h":
+    ctypedef enum IppDataTypeIndex:
+        ipp8u_index = 0
+        ipp8s_index = 1
+        ipp16u_index = 2
+        ipp16s_index = 3
+        ipp32u_index = 4
+        ipp32s_index = 5
+        ipp64u_index = 6
+        ipp64s_index = 7
+        ipp32f_index = 8
+        ipp64f_index = 9
+
+
 
 cdef extern from "ipptypes.h":
     ctypedef int IppStatus
@@ -184,42 +198,42 @@ cdef int __ipp_equalent_number_for_numpy(cnp.ndarray image):
     if kind == str('u'):
         if elemSize == 1:
             # Ipp8u
-            return 0
+            return ipp8u_index
         elif elemSize == 2:
             # Ipp16u
-            return 2
+            return ipp16u_index
         elif elemSize == 4:
             # Ipp32u
-            return 4
+            return ipp32u_index
         elif elemSize == 8:
             # Ipp64u
-            return 6
+            return ipp64u_index
         else:
             # ippUndef
             return -1
     elif kind == str('i'):
         if elemSize == 1:
             # Ipp8s
-            return 1
+            return ipp8s_index
         elif elemSize == 2:
             # Ipp16s
-            return 3
+            return ipp16s_index
         elif elemSize == 4:
             # Ipp32s
-            return 5
+            return ipp32s_index
         elif elemSize == 8:
             # Ipp64s
-            return 7
+            return ipp64s_index
         else:
             # ippUndef
             return -1
     elif kind == str('f'):
         if elemSize == 4:
             # Ipp32f
-            return 8
+            return ipp32f_index
         elif elemSize == 8:
             # Ipp64f
-            return 9
+            return ipp64f_index
         else:
             # ippUndef
             return -1
@@ -427,27 +441,27 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     cdef int image_index = __ipp_equalent_number_for_numpy(image)
     if(image_index == -1):
         raise ValueError("Undefined ipp data type")
-    elif(image_index == 6):   # if input image np.uint64
+    elif(image_index == ipp64u_index):   # if input image np.uint64
         # make a np.float32 copy
         # ~~ maybe it is better to np.uint64
         image = image.astype(np.float32, order='C')
-        image_index = 4
-    elif(image_index == 7):   # if input image np.int64
+        image_index = ipp32f_index
+    elif(image_index == ipp64s_index):   # if input image np.int64
         # make a np.float32 copy
         # ~~ maybe it is better to np.int64
         image = image.astype(np.float32, order='C')
-        image_index = 5
+        image_index = ipp32f_index
 
     cdef int output_index = __ipp_equalent_number_for_numpy(output)
     if(output_index == -1):
         raise ValueError("Undefined ipp data type")
-    elif(output_index == 6):  # if output np.uint64
+    elif(output_index == ipp64u_index):  # if output np.uint64
         # make a np.uint32 copy
         # TODO
         # add case when dtype is np.int64, np.uint64
         # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
         raise ValueError("output 64 bit uint is currently not supported")
-    elif(output_index == 7):  # if output np.int64
+    elif(output_index == ipp64s_index):  # if output np.int64
         # make a np.int32 copy
         # TODO
         # add case when dtype is np.int64, np.uint64
