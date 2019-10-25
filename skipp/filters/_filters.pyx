@@ -131,7 +131,8 @@ cdef extern from "src/edges.c":
                                 int maskSize,
                                 int borderType,
                                 Ipp32f borderValue)
-
+# TODO
+# declarations from ipp headers
 cdef int _getIPPNormType(normType):
     if normType == 'l1':
         return 2
@@ -190,9 +191,6 @@ ctypedef struct dtype_meta:
 """
 
 cdef int __ipp_equalent_number_for_numpy(cnp.ndarray image):
-    # TODO
-    # return int -> ctypedef enum elems
-    # change str ->
     cdef str kind = image.dtype.kind
     cdef int elemSize = image.dtype.itemsize
     if kind == str('u'):
@@ -245,29 +243,28 @@ cdef int __ipp_equalent_number_for_numpy(cnp.ndarray image):
 cdef int __get_IppBorderType(str mode):
     """ Convert an extension mode to the corresponding IPP's IppiBorderType integer code.
     """
-    # add border types defenitions from ipptypes.h
     cdef int borderType
     # 'nearest' -----> IPP's ippBorderRepl
     if mode == 'nearest':
-        borderType = 1
+        borderType = ippBorderRepl
     # 'wrap' --------> IPP's ippBorderWrap
     elif mode == 'wrap':
-        borderType = 2
+        borderType = ippBorderWrap
     # 'mirror' ------> IPP's ippBorderMirror
     elif mode == 'mirror':
-        borderType = 3
+        borderType = ippBorderMirror
     # 'reflect' -----> IPP's ippBorderMirrorR
     elif mode == 'reflect':
-        borderType = 4
+        borderType = ippBorderMirrorR
     # IPP's ippBorderDefault
     elif mode == 'default':
-        borderType = 5
+        borderType = ippBorderDefault
     # 'constant' ----> IPP's ippBorderConst
     elif mode == 'constant':
-        borderType = 6
+        borderType = ippBorderConst
     # IPP's ippBorderTransp
     elif mode == 'transp':
-        borderType = 7
+        borderType = ippBorderTransp
     else:
         # Undef boundary mode
         borderType = -1
@@ -333,6 +330,11 @@ def convert_to_float(image, preserve_range):
         raise ValueError("Currently not supported")
 # <<< utiles module
 
+# >>> dtype module
+# TODO
+# __convert_to_float
+# <<< dtype module
+
 
 # >>> gaussian filter module
 cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, int source_index, int destination_index,
@@ -370,6 +372,7 @@ cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, int source
                                     ippBorderType,
                                     ippBorderValue)
     __get_ipp_error(ippStatusIndex)
+
 
 cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
                multichannel=None, preserve_range=False, truncate=4.0):
@@ -990,4 +993,5 @@ def _get_cy__get_IppBorderType(mode):
 def _get_cy__get_number_of_channels(image):
     # cdef _get_number_of_channels(cnp.ndarray image):
     return _get_number_of_channels(image)
+
 # <<< for tests
