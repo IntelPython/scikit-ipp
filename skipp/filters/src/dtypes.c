@@ -1523,7 +1523,7 @@ image_8s_as_64f_Converting_range_11_ScaleC(
 
     Ipp64f minSrc = (Ipp64f)(IPP_MIN_8S);
     Ipp64f maxSrc = (Ipp64f)(IPP_MAX_8S);
-    Ipp64f minDst = 0;
+    Ipp64f minDst = -1;
     Ipp64f maxDst = 1;
 
     Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
@@ -1546,7 +1546,7 @@ image_16u_as_32f_Converting_range_01_ScaleC(
 {
     IppStatus status = ippStsNoErr;
     Ipp16u * pSRC = NULL;     // Pointers to source and
-    Ipp32f * pDST = NULL;    // destination images
+    Ipp32f * pDST = NULL;     // destination images
 
     IppiSize roiSize = { img_width, img_height }; // Size of source and
                                                   // destination ROI in pixels
@@ -1592,7 +1592,7 @@ image_16u_as_64f_Converting_range_01_ScaleC(
 {
     IppStatus status = ippStsNoErr;
     Ipp16u * pSRC = NULL;     // Pointers to source and
-    Ipp64f * pDST = NULL;    // destination images
+    Ipp64f * pDST = NULL;     // destination images
 
     IppiSize roiSize = { img_width, img_height }; // Size of source and
                                                   // destination ROI in pixels
@@ -1637,7 +1637,7 @@ image_16s_as_32f_Converting_range_11_ScaleC(
 {
     IppStatus status = ippStsNoErr;
     Ipp16s * pSRC = NULL;     // Pointers to source and
-    Ipp32f * pDST = NULL;    // destination images
+    Ipp32f * pDST = NULL;     // destination images
 
     IppiSize roiSize = { img_width, img_height }; // Size of source and
                                                   // destination ROI in pixels
@@ -1683,7 +1683,7 @@ image_16s_as_64f_Converting_range_11_ScaleC(
 {
     IppStatus status = ippStsNoErr;
     Ipp16s * pSRC = NULL;     // Pointers to source and
-    Ipp64f * pDST = NULL;    // destination images
+    Ipp64f * pDST = NULL;     // destination images
 
     IppiSize roiSize = { img_width, img_height }; // Size of source and
                                                   // destination ROI in pixels
@@ -1706,7 +1706,7 @@ image_16s_as_64f_Converting_range_11_ScaleC(
 
     Ipp64f minSrc = (Ipp64f)(IPP_MIN_16S);
     Ipp64f maxSrc = (Ipp64f)(IPP_MAX_16S);
-    Ipp64f minDst = 0;
+    Ipp64f minDst = -1;
     Ipp64f maxDst = 1;
 
     Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
