@@ -428,7 +428,6 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
 
-    # case when sigma is zero -> IPP funcs raises error
     if sigma == 0.0:
         output[...] = image[...]
         return output
@@ -458,18 +457,18 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     cdef int output_index = __ipp_equalent_number_for_numpy(output)
     if(output_index == -1):
         raise ValueError("Undefined ipp data type")
-    elif(output_index == ipp64u_index):  # if output np.uint64
+    # elif(output_index == ipp64u_index):  # if output np.uint64
         # make a np.uint32 copy
         # TODO
         # add case when dtype is np.int64, np.uint64
         # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
         raise ValueError("output 64 bit uint is currently not supported")
-    elif(output_index == ipp64s_index):  # if output np.int64
+    # elif(output_index == ipp64s_index):  # if output np.int64
         # make a np.int32 copy
         # TODO
         # add case when dtype is np.int64, np.uint64
         # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
-        raise ValueError("output 64 bit int is currently not supported")
+    #    raise ValueError("output 64 bit int is currently not supported")
     else:
         __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
     return output
