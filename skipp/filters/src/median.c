@@ -1,7 +1,7 @@
 #include "median.h"
 
 
-#define EXIT_LINE exitLine:                         // Label for Exit
+#define EXIT_LINE exitLine:  // Label for Exit
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine;
 
 // new
@@ -26,7 +26,7 @@ MedianFilter_32f_C1_3D(
 
     int numChannels = 1;
 
-    Ipp8u * pBuffer = NULL;                 // Pointer to the work buffer
+    Ipp8u * pBuffer = NULL;  // Pointer to the work buffer
 
     IpprVolume srcRoiVolume = { img_width, img_height, img_depth };
     IpprVolume dstRoiVolume = { img_width, img_height, img_depth };
