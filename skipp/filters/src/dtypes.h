@@ -367,4 +367,12 @@ image_16s_as_64f_Converting_range_11_ScaleC(
     int numChannels,
     int img_width,
     int img_height);
+
+int
+image_32s_as_32f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
 #endif
