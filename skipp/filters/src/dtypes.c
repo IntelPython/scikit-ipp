@@ -1719,6 +1719,140 @@ EXIT_FUNC
     return (int)status;
 }
 
+// TODO
+//
+// Currently there are no any 32u32f scaling funcs
+// in Intel IPP lib, those:
+// * 32u -> 32s
+// * scaling between 0 ... 1
+int
+image_32u_as_32f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+
+    Ipp32u * pSRC = NULL;     // Pointers to source,
+    Ipp32s * pSrcCopy = NULL; // copy of the source and
+    Ipp32f * pDST = NULL;     // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp32s *)pSrc;
+    pDST = (Ipp32f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    pSrcCopy = (void *)ippsMalloc_8u((img_width * sizeof(Ipp32s)) * img_height);
+    if (pSrcCopy == NULL) {
+        // specify corret error status
+        status = ippStsErr;
+        check_sts(status);
+    }
+    status = image_32u_as_32s_Converting_XorC(pSRC, pSrcCopy, 1, img_width, img_height);
+    check_sts(status)
+
+    int srcStep = sizeof(Ipp32s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_32S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_32S);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_32s32f_C1R(pSrcCopy, srcStep, mVal, aVal, pDST,
+        dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
+    if(pSrcCopy != NULL)
+    {
+        ippsFree(pSrcCopy);
+    }
+    return (int)status;
+}
+
+// TODO
+//
+// Currently there are no any 32u64f scaling funcs
+// in Intel IPP lib, those:
+// * 32u -> 32s
+// * scaling between 0 ... 1
+int
+image_32u_as_64f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+
+    Ipp32u * pSRC = NULL;     // Pointers to source,
+    Ipp32s * pSrcCopy = NULL; // copy of the source and
+    Ipp64f * pDST = NULL;     // destination images
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp32s *)pSrc;
+    pDST = (Ipp64f *)pDst;
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    pSrcCopy = (void *)ippsMalloc_8u((img_width * sizeof(Ipp32s)) * img_height);
+    if (pSrcCopy == NULL) {
+        // specify corret error status
+        status = ippStsErr;
+        check_sts(status);
+    }
+    status = image_32u_as_32s_Converting_XorC(pSRC, pSrcCopy, 1, img_width, img_height);
+    check_sts(status)
+
+        int srcStep = sizeof(Ipp32s) * img_width * numChannels;
+    int dstStep = sizeof(Ipp32f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MIN_32S);
+    Ipp64f maxSrc = (Ipp64f)(IPP_MAX_32S);
+    Ipp64f minDst = 0;
+    Ipp64f maxDst = 1;
+
+    Ipp64f mVal = (maxDst - minDst) / (maxSrc - minSrc);
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    check_sts(ippiScaleC_32s64f_C1R(pSrcCopy, srcStep, mVal, aVal, pDST,
+        dstStep, roiSize, ippAlgHintAccurate));
+
+EXIT_FUNC
+    if(pSrcCopy != NULL)
+    {
+        ippsFree(pSrcCopy);
+    }
+    return (int)status;
+}
+
 int
 image_32s_as_32f_Converting_range_11_ScaleC(
     void * pSrc,
@@ -1808,5 +1942,43 @@ image_32s_as_64f_Converting_range_11_ScaleC(
         dstStep, roiSize, ippAlgHintAccurate));
 
 EXIT_FUNC
+    return (int)status;
+}
+
+static covertHandler
+covertToFloatTable[][8] = {
+                    {image_8u_as_32f_Converting_range_01_ScaleC,              // to Ipp32f
+                     image_8s_as_32f_Converting_range_11_ScaleC,
+                     image_16u_as_32f_Converting_range_01_ScaleC,
+                     image_16s_as_32f_Converting_range_11_ScaleC,
+                     image_32u_as_32f_Converting_range_01_ScaleC,
+                     image_32s_as_32f_Converting_range_11_ScaleC,
+                     image_no_convert,
+                     image_no_convert
+                    },
+                    {image_8u_as_64f_Converting_range_01_ScaleC,              // to Ipp64f
+                     image_8s_as_64f_Converting_range_11_ScaleC,
+                     image_16u_as_64f_Converting_range_01_ScaleC,
+                     image_16s_as_64f_Converting_range_11_ScaleC,
+                     image_32u_as_64f_Converting_range_01_ScaleC,
+                     image_32s_as_64f_Converting_range_11_ScaleC,
+                     image_no_convert,
+                     image_no_convert
+                    }
+};
+
+int
+convertToFloat(
+    int type_index,
+    int float_type_index,
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    status = covertToFloatTable[float_type_index][type_index](pSrc, pDst, numChannels,
+                                                              img_width, img_height);
     return (int)status;
 }

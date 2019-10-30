@@ -369,6 +369,22 @@ image_16s_as_64f_Converting_range_11_ScaleC(
     int img_height);
 
 int
+image_32u_as_32f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
+image_32u_as_64f_Converting_range_01_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
+int
 image_32s_as_32f_Converting_range_11_ScaleC(
     void * pSrc,
     void * pDst,
@@ -378,6 +394,15 @@ image_32s_as_32f_Converting_range_11_ScaleC(
 
 int
 image_32s_as_64f_Converting_range_11_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+int
+convertToFloat(
+    int index1,
+    int index2,
     void * pSrc,
     void * pDst,
     int numChannels,

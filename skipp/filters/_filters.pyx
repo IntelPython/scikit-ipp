@@ -23,17 +23,17 @@ cdef extern from "ippbase.h":
 
 # gaussian
 cdef extern from "src/gaussian.c":
-    int  GaussianFilter(int input_index,
-                        int output_index,
-                        void * pInput,
-                        void * pOutput,
-                        int img_width,
-                        int img_height,
-                        int numChannels,
-                        float sigma_,
-                        int kernelSize,
-                        int ippBorderType,
-                        float ippBorderValue)
+    int GaussianFilter(int input_index,
+                       int output_index,
+                       void * pInput,
+                       void * pOutput,
+                       int img_width,
+                       int img_height,
+                       int numChannels,
+                       float sigma_,
+                       int kernelSize,
+                       int ippBorderType,
+                       float ippBorderValue)
 
 # edges
 cdef extern from "src/edges.c":
@@ -150,6 +150,16 @@ cdef extern from "src/dtypes.c":
                 int numChannels,
                 int img_width,
                 int img_height)
+
+    int convertToFloat(
+                int type_index,
+                int float_type_index,
+                void * pSrc,
+                void * pDst,
+                int numChannels,
+                int img_width,
+                int img_height)
+
 
 cdef extern from "src/dtypes.h":
     ctypedef enum IppDataTypeIndex:
@@ -319,20 +329,71 @@ cdef __convert(cnp.ndarray source, cnp.ndarray destination, int numChannels, int
     __get_ipp_error(ippStatusIndex)
 
 
-# from https://github.com/scikit-image/scikit-image/blob/master/skimage/_shared/utils.py
-def convert_to_float(image, preserve_range):
-    """Convert input image to double image with the appropriate range.
-    """
-    if preserve_range:
-        return image.astype(np.float32)
-    # TODO add img_as_float32
+cdef __img_as_float(cnp.ndarray source, cnp.ndarray destination, int numChannels, int type_index,
+                   int float_type_index):
+    cdef int ippStatusIndex = 0
+    cdef int img_width = source.shape[1]
+    cdef int img_height = source.shape[0]
+
+    cdef void * cysource
+    cdef void * cydestination
+
+    cysource = <void*> cnp.PyArray_DATA(source)
+    cydestination = <void*> cnp.PyArray_DATA(destination)
+
+    ippStatusIndex = convertToFloat(type_index, float_type_index, cysource, cydestination,
+                                    numChannels, img_width, img_height)
+    __get_ipp_error(ippStatusIndex)
+
+
+cpdef img_as_float(image):
+    # TODO
+    # in separate cdef func
+    cdef int numChannels
+    if(image.ndim==1):
+        numChannels = 1
+    elif(image.ndim == 2):
+        numChannels = 1
+    elif(image.ndim == 3) & (image.shape[-1] == 3):
+        numChannels = 3
     else:
-        raise ValueError("Currently not supported")
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+    cdef int image_index = __ipp_equalent_number_for_numpy(image)
+
+    if(image_index == -1):
+        raise ValueError("Undefined ipp data type")
+    # TODO
+    elif(image_index == ipp64u_index):   # if input image np.uint64
+        raise ValueError("image int 64 bit int is currently not supported")
+    # TODO
+    elif(image_index == ipp64s_index):   # if input image np.int64
+        raise ValueError("image int 64 bit int is currently not supported")
+
+    output = np.zeros_like(image, dtype=np.float64)
+    cdef float_type_index = 1   # for covertToFloatTable
+    __img_as_float(image, output, numChannels, image_index, float_type_index)
+    
+    return output
+
 # <<< utiles module
 
 # >>> dtype module
+
 # TODO
 # __convert_to_float
+# from https://github.com/scikit-image/scikit-image/blob/master/skimage/_shared/utils.py
+cpdef convert_to_float(image, preserve_range):
+    """Convert input image to double image with the appropriate range.
+    """
+    if preserve_range:
+        # Convert image to double only if it is not single or double
+        # precision float
+        if image.dtype.char not in 'df':
+            image = image.astype(float)
+    # else:
+    #    image = img_as_float(image)
+    return image
 # <<< dtype module
 
 
@@ -415,6 +476,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         raise ValueError("Incorrect output value")
 
     # TODO
+    # ~~~~~~~
     # add correct preserve range module
     # image = convert_to_float(image)
 
@@ -443,6 +505,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     cdef int image_index = __ipp_equalent_number_for_numpy(image)
     if(image_index == -1):
         raise ValueError("Undefined ipp data type")
+    # ~~ maybe better raise an error
     elif(image_index == ipp64u_index):   # if input image np.uint64
         # make a np.float32 copy
         # ~~ maybe it is better to np.uint64
@@ -457,18 +520,18 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     cdef int output_index = __ipp_equalent_number_for_numpy(output)
     if(output_index == -1):
         raise ValueError("Undefined ipp data type")
-    # elif(output_index == ipp64u_index):  # if output np.uint64
+    elif(output_index == ipp64u_index):  # if output np.uint64
         # make a np.uint32 copy
         # TODO
         # add case when dtype is np.int64, np.uint64
         # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
         raise ValueError("output 64 bit uint is currently not supported")
-    # elif(output_index == ipp64s_index):  # if output np.int64
+    elif(output_index == ipp64s_index):  # if output np.int64
         # make a np.int32 copy
         # TODO
         # add case when dtype is np.int64, np.uint64
         # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
-    #    raise ValueError("output 64 bit int is currently not supported")
+        raise ValueError("output 64 bit int is currently not supported")
     else:
         __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
     return output
