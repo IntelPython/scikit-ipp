@@ -1,6 +1,9 @@
 import pytest
 import numpy as np
+from numpy.testing import assert_array_almost_equal
+from scipy.ndimage.filters import gaussian_filter as scipy_gaussian
 from skipp.skipp.filters import gaussian
+from skimage.filters import gaussian as skimage_gaussian
 
 
 @pytest.fixture
@@ -77,3 +80,32 @@ def test_dimension_error_gaussian():
     image_4d = np.arange(5*5*5*4, dtype=np.uint8).reshape((5, 5, 5, 4))
     with pytest.raises(ValueError):
         filtered_img = gaussian(image_4d, sigma=1, multichannel=True)
+
+def test_skimage_gaussina_similarity_float32():
+    """
+    # Testing scikit-image's and scikit-ipp's gaussian filtering results
+    # for float32 input/output dtypes
+    """
+    image = np.arange(5*4, dtype=np.float32).reshape((5, 4))
+    skimage_gaussian_result = skimage_gaussian(image, sigma=3)
+    skipp_gaussian_result = gaussian(image, sigma=3)
+    assert_array_almost_equal(skimage_gaussian_result, skipp_gaussian_result, decimal=3)
+
+
+# TODO
+@pytest.mark.skip(reason="dev in progress")
+def test_skimage_gaussina_similarity_uint8():
+    """
+    # Note: there is a bug in gaussian scikit-image version 0.17.dev0
+    # skimage.filters.gaussian doesn't use the value of output parameter
+    # skimage.filters.gaussian is a wrapper around scipy.ndi.gaussian_filter. But 
+    # the scikit-image's gaussian doesn't pass the output to scipy.ndi.gaussian_filter.
+    # This leads that skimage.filters.gaussian returns only the image of float64/float32 dtype,
+    # even if explicitly specify the integer output dtype.
+    # Thats why this test compares scikit-ipp's gaussian filter with
+    # scipy.ndimage.filters.gaussian_filter
+    """
+    image = np.arange(5*4, dtype=np.uint8).reshape((5, 4))
+    scipy_gaussian_result = scipy_gaussian(image, sigma=3)
+    skipp_gaussian_result = gaussian(image, sigma=3)
+    assert_array_almost_equal(scipy_gaussian_result, skipp_gaussian_result, decimal=3)

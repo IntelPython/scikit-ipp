@@ -26,7 +26,10 @@ requirements:
 
 test:
     requires:
+      - numpy
       - pytest
+      - scikit-image
+      - scipy
     imports:
       - skipp
       - skipp.skipp.filters

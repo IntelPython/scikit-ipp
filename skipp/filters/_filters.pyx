@@ -356,8 +356,8 @@ cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, int source
 
     # needed more correct way. Warning: conversion from 'npy_intp'
     # to 'int', possible loss of data
-    cdef int img_width = source.shape[0]
-    cdef int img_height = source.shape[1]
+    cdef int img_width = source.shape[1]
+    cdef int img_height = source.shape[0]
 
     # pass to IPP the source and destination arrays
     ippStatusIndex = GaussianFilter(source_index,
