@@ -366,7 +366,8 @@ GaussianFilter(
     float sigma_,
     int kernelSize,
     int ippBorderType,
-    float ippBorderValue)
+    float ippBorderValue,
+    preserveRange preserve_range)
 {
     IppStatus status = ippStsNoErr;
 

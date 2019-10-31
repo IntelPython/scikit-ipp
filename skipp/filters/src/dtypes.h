@@ -51,6 +51,11 @@ typedef enum {
     convertToFloat_Ipp64f = 1,
 } convertToFloatIndex;
 
+typedef enum {
+    preserve_range_false = 0,
+    preserve_range_true = 1
+} preserveRange;
+
 int
 get_convertToFloatIndex(IppDataTypeIndex ippDataTypeIndex);
 

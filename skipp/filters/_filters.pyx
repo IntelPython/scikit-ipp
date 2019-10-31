@@ -33,7 +33,8 @@ cdef extern from "src/gaussian.c":
                        float sigma_,
                        int kernelSize,
                        int ippBorderType,
-                       float ippBorderValue)
+                       float ippBorderValue,
+                       preserveRange preserve_range)
 
 # edges
 cdef extern from "src/edges.c":
@@ -174,6 +175,9 @@ cdef extern from "src/dtypes.h":
         ipp32f_index = 8
         ipp64f_index = 9
 
+    ctypedef enum preserveRange:
+        preserve_range_false = 0
+        preserve_range_true = 1
 
 
 cdef extern from "ipptypes.h":
@@ -399,7 +403,7 @@ cpdef convert_to_float(image, preserve_range):
 
 # >>> gaussian filter module
 cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, int source_index, int destination_index,
-                         int numChannels, float sigma, float truncate, int ippBorderType, float ippBorderValue):
+                         int numChannels, float sigma, float truncate, int ippBorderType, float ippBorderValue, preserveRange preserve_range):
 
     cdef int ippStatusIndex = 0   # OK
 
@@ -431,7 +435,8 @@ cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, int source
                                     sigma,
                                     kernelSize,
                                     ippBorderType,
-                                    ippBorderValue)
+                                    ippBorderValue,
+                                    preserve_range)
     __get_ipp_error(ippStatusIndex)
 
 
@@ -500,7 +505,12 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
 
     cdef float sd = float(sigma)
     cdef float tr = float(truncate)
-    cdef float ippBorderValue = float(cval)    
+    cdef float ippBorderValue = float(cval)
+
+    cdef preserveRange preserve_Range = preserve_range_false
+
+    if preserve_range:
+        preserve_Range = preserve_range_true
 
     cdef int image_index = __ipp_equalent_number_for_numpy(image)
     if(image_index == -1):
@@ -533,7 +543,8 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
         raise ValueError("output 64 bit int is currently not supported")
     else:
-        __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
+        __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd,
+                            tr, ippBorderType, ippBorderValue, preserve_Range)
     return output
 # <<< gaussian filter module
 
