@@ -46,6 +46,14 @@ typedef enum {
     ipp64f_r = 0x2,  // 0000000010
 } IppDataTypeConversionRecomendationMask;
 
+typedef enum {
+    convertToFloat_Ipp32f = 0,
+    convertToFloat_Ipp64f = 1,
+} convertToFloatIndex;
+
+int
+get_convertToFloatIndex(IppDataTypeIndex ippDataTypeIndex);
+
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes);
 

@@ -1968,9 +1968,22 @@ covertToFloatTable[][8] = {
 };
 
 int
+get_convertToFloatIndex(IppDataTypeIndex ippDataTypeIndex)
+{
+    convertToFloatIndex index;
+    if (ippDataTypeIndex == ipp32f_index)
+        index = convertToFloat_Ipp32f;
+    else if (ippDataTypeIndex == ipp64f_index)
+        index = convertToFloat_Ipp64f;
+    else
+        index = -1;
+    return index;
+}
+
+int
 convertToFloat(
-    int type_index,
-    int float_type_index,
+    int input_index,
+    int output_index,
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -1978,7 +1991,13 @@ convertToFloat(
     int img_height)
 {
     IppStatus status = ippStsNoErr;
-    status = covertToFloatTable[float_type_index][type_index](pSrc, pDst, numChannels,
-                                                              img_width, img_height);
+    int float_type_index = get_convertToFloatIndex(output_index);
+    if (float_type_index == -1)
+    {
+        status = ippStsErr;
+        check_sts(status);
+    }
+    status = covertToFloatTable[float_type_index][input_index](pSrc, pDst, numChannels, img_width, img_height);
+EXIT_FUNC
     return (int)status;
 }

@@ -152,8 +152,8 @@ cdef extern from "src/dtypes.c":
                 int img_height)
 
     int convertToFloat(
-                int type_index,
-                int float_type_index,
+                int input_index,
+                int output_index,
                 void * pSrc,
                 void * pDst,
                 int numChannels,
@@ -329,8 +329,8 @@ cdef __convert(cnp.ndarray source, cnp.ndarray destination, int numChannels, int
     __get_ipp_error(ippStatusIndex)
 
 
-cdef __img_as_float(cnp.ndarray source, cnp.ndarray destination, int numChannels, int type_index,
-                   int float_type_index):
+cdef __img_as_float(cnp.ndarray source, cnp.ndarray destination, int numChannels, int input_index,
+                   int output_index):
     cdef int ippStatusIndex = 0
     cdef int img_width = source.shape[1]
     cdef int img_height = source.shape[0]
@@ -341,7 +341,7 @@ cdef __img_as_float(cnp.ndarray source, cnp.ndarray destination, int numChannels
     cysource = <void*> cnp.PyArray_DATA(source)
     cydestination = <void*> cnp.PyArray_DATA(destination)
 
-    ippStatusIndex = convertToFloat(type_index, float_type_index, cysource, cydestination,
+    ippStatusIndex = convertToFloat(input_index, output_index, cysource, cydestination,
                                     numChannels, img_width, img_height)
     __get_ipp_error(ippStatusIndex)
 
@@ -371,8 +371,8 @@ cpdef img_as_float(image):
         raise ValueError("image int 64 bit int is currently not supported")
 
     output = np.zeros_like(image, dtype=np.float64)
-    cdef float_type_index = 1   # for covertToFloatTable
-    __img_as_float(image, output, numChannels, image_index, float_type_index)
+    # cdef float_type_index = 1   # for covertToFloatTable
+    __img_as_float(image, output, numChannels, image_index, ipp64f_index)
     
     return output
 
