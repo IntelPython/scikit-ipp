@@ -93,6 +93,20 @@ def test_skimage_gaussina_similarity_float32():
 
 
 # TODO
+# add np.float64 input image
+@pytest.mark.parametrize("input_dtype", [np.uint8, np.int8, np.uint16, np.int16, np.uint32, np.int32, np.float32])
+@pytest.mark.parametrize("output_dtype", [np.float32, np.float64])
+def test_skimage_gaussina_similarity_preserve_range_false(input_dtype, output_dtype):
+    """
+    # Testing scikit-image's and scikit-ipp's gaussian filtering results when
+    # preserve_range parameter is False and output dtype float
+    """
+    image = np.arange(3*4,dtype=input_dtype).reshape((4,3))
+    skimage_gaussian_filtered = skimage_gaussian(image, output=output_dtype, sigma=1, preserve_range=False)
+    skipp_gaussian_filtered = gaussian(image, output=output_dtype, sigma=1, preserve_range=False)
+    assert_array_almost_equal(skimage_gaussian_filtered, skipp_gaussian_filtered, decimal=3)
+
+# TODO
 @pytest.mark.skip(reason="dev in progress")
 def test_skimage_gaussina_similarity_uint8():
     """
