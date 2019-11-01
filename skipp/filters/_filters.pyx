@@ -464,26 +464,23 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # get input require
     # TODO module with numpy.require to provid type that satisfies requirements.
 
+    # TODO
     # get output
     shape = image.shape
     if output is None:
         output_dtype = image.dtype.name
         output = np.empty_like(image, dtype=output_dtype, order='C')
-    # TODO
     elif type(output) in [type(type), type(np.zeros((4,)).dtype)]:
         output_dtype = output
         output = np.zeros(shape, dtype=output_dtype)
     elif isinstance(output, np.ndarray):
+        if output.shape != shape:
+            raise RuntimeError("output shape not correct")
         output_dtype = output.dtype
         # TODO
         # module with numpy.require to provid type that satisfies requirements.
     else:
         raise ValueError("Incorrect output value")
-
-    # TODO
-    # ~~~~~~~
-    # add correct preserve range module
-    # image = convert_to_float(image)
 
     # TODO
     # in separate cdef func
