@@ -32,21 +32,21 @@ def test_gaussian_output_is_none_dev(image, input_dtype):
     assert gaussian_image.dtype == input_dtype
 
 
-def test_default_sigma_gaussian():
+def test_gaussian_default_sigma():
     a = np.zeros((3, 3), dtype=np.uint8)
     a[1, 1] = 1.
     assert np.all(gaussian(a) == gaussian(a, sigma=1))
 
 
 @pytest.mark.parametrize("ipp_supported", [np.uint8, np.uint16, np.int16, np.float32])
-def test_given_and_returned_output_gaussian(ipp_supported):
+def test_gaussian_given_and_returned_output(ipp_supported):
     input_image = np.zeros((3, 3), dtype=ipp_supported)
     output_image = np.zeros((3, 3), dtype=ipp_supported)
     returned_image = gaussian(input_image, output=output_image)
     assert id(output_image) == id(returned_image)
 
 
-def test_null_sigma():
+def test_gaussian_null_sigma():
     a = np.zeros((3, 3))
     a[1, 1] = 1.
     assert np.all(gaussian(a, 0) == a)
@@ -54,7 +54,7 @@ def test_null_sigma():
 
 # Intel IPP's GaussianFilterBorder doesn't support `reflect` mode
 # TODO: investigate why skimage in test_energy_decrease_gaussian uses `reflect` mode
-def test_energy_decrease_gaussian():
+def test_gaussian_energy_decrease():
     a = np.zeros((3, 3), dtype=np.float32)
     a[1, 1] = 1.
     gaussian_a = gaussian(a, sigma=1)
@@ -69,19 +69,19 @@ def test_gaussian_unsupported_mode_in_IPP():
 
 # TODO
 @pytest.mark.skip(reason="dev in progress")
-def test_preserve_range_gaussian():
+def test_gaussian_preserve_range():
     img = np.array([[10.0, -10.0], [-4, 3]], dtype=np.float32)
     gaussian(img, 1, preserve_range=True)
 
 
 # TODO
 # update
-def test_dimension_error_gaussian():
+def test_gaussian_dimension_error():
     image_4d = np.arange(5*5*5*4, dtype=np.uint8).reshape((5, 5, 5, 4))
     with pytest.raises(ValueError):
         filtered_img = gaussian(image_4d, sigma=1, multichannel=True)
 
-def test_skimage_gaussina_similarity_float32():
+def test_gaussian_skimage_similarity_float32():
     """
     # Testing scikit-image's and scikit-ipp's gaussian filtering results
     # for float32 input/output dtypes
@@ -96,7 +96,7 @@ def test_skimage_gaussina_similarity_float32():
 # add np.float64 input image
 @pytest.mark.parametrize("input_dtype", [np.uint8, np.int8, np.uint16, np.int16, np.uint32, np.int32, np.float32])
 @pytest.mark.parametrize("output_dtype", [np.float32, np.float64])
-def test_skimage_gaussina_similarity_preserve_range_false(input_dtype, output_dtype):
+def test_gaussian_skimage_similarity_preserve_range_false(input_dtype, output_dtype):
     """
     # Testing scikit-image's and scikit-ipp's gaussian filtering results when
     # preserve_range parameter is False and output dtype float
@@ -108,7 +108,7 @@ def test_skimage_gaussina_similarity_preserve_range_false(input_dtype, output_dt
 
 # TODO
 @pytest.mark.skip(reason="dev in progress")
-def test_skimage_gaussina_similarity_uint8():
+def test_gaussian_skimage_similarity_uint8():
     """
     # Note: there is a bug in gaussian scikit-image version 0.17.dev0
     # skimage.filters.gaussian doesn't use the value of output parameter
@@ -125,7 +125,7 @@ def test_skimage_gaussina_similarity_uint8():
     assert_array_almost_equal(scipy_gaussian_result, skipp_gaussian_result, decimal=3)
 
 
-def test_wrong_output_shape():
+def test_gaussian_wrong_output_shape():
     image = np.zeros(3*3, dtype=np.uint8).reshape((3, 3))
     output_image = np.zeros(3*2, dtype=np.uint8).reshape((3, 2))
     with pytest.raises(RuntimeError):
