@@ -289,6 +289,14 @@ image_32s_as_32u_Converting_XorC(
     int img_width,
     int img_height);
 
+int
+image_32f_as_64f_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height);
+
 typedef
 int(*covertHandler)(
     void * pSrc,

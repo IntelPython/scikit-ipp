@@ -1212,6 +1212,50 @@ EXIT_FUNC
     return (int)status;
 }
 
+int
+image_32f_as_64f_Converting_ScaleC(
+    void * pSrc,
+    void * pDst,
+    int numChannels,
+    int img_width,
+    int img_height)
+{
+    IppStatus status = ippStsNoErr;
+    Ipp32f * pSRC = NULL;     // Pointers to source and
+    Ipp64f * pDST = NULL;     // destination images
+
+    if (numChannels == 3) {
+        if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
+            img_width = img_height * 3;
+        }
+        else
+        {
+            status = ippStsSizeErr;
+            check_sts(status)
+        }
+    }
+
+    IppiSize roiSize = { img_width, img_height }; // Size of source and
+                                                  // destination ROI in pixels
+    pSRC = (Ipp32f *)pSrc;
+    pDST = (Ipp64f *)pDst;
+
+    int srcStep = sizeof(Ipp32f) * img_width * numChannels;
+    int dstStep = sizeof(Ipp64f) * img_width * numChannels;
+
+    Ipp64f minSrc = (Ipp64f)(IPP_MINABS_32F);
+    Ipp64f minDst = (Ipp64f)(IPP_MINABS_32F);
+
+    Ipp64f mVal = 1; // because minDst = minSrc and maxSrc = maxDst
+    Ipp64f aVal = minDst - minSrc * mVal;
+
+    status = ippiScaleC_32f64f_C1R(pSRC, srcStep, mVal, aVal, pDST, dstStep, roiSize, ippAlgHintAccurate);
+    check_sts(status);
+
+EXIT_FUNC
+    return (int)status;
+}
+
 static covertHandler
 covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = {
                         {image_no_convert,                // from Ipp8u
@@ -1311,7 +1355,7 @@ covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER] = {
                          image_no_convert,
                          image_no_convert,
                          image_no_convert,
-                         image_no_convert
+                         image_32f_as_64f_Converting_ScaleC
                        },
                         {image_no_convert,              // from Ipp64f
                          image_no_convert,
