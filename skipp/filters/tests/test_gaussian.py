@@ -123,3 +123,10 @@ def test_skimage_gaussina_similarity_uint8():
     scipy_gaussian_result = scipy_gaussian(image, sigma=3)
     skipp_gaussian_result = gaussian(image, sigma=3)
     assert_array_almost_equal(scipy_gaussian_result, skipp_gaussian_result, decimal=3)
+
+
+def test_wrong_output_shape():
+    image = np.zeros(3*3, dtype=np.uint8).reshape((3, 3))
+    output_image = np.zeros(3*2, dtype=np.uint8).reshape((3, 2))
+    with pytest.raises(RuntimeError):
+        gaussian(image, output=output_image)
