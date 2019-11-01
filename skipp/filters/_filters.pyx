@@ -334,7 +334,7 @@ cdef __convert(cnp.ndarray source, cnp.ndarray destination, int numChannels, int
 
 
 cdef __img_as_float(cnp.ndarray source, cnp.ndarray destination, int numChannels, int input_index,
-                   int output_index):
+                    int output_index):
     cdef int ippStatusIndex = 0
     cdef int img_width = source.shape[1]
     cdef int img_height = source.shape[0]
@@ -354,7 +354,7 @@ cpdef img_as_float(image):
     # TODO
     # in separate cdef func
     cdef int numChannels
-    if(image.ndim==1):
+    if(image.ndim == 1):
         numChannels = 1
     elif(image.ndim == 2):
         numChannels = 1
@@ -377,7 +377,7 @@ cpdef img_as_float(image):
     output = np.zeros_like(image, dtype=np.float64)
     # cdef float_type_index = 1   # for covertToFloatTable
     __img_as_float(image, output, numChannels, image_index, ipp64f_index)
-    
+
     return output
 
 # <<< utiles module
@@ -402,8 +402,16 @@ cpdef convert_to_float(image, preserve_range):
 
 
 # >>> gaussian filter module
-cdef __pass_ipp_gaussian(cnp.ndarray source, cnp.ndarray destination, int source_index, int destination_index,
-                         int numChannels, float sigma, float truncate, int ippBorderType, float ippBorderValue, preserveRange preserve_range):
+cdef __pass_ipp_gaussian(cnp.ndarray source,
+                         cnp.ndarray destination,
+                         int source_index,
+                         int destination_index,
+                         int numChannels,
+                         float sigma,
+                         float truncate,
+                         int ippBorderType,
+                         float ippBorderValue,
+                         preserveRange preserve_range):
 
     cdef int ippStatusIndex = 0   # OK
 
@@ -531,13 +539,11 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         # make a np.uint32 copy
         # TODO
         # add case when dtype is np.int64, np.uint64
-        # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
         raise ValueError("output 64 bit uint is currently not supported")
     elif(output_index == ipp64s_index):  # if output np.int64
         # make a np.int32 copy
         # TODO
         # add case when dtype is np.int64, np.uint64
-        # __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd, tr, ippBorderType, ippBorderValue)
         raise ValueError("output 64 bit int is currently not supported")
     else:
         __pass_ipp_gaussian(image, output, image_index, output_index, numChannels, sd,
