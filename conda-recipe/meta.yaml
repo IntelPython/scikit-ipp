@@ -28,6 +28,7 @@ test:
     requires:
       - numpy
       - pytest
+      - pytest-benchmark
       - scikit-image
       - scipy
     imports:
