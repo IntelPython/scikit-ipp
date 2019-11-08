@@ -22,7 +22,7 @@ def run_skimage_gaussian(image, output, sigma, preserve_range):
 def run_skipp_gaussian(image, output, sigma, preserve_range):
     result = gaussian(image, output=output, sigma=sigma, preserve_range=preserve_range)
 
-
+@pytest.mark.skip(reason="skipp")
 @pytest.mark.parametrize("input_dtype", [np.uint8, np.int8, np.uint16, np.int16, np.uint32, np.int32, np.float32])
 def test_bench_skimage_gaussian_preserve_range(benchmark, input_dtype):
     """
@@ -35,7 +35,7 @@ def test_bench_skimage_gaussian_preserve_range(benchmark, input_dtype):
     # gaussian(image, output=np.float32, sigma=100, preserve_range=False
     result = benchmark(run_skimage_gaussian, image, np.float32, 100, False)
 
-
+@pytest.mark.skip(reason="skipp")
 @pytest.mark.parametrize("input_dtype", [np.uint8, np.int8, np.uint16, np.int16, np.uint32, np.int32, np.float32])
 def test_bench_skipp_gaussian_preserve_range(benchmark, input_dtype):
     """
@@ -47,7 +47,7 @@ def test_bench_skipp_gaussian_preserve_range(benchmark, input_dtype):
     image = get_image_data(input_dtype)
     result = benchmark(run_skipp_gaussian, image, np.float32, 100, False)
 
-
+@pytest.mark.skip(reason="skipp")
 @pytest.mark.parametrize("input_dtype", [np.uint8, np.uint16, np.int16, np.float32])
 def test_bench_skipp_gaussian_with_ipp_supported(benchmark, input_dtype):
     """
@@ -60,7 +60,7 @@ def test_bench_skipp_gaussian_with_ipp_supported(benchmark, input_dtype):
     image = get_image_data(input_dtype)
     result = benchmark(run_skipp_gaussian, image, None, 100, False)
 
-
+@pytest.mark.skip(reason="skipp")
 @pytest.mark.parametrize("input_dtype", [np.uint8, np.uint16, np.int16, np.float32])
 def test_bench_scipy_gaussian_with_ipp_supported(benchmark, input_dtype):
     """
