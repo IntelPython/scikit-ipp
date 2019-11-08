@@ -30,6 +30,21 @@ int IppDataTypeConversionRecomendationMaskArray[IPP_TYPES_NUMBER] = {ipp8u_r,
                                                                      ipp64f_r
 };
 
+static
+int sizeof_ipp_dtype[IPP_TYPES_NUMBER] =
+{
+    sizeof(Ipp8u),
+    sizeof(Ipp8s),
+    sizeof(Ipp16u),
+    sizeof(Ipp16s),
+    sizeof(Ipp32u),
+    sizeof(Ipp32s),
+    sizeof(Ipp64u),
+    sizeof(Ipp64s),
+    sizeof(Ipp32f),
+    sizeof(Ipp64f)
+};
+
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes) {
     if (output_index > 9 || output_index < 0)
@@ -145,52 +160,13 @@ malloc_by_dtype_index(
     void * ipp_arr_p = NULL;
     int sizeofIppDataType = 0;
 
-    // better use array with sizeof(IppDtype)
-    if (index == ipp8u_index)
+    if (index  >= ipp8u_index && index <= ipp64f_index)
     {
-        sizeofIppDataType = sizeof(Ipp8u);
+        sizeofIppDataType = sizeof_ipp_dtype[index];
+        ipp_arr_p = (void *)ippsMalloc_8u((img_width * sizeofIppDataType * numChannels) * img_height);
     }
-    else if (index == ipp8s_index)
-    {
-        sizeofIppDataType = sizeof(Ipp8s);
-    }
-    else if (index == ipp16u_index)
-    {
-        sizeofIppDataType = sizeof(Ipp16u);
-    }
-    else if (index == ipp16s_index)
-    {
-        sizeofIppDataType = sizeof(Ipp16s);
-    }
-    else if (index == ipp32u_index)
-    {
-        sizeofIppDataType = sizeof(Ipp32u);
-    }
-    else if (index == ipp32s_index)
-    {
-        sizeofIppDataType = sizeof(Ipp32s);
-    }
-    else if (index == ipp64u_index)
-    {
-        sizeofIppDataType = sizeof(Ipp64u);
-    }
-    else if (index == ipp64s_index)
-    {
-        sizeofIppDataType = sizeof(Ipp64s);
-    }
-    else if (index == ipp32f_index)
-    {
-        sizeofIppDataType = sizeof(Ipp32f);
-    }
-    else if (index == ipp64f_index)
-    {
-        sizeofIppDataType = sizeof(Ipp64f);
-    }
-
     // ~~~~ check mul
     // ~~~~ is it correct allocate by ippsMalloc_8u ?
-    ipp_arr_p = (void *)ippsMalloc_8u((img_width * sizeofIppDataType * numChannels) * img_height);
-
     return ipp_arr_p;
 }
 
