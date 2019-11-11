@@ -45,6 +45,8 @@ int sizeof_ipp_dtype[IPP_TYPES_NUMBER] =
     sizeof(Ipp64f)
 };
 
+
+
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes) {
     if (output_index > 9 || output_index < 0)
@@ -168,6 +170,36 @@ malloc_by_dtype_index(
     // ~~~~ is it correct allocate by ippsMalloc_8u ?
     return ipp_arr_p;
 }
+
+Ipp64f
+ipp_type_max[IPP_TYPES_NUMBER] =
+{
+    (Ipp64f)IPP_MAX_8U,
+    (Ipp64f)IPP_MAX_8S,
+    (Ipp64f)IPP_MAX_16U,
+    (Ipp64f)IPP_MAX_16S,
+    (Ipp64f)IPP_MAX_32U,
+    (Ipp64f)IPP_MAX_32S,
+    (Ipp64f)IPP_MAX_64U,
+    (Ipp64f)IPP_MAX_64S,
+    (Ipp64f)IPP_MAXABS_32F,
+    (Ipp64f)IPP_MAXABS_64F    //  TODO: problems, when IPP_MAXABS_64F
+};
+
+Ipp64f
+ipp_type_min[IPP_TYPES_NUMBER] =
+{
+    (Ipp64f)IPP_MIN_8U,
+    (Ipp64f)IPP_MIN_8S,
+    (Ipp64f)IPP_MIN_16U,
+    (Ipp64f)IPP_MIN_16S,
+    (Ipp64f)IPP_MIN_32U,
+    (Ipp64f)IPP_MIN_32S,
+    (Ipp64f)IPP_MIN_64U,
+    (Ipp64f)IPP_MIN_64S,
+    (Ipp64f)IPP_MINABS_32F,
+    (Ipp64f)IPP_MINABS_64F    //  TODO: problems, when IPP_MINABS_64F
+};
 
 int
 image_no_convert(
