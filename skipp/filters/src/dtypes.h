@@ -6,6 +6,7 @@
 #define MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE 0x2AAAAAAA
 
 #define IPP_TYPES_NUMBER 10
+#define IPPi_ScaleC_SUPPORTED_TYPES_NUMBER 7
 
 typedef enum {
     ipp8u_index = 0,
@@ -46,19 +47,6 @@ typedef enum {
     ipp64f_r = 0x2,  // 0000000010
 } IppDataTypeConversionRecomendationMask;
 
-typedef enum {
-    convertToFloat_Ipp32f = 0,
-    convertToFloat_Ipp64f = 1,
-} convertToFloatIndex;
-
-typedef enum {
-    preserve_range_false = 0,
-    preserve_range_true = 1
-} preserveRange;
-
-int
-get_convertToFloatIndex(IppDataTypeIndex ippDataTypeIndex);
-
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes);
 
@@ -74,205 +62,42 @@ malloc_by_dtype_index(
 );
 
 int
-image_no_convert(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
+sizeof_ipp_dtype_by_index(
+    int * sizeof_type,
+    int type_index
+);
 
-// image scaling and converting funcs
-// functions naming rule
-// image_<from dtype>_<to dtype>_<Functionality>_<backend function(s) from IPP>
-//
-// E.g. image_8u_as_8s_Converting_XorC: functions that does convertation
-// from Ipp8u to Ipp8s by using IPP's XorC library func
+typedef int func_jumpt_table_index;
 
-int
-image_8u_as_8s_Converting_XorC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
+typedef enum {
+    preserve_range_false_ = 0,                   //  [0...1] or [-1...1] for unsigned and signed
+    preserve_range_true_ = 1,                    //  [dst_dtype_min...dst_dtype_max]
+    preserve_range_true_for_small_bitsize_src_ = 2     //  [dst_dtype_min...dst_dtype_max], where 
+                                                      //  dst_dtype_min is src_dtype_min and
+                                                      //  dst_dtype_max is src_dtype_max
+} preserve_range_flag;
 
 int
-image_8u_as_8s_ScaleC(
+image_ScaleC(
+    int src_index,
+    int dst_index,
     void * pSrc,
     void * pDst,
     int numChannels,
     int img_width,
-    int img_height);
+    int img_height,
+    preserve_range_flag preserve_range);
 
-int
-image_8u_as_16u_ScaleC(
+typedef
+IppStatus(*ScaleC_Handler)(
     void * pSrc,
+    int srcStep,
+    Ipp64f mVal,
+    Ipp64f aVal,
     void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_16u_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_16s_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_16s_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_32u_Convert(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_32s_Convert(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_32s_Scale(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_32s_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_32f_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_32f_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_64f_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8s_as_8u_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8s_as_8u_Converting_XorC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8s_as_16u_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8s_as_16s_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-//~~~ doesn't work correct unsafe convert
-int
-image_8s_as_32u_Convert(   // 8s32u_C1Rs
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8s_as_32s_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_16u_as_8s_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_16u_as_16s_Converting_XorC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_16s_as_8s_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_16s_as_16u_Converting_XorC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
+    int dstStep,
+    IppiSize roiSize,
+    IppHintAlgorithm hint);
 int
 image_32u_as_32s_Converting_XorC(
     void * pSrc,
@@ -283,147 +108,6 @@ image_32u_as_32s_Converting_XorC(
 
 int
 image_32s_as_32u_Converting_XorC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_32f_as_64f_Converting_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-typedef
-int(*covertHandler)(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-static covertHandler covertTable[IPP_TYPES_NUMBER][IPP_TYPES_NUMBER];
-
-int
-convert(int index1,
-    int index2,
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-
-// Image as float
-//
-// The range of a floating point image is [0.0, 1.0] or [-1.0, 1.0] when
-// converting from unsigned or signed datatypes, respectively.
-//
-// functions naming rule
-// image_<from dtype>_<to dtype>_<Functionality>_<backend function(s) from IPP>
-//
-// E.g. image_8u_as_32f_Converting_range_01_ScaleC: function that does scaling
-// conv range [0.0, 1.0] from Ipp8u to Ipp32f by using IPP's ScaleC library func
-
-int
-image_8u_as_32f_Converting_range_01_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8u_as_64f_Converting_range_01_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_8s_as_32f_Converting_range_11_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-int
-image_8s_as_64f_Converting_range_11_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_16u_as_32f_Converting_range_01_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-int
-image_16u_as_64f_Converting_range_01_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-int
-image_16s_as_32f_Converting_range_11_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_16s_as_64f_Converting_range_11_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_32u_as_32f_Converting_range_01_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_32u_as_64f_Converting_range_01_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_32s_as_32f_Converting_range_11_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-
-int
-image_32s_as_64f_Converting_range_11_ScaleC(
-    void * pSrc,
-    void * pDst,
-    int numChannels,
-    int img_width,
-    int img_height);
-int
-convertToFloat(
-    int index1,
-    int index2,
     void * pSrc,
     void * pDst,
     int numChannels,
