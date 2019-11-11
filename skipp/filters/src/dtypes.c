@@ -92,18 +92,18 @@ int
 ippDtypeMask_as_ippDtypeIndex(int ippDtypeMask)
 {
     int ippDtypeIndex = -1;
-    /*
-    ipp8u_index = 0,
-    ipp8s_index = 1,
-    ipp16u_index = 2,
-    ipp16s_index = 3,
-    ipp32u_index = 4,
-    ipp32s_index = 5,
-    ipp64u_index = 6,
-    ipp64s_index = 7,
-    ipp32f_index = 8,
-    ipp64f_index = 9,
-    */
+
+    // ipp8u_index = 0
+    // ipp8s_index = 1
+    // ipp16u_index = 2
+    // ipp16s_index = 3
+    // ipp32u_index = 4
+    // ipp32s_index = 5
+    // ipp64u_index = 6
+    // ipp64s_index = 7
+    // ipp32f_index = 8
+    // ipp64f_index = 9
+
     if (ippDtypeMask == ipp8u_c)
         ippDtypeIndex = ipp8u_index;
 
@@ -134,18 +134,17 @@ ippDtypeMask_as_ippDtypeIndex(int ippDtypeMask)
     else if (ippDtypeMask == ipp64f_c)
         ippDtypeIndex = ipp64f_index;
 
-    /*
-    ipp8u_c = 512,     // 1000000000
-    ipp8s_c = 256,     // 0100000000
-    ipp16u_c = 128,    // 0010000000
-    ipp16s_c = 64,     // 0001000000
-    ipp32u_c = 32,     // 0000100000
-    ipp32s_c = 16,     // 0000010000
-    ipp64u_c = 8,      // 0000001000
-    ipp64s_c = 4,      // 0000000100
-    ipp32f_c = 2,      // 0000000010
-    ipp64f_c = 1,      // 0000000001
-    */
+    // ipp8u_c = 512  ----> 1000000000
+    // ipp8s_c = 256  ----> 0100000000
+    // ipp16u_c = 128 ----> 0010000000
+    // ipp16s_c = 64  ----> 0001000000
+    // ipp32u_c = 32  ----> 0000100000
+    // ipp32s_c = 16  ----> 0000010000
+    // ipp64u_c = 8   ----> 0000001000
+    // ipp64s_c = 4   ----> 0000000100
+    // ipp32f_c = 2   ----> 0000000010
+    // ipp64f_c = 1   ----> 0000000001
+
     return ippDtypeIndex;
 }
 
