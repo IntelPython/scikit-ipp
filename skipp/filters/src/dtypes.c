@@ -30,6 +30,41 @@ int IppDataTypeConversionRecomendationMaskArray[IPP_TYPES_NUMBER] = { ipp8u_r,
                                                                      ipp64f_r
 };
 
+// contains IppDataType enums that equalent of ipp<type>_index
+// ex. IppDataTypeArray[ipp8u_index] is ipp8u
+static
+int IppDataTypeArray[IPP_TYPES_NUMBER] = {
+    ipp8u,                  //  ipp8u_index
+    ipp8s,                  //  ipp8s_index
+    ipp16u,                 //  ipp16u_index
+    ipp16s,                 //  ipp16s_index
+    ipp32u,                 //  ipp32u_index
+    ipp32s,                 //  ipp32s_index
+    ipp64u,                 //  ipp64u_index
+    ipp64s,                 //  ipp64s_index
+    ipp32f,                 //  ipp32f_index
+    ipp64f                  //  ipp64f_index
+};
+
+// returns IppDataType enum by ipp<type>_index
+int
+ipp_type_index_as_IppDataType(
+    IppDataType * ippDataType,
+    IppDataTypeIndex ipp_type_index
+)
+{
+    IppStatus status = ippStsNoErr;
+    if (ipp_type_index < ipp8u_index || ipp_type_index > ipp64f_index)
+    {
+        status = ippStsSizeErr;
+        ippDataType = NULL;
+        check_sts(status);
+    }
+    *ippDataType = IppDataTypeArray[ipp_type_index];
+EXIT_FUNC
+    return (int)status;
+}
+
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes) {
     if (output_index > 9 || output_index < 0)

@@ -47,6 +47,13 @@ typedef enum {
     ipp64f_r = 0x2,  // 0000000010
 } IppDataTypeConversionRecomendationMask;
 
+// returns IppDataType enum by ipp<type>_index
+int
+ipp_type_index_as_IppDataType(
+    IppDataType * ippDataType,
+    IppDataTypeIndex ipp_type_index
+);
+
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes);
 
