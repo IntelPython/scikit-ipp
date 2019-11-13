@@ -67,7 +67,7 @@ EXIT_FUNC
 
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes) {
-    if (output_index > 9 || output_index < 0)
+    if (output_index > ipp64f_index || output_index < ipp8u_index)
         return -1;
 
     IppDataTypeMask output_mask = IppDataTypeMaskArray[output_index];
@@ -199,9 +199,6 @@ malloc_by_dtype_index(
         sizeofIppDataType = sizeof_ipp_dtype[index];
         ipp_arr_p = (void *)ippsMalloc_8u((img_width * sizeofIppDataType * numChannels) * img_height);
     }
-    // TODO:
-    // check (img_width * sizeofIppDataType * numChannels) * img_height
-
     return ipp_arr_p;
 }
 
@@ -262,7 +259,7 @@ typedef enum {
     ipp32s_ipp_ScaleC = 4,
     ipp32f_ipp_ScaleC = 5,
     ipp64f_ipp_ScaleC = 6,
-    undef_ipp_ScaleC = 7
+    undef_ipp_ScaleC = -1
 } ScaleC_C1R_dtype_index;
 
 func_jumpt_table_index ScaleC_C1R_table_array[IPP_TYPES_NUMBER] = {
@@ -370,8 +367,8 @@ ipp_scaleC_table[IPPi_ScaleC_SUPPORTED_TYPES_NUMBER][IPPi_ScaleC_SUPPORTED_TYPES
 
 int
 image_ScaleC(
-    int src_index,
-    int dst_index,
+    IppDataTypeIndex src_index,
+    IppDataTypeIndex dst_index,
     void * pSrc,
     void * pDst,
     int numChannels,
@@ -383,7 +380,7 @@ image_ScaleC(
 
     void * intermediateSrc = NULL;
     void * intermediateDst = NULL;
-    
+
     if (numChannels == 3) {
         if (img_width < MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE) {
             img_width = img_height * 3;
@@ -462,12 +459,16 @@ image_ScaleC(
     minSrc = ipp_type_min[src_index];
     maxSrc = ipp_type_max[src_index];
 
-    if (preserve_range == preserve_range_true_) {
+    if (preserve_range == preserve_range_true) {
         minDst = ipp_type_min[dst_index];
         maxDst = ipp_type_max[dst_index];
     }
-    else if (preserve_range == preserve_range_true_for_small_bitsize_src_) {
-        if ((sizeof_src < sizeof_dst) && (src_index <= ipp64s_index) && ((src_index % 2) == (dst_index % 2))) {
+    else if (preserve_range == preserve_range_true_for_small_bitsize_src) {
+        if ((sizeof_src < sizeof_dst) && 
+            (((src_index <= ipp64s_index) && (dst_index <= ipp64s_index) && ((src_index % 2) == (dst_index % 2))) ||
+            (dst_index == ipp32f_index || dst_index == ipp64f_index))
+            ) 
+        {
             minDst = ipp_type_min[src_index];
             maxDst = ipp_type_max[src_index];
         }
@@ -476,9 +477,8 @@ image_ScaleC(
             minDst = ipp_type_min[dst_index];
             maxDst = ipp_type_max[dst_index];
         }
-
     }
-    else if ((preserve_range == preserve_range_false_) && (dst_index == ipp32f_index || dst_index == ipp64f_index)) {
+    else if ((preserve_range == preserve_range_false) && (dst_index == ipp32f_index || dst_index == ipp64f_index)) {
         if ((src_index <= ipp64s_index) && ((src_index % 2) == 1))
         {
             minDst = 0;
@@ -489,7 +489,6 @@ image_ScaleC(
             minDst = -1;
             maxDst = 1;
         }
-
     }
     else
     {

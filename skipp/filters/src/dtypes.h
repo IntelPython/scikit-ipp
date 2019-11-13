@@ -35,16 +35,16 @@ typedef enum {
 } IppDataTypeMask;
 
 typedef enum {
-    ipp8u_r = 0x1FF, // 0111111111
-    ipp8s_r = 0x2FF, // 1011111111
-    ipp16u_r = 0x7F, // 0001111111
-    ipp16s_r = 0xBF, // 0010111111
-    ipp32u_r = 0x1F, // 0000011111
-    ipp32s_r = 0x2F, // 0000101111
-    ipp64u_r = 0x7,  // 0000000111
-    ipp64s_r = 0xB,  // 0000001011
-    ipp32f_r = 0x1,  // 0000000001
-    ipp64f_r = 0x2,  // 0000000010
+    ipp8u_r = 0x1FF,   // 0111111111
+    ipp8s_r = 0x2FF,   // 1011111111
+    ipp16u_r = 0x7F,   // 0001111111
+    ipp16s_r = 0xBF,   // 0010111111
+    ipp32u_r = 0x1F,   // 0000011111
+    ipp32s_r = 0x2F,   // 0000101111
+    ipp64u_r = 0x7,    // 0000000111
+    ipp64s_r = 0xB,    // 0000001011
+    ipp32f_r = 0x1,    // 0000000001
+    ipp64f_r = 0x2,    // 0000000010
 } IppDataTypeConversionRecomendationMask;
 
 // returns IppDataType enum by ipp<type>_index
@@ -77,17 +77,17 @@ sizeof_ipp_dtype_by_index(
 typedef int func_jumpt_table_index;
 
 typedef enum {
-    preserve_range_false_ = 0,                   //  [0...1] or [-1...1] for unsigned and signed
-    preserve_range_true_ = 1,                    //  [dst_dtype_min...dst_dtype_max]
-    preserve_range_true_for_small_bitsize_src_ = 2     //  [dst_dtype_min...dst_dtype_max], where 
+    preserve_range_false = 0,                         //  [0...1] or [-1...1] for unsigned and signed
+    preserve_range_true = 1,                          //  [dst_dtype_min...dst_dtype_max]
+    preserve_range_true_for_small_bitsize_src = 2     //  [dst_dtype_min...dst_dtype_max], where 
                                                       //  dst_dtype_min is src_dtype_min and
                                                       //  dst_dtype_max is src_dtype_max
 } preserve_range_flag;
 
 int
 image_ScaleC(
-    int src_index,
-    int dst_index,
+    IppDataTypeIndex src_index,
+    IppDataTypeIndex dst_index,
     void * pSrc,
     void * pDst,
     int numChannels,
