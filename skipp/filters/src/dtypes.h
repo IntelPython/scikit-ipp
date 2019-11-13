@@ -19,6 +19,7 @@ typedef enum {
     ipp64s_index = 7,
     ipp32f_index = 8,
     ipp64f_index = 9,
+    ippUndef_index = -1,
 } IppDataTypeIndex;
 
 typedef enum {
