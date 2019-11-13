@@ -7,7 +7,7 @@ from skimage import img_as_float32 as skimage_img_as_float32
 from skimage import img_as_float64 as skimage_img_as_float64
 # TODO
 # Change modul
-from skipp.skipp.filters import img_as_float
+# from skipp.skipp.filters import img_as_float
 
 unsigned_dtype_range = {np.uint8: (0, 255),
                         np.uint16: (0, 65535),
