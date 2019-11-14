@@ -58,7 +58,7 @@ ipp_type_index_as_IppDataType(
 int
 get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes);
 
-int
+IppDataTypeIndex
 ippDtypeMask_as_ippDtypeIndex(int ippDtypeMask);
 
 void *

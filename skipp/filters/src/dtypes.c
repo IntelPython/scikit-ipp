@@ -108,10 +108,10 @@ get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes) {
     return result;
 };
 
-int
+IppDataTypeIndex
 ippDtypeMask_as_ippDtypeIndex(int ippDtypeMask)
 {
-    int ippDtypeIndex = -1;
+    IppDataTypeIndex ippDtypeIndex;
 
     // ipp8u_index = 0
     // ipp8s_index = 1
@@ -123,6 +123,7 @@ ippDtypeMask_as_ippDtypeIndex(int ippDtypeMask)
     // ipp64s_index = 7
     // ipp32f_index = 8
     // ipp64f_index = 9
+    // ippUndef_index = -1
 
     if (ippDtypeMask == ipp8u_c)
         ippDtypeIndex = ipp8u_index;
@@ -164,6 +165,8 @@ ippDtypeMask_as_ippDtypeIndex(int ippDtypeMask)
     // ipp64s_c = 4   ----> 0000000100
     // ipp32f_c = 2   ----> 0000000010
     // ipp64f_c = 1   ----> 0000000001
+    else 
+        ippDtypeIndex = ippUndef_index;
 
     return ippDtypeIndex;
 }
