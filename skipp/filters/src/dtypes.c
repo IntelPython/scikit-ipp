@@ -515,10 +515,12 @@ image_ScaleC(
     check_sts(status);
 
 EXIT_FUNC
-if (intermediateSrc != NULL)
+if(intermediateSrc != NULL){
     ippsFree(intermediateSrc);
-if (intermediateDst != NULL)
+}
+if(intermediateDst != NULL){
     ippsFree(intermediateDst);
+}
     return (int)status;
 };
 

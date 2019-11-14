@@ -216,144 +216,69 @@ GaussianFilter(
     void * ipp_dst = NULL;  // pointers to dst array that is passes to ipp func
     IppDataTypeIndex ipp_src_dst_index;
 
-    if ((output_index == ipp32f_index) && (preserve_range == preserve_range_false))
+    if (!(preserve_range == preserve_range_false && ((output_index == ipp32f_index) || (output_index == ipp64f_index)))) {
+        preserve_range = preserve_range_true;
+    }
+    // IPP_GAUSSIAN_SUPPORTED_DTYPES
+    // int -> ippDtypeMask and int -> ippDtypeIndex
+    int ipp_src_dst_mask_for_gaussian_filter = get_ipp_src_dst_index(output_index, IPP_GAUSSIAN_SUPPORTED_DTYPES);
+    if (ipp_src_dst_mask_for_gaussian_filter == -1)
     {
-        ipp_src_dst_index = output_index;  //  ipp32f_index
-        ipp_dst = pOutput;
-        if (input_index == ipp_src_dst_index)
-        {
-            ipp_src = pInput;
-        }
-        else
-        {
-            ipp_src = malloc_by_dtype_index(ipp_src_dst_index, numChannels, img_width, img_height);
-            if (ipp_src == NULL) {
-                // specify corret error status
-                status = ippStsErr;
-                check_sts(status);
-            }
-
-            status = image_ScaleC(input_index, ipp_src_dst_index, pInput, ipp_src,
-                numChannels, img_width, img_height, preserve_range);
-            check_sts(status);
-        }
-        
-        // pass to ipp func
-        status = ippiFilterGaussianBorder(ipp_src_dst_index, ipp_src, ipp_dst, img_width, img_height, numChannels, 
-                    sigma, kernelSize, ippBorderType, ippBorderValue);
-
+        status = ippStsErr;
         check_sts(status);
     }
-
-    else if ((output_index == ipp64f_index) && (preserve_range == preserve_range_false))
+    ipp_src_dst_index = ippDtypeMask_as_ippDtypeIndex(ipp_src_dst_mask_for_gaussian_filter);
+    if (ipp_src_dst_index == ippUndef_index)
     {
-        ipp_src_dst_index = ipp32f_index;
-
-        // malloc ipp_dst
-        ipp_dst = malloc_by_dtype_index(ipp_src_dst_index, numChannels, img_width, img_height);
-        if (ipp_dst == NULL) {
+        status = ippStsErr;
+        check_sts(status);
+    }
+    // if there is no need in convertation ipp_src --> pOutput 
+    if ((ipp_src_dst_index == output_index) && (preserve_range != preserve_range_false)) {
+        preserve_range = preserve_range_true_for_small_bitsize_src;
+    }
+    //  input  --> ipp_src
+    //  output --> ipp_dst
+    if (input_index != ipp_src_dst_index)
+    {
+        ipp_src = malloc_by_dtype_index(ipp_src_dst_index, numChannels, img_width, img_height);
+        if (ipp_src == NULL) {
             // specify corret error status
             status = ippStsErr;
             check_sts(status);
         }
+        status = image_ScaleC(input_index, ipp_src_dst_index, pInput, ipp_src,
+            numChannels, img_width, img_height, preserve_range);
 
-        if (input_index == ipp_src_dst_index)
-        {
-            ipp_src = pInput;
-        }
-        // convert to float32 input image
-        // if input_index is not ipp32f_index, then malloc and convert
-        else
-        {
-            ipp_src = malloc_by_dtype_index(ipp_src_dst_index, numChannels, img_width, img_height);
-            if (ipp_src == NULL) {
-                // specify corret error status
-                status = ippStsErr;
-                check_sts(status);
-            }
-            status = image_ScaleC(input_index, ipp_src_dst_index, pInput, ipp_src,
-                numChannels, img_width, img_height, preserve_range);
-            check_sts(status);
-        }
-
-        // pass to ipp func
-        status = ippiFilterGaussianBorder(ipp_src_dst_index, ipp_src, ipp_dst, img_width, img_height, numChannels,
-            sigma, kernelSize, ippBorderType, ippBorderValue);
-        check_sts(status);
-
-        // convert_from_32f_to_64f output image
-        status = image_ScaleC(ipp_src_dst_index, output_index, ipp_dst, pOutput, numChannels, img_width, img_height, preserve_range);
         check_sts(status);
     }
     else
     {
-        if (preserve_range == preserve_range_false) {
-            preserve_range = preserve_range_true;
-        }
+        ipp_src = pInput;
+    }
 
-        // IPP_GAUSSIAN_SUPPORTED_DTYPES
-        int ipp_src_dst_mask_for_gaussian_filter = get_ipp_src_dst_index(output_index, IPP_GAUSSIAN_SUPPORTED_DTYPES);
-        if (ipp_src_dst_mask_for_gaussian_filter == -1)
-        {
+    if (output_index != ipp_src_dst_index)
+    {
+        ipp_dst = malloc_by_dtype_index(ipp_src_dst_index, numChannels, img_width, img_height);
+        if (ipp_dst == NULL) {
+            // specify correct error status
             status = ippStsErr;
             check_sts(status);
         }
-        int ipp_src_dst_index = ippDtypeMask_as_ippDtypeIndex(ipp_src_dst_mask_for_gaussian_filter);
-        if (ipp_src_dst_index == -1)
-        {
-            status = ippStsErr;
-            check_sts(status);
-        }
-
-        if (ipp_src_dst_index == output_index) {
-            preserve_range = preserve_range_true_for_small_bitsize_src;
-        }
-        //  input  --> ipp_src
-        //  output --> ipp_dst
-        if (input_index != ipp_src_dst_index)
-        {
-            ipp_src = malloc_by_dtype_index(ipp_src_dst_index, numChannels, img_width, img_height);
-            if (ipp_src == NULL) {
-                // specify corret error status
-                status = ippStsErr;
-                check_sts(status);
-            }
-            status = image_ScaleC(input_index, ipp_src_dst_index, pInput, ipp_src,
-                numChannels, img_width, img_height, preserve_range);
-
-            check_sts(status);
-        }
-        else
-        {
-            ipp_src = pInput;
-        }
-
-        if (output_index != ipp_src_dst_index)
-        {
-
-            ipp_dst = malloc_by_dtype_index(ipp_src_dst_index, numChannels, img_width, img_height);
-            if (ipp_dst == NULL) {
-                // specify correct error status
-                status = ippStsErr;
-                check_sts(status);
-            }
-        }
-        else
-        {
-            ipp_dst = pOutput;
-        }
-
-        // pass to ipp func
-        status = ippiFilterGaussianBorder(ipp_src_dst_index, ipp_src, ipp_dst, img_width, img_height, numChannels,
-            sigma, kernelSize, ippBorderType, ippBorderValue);
+    }
+    else
+    {
+        ipp_dst = pOutput;
+    }
+    // pass to ipp func
+    status = ippiFilterGaussianBorder(ipp_src_dst_index, ipp_src, ipp_dst, img_width, img_height, numChannels,
+        sigma, kernelSize, ippBorderType, ippBorderValue);
+    check_sts(status);
+    // convert ipp_dst into output array dtype, if they are different
+    if (output_index != ipp_src_dst_index)
+    {
+        status = image_ScaleC(ipp_src_dst_index, output_index, ipp_dst, pOutput, numChannels, img_width, img_height, preserve_range);
         check_sts(status);
-
-        // convert ipp_dst into output array dtype, if they are different
-        if (output_index != ipp_src_dst_index)
-        {
-            status = image_ScaleC(ipp_src_dst_index, output_index, ipp_dst, pOutput, numChannels, img_width, img_height, preserve_range);
-            check_sts(status);
-        }
     }
 EXIT_FUNC
     if (ipp_src != pInput && ipp_src != NULL)
