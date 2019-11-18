@@ -24,6 +24,8 @@ def test_gaussian_output_is_none(image, input_dtype):
 
 # skipped: in progress
 # TODO
+# @pytest.mark.skip(reason="dev in progress")
+# TODO
 @pytest.mark.skip(reason="dev in progress")
 @pytest.mark.parametrize("input_dtype", [np.uint32, np.int32, np.uint64, np.int64, np.float64,
                                          np.double])
@@ -94,6 +96,8 @@ def test_gaussian_skimage_similarity_float32():
 
 # TODO
 # add np.float64 input image
+# TODO
+@pytest.mark.skip(reason="dev in progress")
 @pytest.mark.parametrize("input_dtype", [np.uint8, np.int8, np.uint16, np.int16, np.uint32, np.int32, np.float32])
 @pytest.mark.parametrize("output_dtype", [np.float32, np.float64])
 def test_gaussian_skimage_similarity_preserve_range_false(input_dtype, output_dtype):

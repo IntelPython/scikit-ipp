@@ -3,105 +3,6 @@
 #define EXIT_FUNC exitLine:                                  /* Label for Exit */
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine 
 
-
-static ippiFilterGaussianBorder_C1R
-ippiFilterGaussianBorder_C1R_arr[IPP_GAUSSIAN_SUPPORTED_TYPES_NUMBER] = {
-    ippiFilterGaussianBorder_8u_C1R,
-    ippiFilterGaussianBorder_16u_C1R,
-    ippiFilterGaussianBorder_16s_C1R,
-    ippiFilterGaussianBorder_32f_C1R
-};
-
-static ippiFilterGaussianBorder_C3R
-ippiFilterGaussianBorder_C3R_arr[IPP_GAUSSIAN_SUPPORTED_TYPES_NUMBER] = {
-    ippiFilterGaussianBorder_8u_C3R,
-    ippiFilterGaussianBorder_16u_C3R,
-    ippiFilterGaussianBorder_16s_C3R,
-    ippiFilterGaussianBorder_32f_C3R
-};
-
-func_jumpt_table_index 
-ippiFilterGaussianBorder_table_array[IPP_TYPES_NUMBER] = {
-    ippiFilterGaussianBorder_8u,
-    ippiFilterGaussianBorder_16u,
-    ippiFilterGaussianBorder_16s,
-    undef,
-    undef,
-    undef,
-    undef,
-    undef,
-    ippiFilterGaussianBorder_32f,
-    undef,
-};
-
-int
-dtype_index_for_ippiFilterGaussianBorder_table(func_jumpt_table_index * jumpt_table_index, IppDataTypeIndex type_index)
-{
-    IppStatus status = ippStsNoErr;
-
-    if (type_index > ipp64f_index || type_index < ipp8u_index)
-    {
-        jumpt_table_index = NULL;
-        status = ippStsErr;
-        check_sts(status);
-    }
-    *jumpt_table_index = ippiFilterGaussianBorder_table_array[type_index];
-    if (*jumpt_table_index == undef)
-    {
-        jumpt_table_index = NULL;
-        status = ippStsErr;
-        check_sts(status);
-    }
-
-EXIT_FUNC
-    return (int)status;
-}
-
-IppStatus
-get_borderValue_C3(
-    IppDataTypeIndex ipp_src_dst_index,
-    void * borderValue_C3,
-    float ippBorderValue)
-{
-    IppStatus status = ippStsNoErr;
-    // borderValue_C3 = NULL;
-    if (ipp_src_dst_index == ipp8u_index) {
-        Ipp8u * borderValue_C3_ipp8u = (Ipp8u*)borderValue_C3;
-        borderValue_C3_ipp8u[0] = (Ipp8u)(ippBorderValue);
-        borderValue_C3_ipp8u[1] = (Ipp8u)(ippBorderValue);
-        borderValue_C3_ipp8u[2] = (Ipp8u)(ippBorderValue);
-    }
-    else if (ipp_src_dst_index == ipp16u_index)
-    {
-        Ipp16u * borderValue_C3_ipp16u = (Ipp16u*)borderValue_C3;
-        borderValue_C3_ipp16u[0] = (Ipp16u)(ippBorderValue);
-        borderValue_C3_ipp16u[1] = (Ipp16u)(ippBorderValue);
-        borderValue_C3_ipp16u[2] = (Ipp16u)(ippBorderValue);
-    }
-    else if (ipp_src_dst_index == ipp16s_index)
-    {
-        Ipp16s * borderValue_C3_ipp16s = (Ipp16s*)borderValue_C3;
-        borderValue_C3_ipp16s[0] = (Ipp16s)(ippBorderValue);
-        borderValue_C3_ipp16s[1] = (Ipp16s)(ippBorderValue);
-        borderValue_C3_ipp16s[2] = (Ipp16s)(ippBorderValue);
-    }
-
-    else if (ipp_src_dst_index = ipp32f_index)
-    {
-        Ipp32f * borderValue_C3_ipp32f = (Ipp32f*)borderValue_C3;
-        borderValue_C3_ipp32f[0] = (Ipp32f)(ippBorderValue);
-        borderValue_C3_ipp32f[1] = (Ipp32f)(ippBorderValue);
-        borderValue_C3_ipp32f[2] = (Ipp32f)(ippBorderValue);
-    }
-    else
-    {
-        status = ippStsErr;
-    }
-    check_sts(status);
-EXIT_FUNC
-    return (int)status;
-}
-
 int
 ippiFilterGaussianBorder(
     IppDataTypeIndex ipp_src_dst_index,
@@ -117,7 +18,6 @@ ippiFilterGaussianBorder(
 {
 
     IppStatus status = ippStsNoErr;
-    void * borderValue_C3 = NULL;
     int sizeof_src;
     status = sizeof_ipp_dtype_by_index(&sizeof_src, ipp_src_dst_index);
 
@@ -156,29 +56,73 @@ ippiFilterGaussianBorder(
     
     check_sts(status);
 
-    func_jumpt_table_index ippiFilterGaussianBorder_table;
-
-    status = dtype_index_for_ippiFilterGaussianBorder_table(&ippiFilterGaussianBorder_table, ipp_src_dst_index);
-    check_sts(status);
-
     if (numChannels == 1)
     {
-        status = ippiFilterGaussianBorder_C1R_arr[ippiFilterGaussianBorder_table](pSrc, srcStep, pDst, dstStep,
-            roiSize, ippBorderValue, pSpec, pBuffer);
+        switch (ipp_src_dst_index)
+        {
+        case ipp8u_index:
+        {
+            Ipp8u ippbordervalue = (Ipp8u)ippBorderValue;
+            status = ippiFilterGaussianBorder_8u_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        case ipp16u_index:
+        {
+            Ipp16u ippbordervalue = (Ipp16u)ippBorderValue;
+            status = ippiFilterGaussianBorder_16u_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        case ipp16s_index:
+        {
+            Ipp16s ippbordervalue = (Ipp16s)ippBorderValue;
+            status = ippiFilterGaussianBorder_16s_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        case ipp32f_index:
+        {
+            Ipp32f ippbordervalue = (Ipp32f)ippBorderValue;
+            status = ippiFilterGaussianBorder_32f_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        default:
+        {
+            status = ippStsErr;
+        }
+        }
     }
     else if (numChannels == 3)
     {
-        borderValue_C3 = malloc_by_dtype_index(ipp_src_dst_index, numChannels, 1, 1);
-        if (borderValue_C3 == NULL)
+        switch (ipp_src_dst_index)
         {
-            status = ippStsMemAllocErr;
-            check_sts(status);
+        case ipp8u_index:
+        {
+            Ipp8u ippbordervalue[3] = { (Ipp8u)ippBorderValue, (Ipp8u)ippBorderValue , (Ipp8u)ippBorderValue };
+            status = ippiFilterGaussianBorder_8u_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippbordervalue, pSpec, pBuffer);
+            break;
         }
-        status = get_borderValue_C3(ipp_src_dst_index, borderValue_C3, ippBorderValue);
-        check_sts(status);
-
-        status = ippiFilterGaussianBorder_C3R_arr[ippiFilterGaussianBorder_table](pSrc, srcStep, pDst, dstStep,
-            roiSize, borderValue_C3, pSpec, pBuffer);
+        case ipp16u_index:
+        {
+            Ipp16u ippbordervalue[3] = { (Ipp16u)ippBorderValue, (Ipp16u)ippBorderValue , (Ipp16u)ippBorderValue };
+            status = ippiFilterGaussianBorder_16u_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        case ipp16s_index:
+        {
+            Ipp16s ippbordervalue[3] = { (Ipp16s)ippBorderValue, (Ipp16s)ippBorderValue , (Ipp16s)ippBorderValue };
+            status = ippiFilterGaussianBorder_16s_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        case ipp32f_index:
+        {
+            Ipp32f ippbordervalue[3] = { (Ipp32f)ippBorderValue, (Ipp32f)ippBorderValue , (Ipp32f)ippBorderValue };
+            status = ippiFilterGaussianBorder_32f_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        default:
+        {
+            status = ippStsErr;
+        }
+        }
     }
     else
     {
@@ -188,10 +132,6 @@ ippiFilterGaussianBorder(
 EXIT_FUNC
     ippsFree(pBuffer);
     ippsFree(pSpec);
-if(borderValue_C3 != NULL)
-{
-    ippsFree(borderValue_C3);
-}
 return (int)status;
 }
 

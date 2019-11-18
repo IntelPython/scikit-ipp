@@ -4,37 +4,6 @@
 #include "dtypes.h"
 
 #define IPP_GAUSSIAN_SUPPORTED_DTYPES  0x2C2    // 1011000010
-#define IPP_GAUSSIAN_SUPPORTED_TYPES_NUMBER 4   // 8u, 16u, 16s, 32f
-
-typedef enum {
-  ippiFilterGaussianBorder_8u = 0,
-  ippiFilterGaussianBorder_16u = 1,
-  ippiFilterGaussianBorder_16s = 2,
-  ippiFilterGaussianBorder_32f = 3,
-  undef = -1
-} ippiFilterGaussianBorder_jump_table_index;
-
-typedef
-IppStatus(*ippiFilterGaussianBorder_C1R)(
-  void * pSrc,
-  int srcStep,
-  void * pDst,
-  int dstStep,
-  IppiSize roiSize,
-  float borderValue,  // TODO: unsafe cast -> check
-  IppFilterGaussianSpec * pSpec,
-  Ipp8u * pBuffer);
-
-typedef
-IppStatus(*ippiFilterGaussianBorder_C3R)(
-  void * pSrc,
-  int srcStep,
-  void * pDst,
-  int dstStep,
-  IppiSize roiSize,
-  void * borderValue, // TODO: unsafe cast -> check
-  IppFilterGaussianSpec * pSpec,
-  Ipp8u * pBuffer);
 
 int
 ippiFilterGaussianBorder(
@@ -47,12 +16,6 @@ ippiFilterGaussianBorder(
   float sigma_,
   int kernelSize,
   IppiBorderType ippBorderType,
-  float ippBorderValue);
-
-IppStatus
-get_borderValue_C3(
-  IppDataTypeIndex ipp_src_dst_index,
-  void * borderValue_C3,
   float ippBorderValue);
 
 int

@@ -380,6 +380,8 @@ image_ScaleC(
     preserve_range_flag preserve_range)
 {
     IppStatus status = ippStsNoErr;
+    // if (src_index == dst_index)
+    //    goto exitLine;
 
     void * intermediateSrc = NULL;
     void * intermediateDst = NULL;

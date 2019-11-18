@@ -37,17 +37,6 @@ cdef extern from "src/gaussian.c":
                        preserve_range_flag preserve_range)
 
 
-cdef extern from "src/dtypes.c":
-    int image_ScaleC(IppDataTypeIndex src_index,
-                     IppDataTypeIndex dst_index,
-                     void * pSrc,
-                     void * pDst,
-                     int numChannels,
-                     int img_width,
-                     int img_height,
-                     preserve_range_flag preserve_range);
-
-
 cdef extern from "src/dtypes.h":
     ctypedef enum IppDataTypeIndex:
         ipp8u_index = 0
@@ -275,8 +264,6 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # get input require
     # TODO module with numpy.require to provid type that satisfies requirements.
 
-    # ~~~~
-    # cdef int numChannels = int(__get_numChannels(image))
     cdef int numChannels
     if(image.ndim == 2):
         numChannels = 1
@@ -290,7 +277,6 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     if sigma == 0.0:
         output[...] = image[...]
         return output
-
     cdef IppiBorderType ippBorderType = __get_IppBorderType(mode)
     if(ippBorderType == -1):
         raise ValueError("Boundary mode not supported")
