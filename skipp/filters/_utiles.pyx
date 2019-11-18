@@ -121,3 +121,63 @@ cpdef img_as_float(image):
     __img_as_float(image, output, numChannels, image_index, ipp64f_index)
 
     return output
+
+def _get_cy__image_ScaleC(image, output_dtype, preserve_range=0):
+
+    cdef int ippStatusIndex = 0   # OK
+
+    # cdef int __get_IppBorderType(str mode)
+    cdef int img_width
+    cdef int img_height
+    cdef int numChannels
+    cdef void * cysource
+    cdef void * cydestination
+
+    cdef preserve_range_flag preserveRange
+    if preserve_range == 0:
+        preserveRange = preserve_range_false
+    elif preserve_range == 1:
+        preserveRange = preserve_range_true
+    elif preserve_range == 2:
+        preserveRange = preserve_range_true_for_small_bitsize_src
+    else:
+        raise ValueError("Undefined preserve_range")
+
+
+    if(image.ndim == 2):
+        numChannels = 1
+    elif(image.ndim == 3) & (image.shape[-1] == 3):
+        numChannels = 3
+    else:
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+
+    cdef IppDataTypeIndex image_index = __ipp_equalent_number_for_numpy(image)
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    output = np.zeros_like(image, output_dtype)
+    cdef IppDataTypeIndex output_index = __ipp_equalent_number_for_numpy(output)
+    if(output_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    img_width = image.shape[1]
+    img_height = image.shape[0]
+
+    cysource = <void*> cnp.PyArray_DATA(image)
+    cydestination = <void*> cnp.PyArray_DATA(output)
+
+
+    # pass to IPP the source and destination arrays
+    ippStatusIndex = image_ScaleC(image_index,
+                                  output_index,
+                                  cysource,
+                                  cydestination,
+                                  numChannels,
+                                  img_width,
+                                  img_height,
+                                  preserveRange)
+
+    __get_ipp_error(ippStatusIndex)
+
+    return output
