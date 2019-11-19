@@ -1,33 +1,40 @@
 import pytest
 import numpy as np
-# from skipp.skipp.filters import (median, median_1)
+from numpy.testing import (assert_array_equal, assert_array_almost_equal,
+                           assert_array_less, assert_array_almost_equal_nulp,
+                           assert_equal, TestCase, assert_allclose,
+                           assert_almost_equal, assert_, assert_warns,
+                           assert_no_warnings)
+from skimage.filters import median as skimage_median
+from skipp.skipp.filters import median as skipp_median
+
+@pytest.fixture
+def image():
+    return np.array([[1, 2, 3, 2, 1],
+                     [1, 1, 2, 2, 3],
+                     [3, 2, 1, 2, 1],
+                     [3, 2, 1, 1, 1],
+                     [1, 2, 1, 2, 3]],
+                    dtype=np.uint8)
 
 # TODO
-@pytest.mark.skip(reason="in progress")
-def test_median_unsupported_behavior():
-    image = np.arange(5*5, dtype=np.uint8).reshape((5, 5))
-    with pytest.raises(ValueError):
-        filtered_img = median(image, behavior='ndimage')
-
-# TODO
-@pytest.mark.skip(reason="in progress")
-def test_median_1_unsupported_behavior():
-    image = np.arange(5*5, dtype=np.uint8).reshape((5, 5))
-    with pytest.raises(ValueError):
-        filtered_img = median_1(image, behavior='ndimage')
-
-# TODO
-@pytest.mark.skip(reason="in progress")
-@pytest.mark.parametrize("dtype", [np.uint8, np.uint16, np.float32, np.float64])
+# for all dtypes
+@pytest.mark.parametrize(
+    "dtype", [np.uint8, np.uint16, np.int16, np.float32]
+)
 def test_median_preserve_dtype(image, dtype):
-    mediani_mage = median(image.astype(dtype), behavior='ndimage')
-    assert median_image.dtype == dtype
+    skipp_median_image = skipp_median(image.astype(dtype), selem = np.ones((3,3), dtype=np.bool_), behavior='ipp')
+    assert skipp_median_image.dtype == dtype
 
 # TODO
-@pytest.mark.skip(reason="in progress")
-def test_median_error_ndim():
-    img = np.random.randint(0, 10, size=(5, 5, 5), dtype=np.uint8)
-    with pytest.raises(ValueError):
-        median(img, behavior='rank')
-# TODO
-# tests
+# for all dtypes
+@pytest.mark.parametrize(
+    "dtype", [np.uint8, np.uint16, np.int16, np.float32]
+)
+def test_median_skimage_similarity(image, dtype):
+    """
+    # Testing scikit-image's and scikit-ipp's median filtering results
+    """
+    skimage_median_result = skimage_median(image.astype(dtype), selem = np.ones((3,3), dtype=np.bool_), behavior='ndimage')
+    skipp_median_result = skipp_median(image.astype(dtype), selem = np.ones((3,3), dtype=np.bool_), behavior='ipp')
+    assert_array_almost_equal(skimage_median_result, skipp_median_result, decimal=3)

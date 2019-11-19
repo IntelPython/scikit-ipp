@@ -36,15 +36,29 @@ cdef extern from "src/gaussian.c":
                        float ippBorderValue,
                        preserve_range_flag preserve_range)
 
-cdef extern from "src/dtypes.c":    
-    int image_ScaleC(IppDataTypeIndex src_index,   
-                     IppDataTypeIndex dst_index,   
-                     void * pSrc,  
-                     void * pDst,  
-                     int numChannels,  
-                     int img_width,    
-                     int img_height,   
-                     preserve_range_flag preserve_range);
+
+cdef extern from "src/dtypes.c":
+    int image_ScaleC(IppDataTypeIndex src_index,
+                     IppDataTypeIndex dst_index,
+                     void * pSrc,
+                     void * pDst,
+                     int numChannels,
+                     int img_width,
+                     int img_height,
+                     preserve_range_flag preserve_range)
+
+
+cdef extern from "src/median.c":
+    int ippiFilterMedianBorder(IppDataTypeIndex ipp_src_dst_index,
+                               void * pSrc,
+                               void * pDst,
+                               int img_width,
+                               int img_height,
+                               int numChannels,
+                               int mask_width,
+                               int mask_height,
+                               IppiBorderType ippBorderType,
+                               float ippBorderValue)
 
 
 cdef extern from "src/dtypes.h":
@@ -165,6 +179,7 @@ def __get_IppBorderType(str mode):
         return -1
     return borderType
 
+
 def __get_numChannels(image):
     cdef int numChannels
     if(image.ndim == 2):
@@ -173,6 +188,7 @@ def __get_numChannels(image):
         numChannels = 3
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
 
 def __get_output(image, output):
     # TODO
@@ -194,6 +210,7 @@ def __get_output(image, output):
     else:
         raise ValueError("Incorrect output value")
     return output
+
 
 # needed more correct version (guest_spatial_dim skimage)
 cdef PyObject * __get_ipp_error(int ippStatusIndex) except *:
@@ -273,6 +290,8 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     # TODO
     # get input require
     # TODO module with numpy.require to provid type that satisfies requirements.
+    cdef IppDataTypeIndex image_index
+    cdef IppDataTypeIndex output_index
 
     cdef int numChannels
     if(image.ndim == 2):
@@ -300,7 +319,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     if preserve_range:
         preserve_Range = preserve_range_true
 
-    cdef IppDataTypeIndex image_index = __ipp_equalent_number_for_numpy(image)
+    image_index = __ipp_equalent_number_for_numpy(image)
     if(image_index == ippUndef_index):
         raise ValueError("Undefined ipp data type")
     elif(image_index == ipp64u_index or image_index == ipp64s_index):   # input image is np.uint64 or np.int64
@@ -308,8 +327,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
         image = image.astype(np.float32, order='C')
         image_index = ipp32f_index
 
-
-    cdef IppDataTypeIndex output_index = __ipp_equalent_number_for_numpy(output)
+    output_index = __ipp_equalent_number_for_numpy(output)
     if(output_index == ippUndef_index):
         raise ValueError("Undefined ipp data type")
     elif(output_index == ipp64u_index or output_index == ipp64s_index):  # output image is np.uint64 or np.int64
@@ -323,11 +341,76 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
 # <<< gaussian filter module
 
 # >>> median filter module
-def median(image, selem=None, out=None, mask=None, shift_x=False,
-           shift_y=False, mode='nearest', cval=0.0, behavior='ipp'):
-    pass
+cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
+             shift_y=False, mode='nearest', cval=0.0, behavior='ipp'):
+    """
+    # TODO
+    # add documentation
+    Note: scikit-image's median filter requiers the `image`, that must be a 2-dimensional array
+    scikit-ipp could processing also multichannel image
+    scikit-ipp uses only recantagle shape masks with ones
+    if mask size is egen ipp raises RuntimeError: ippStsMaskSizeErr: Invalid mask size
+    """
+    # TODO
+    # get input require
+    # TODO module with numpy.require to provid type that satisfies requirements.
 
+    # TODO
+    # add documentation
+    cdef int ippStatusIndex = 0  # OK
+
+    cdef void * cyimage
+    cdef void * cydestination
+    cdef IppiBorderType ippBorderType
+    cdef int selem_width
+    cdef int selem_height
+    cdef int img_width
+    cdef int img_height
+    cdef float ippBorderValue = float(cval)
+
+    # TODO
+    # add _get_output
+    out = np.empty_like(image, dtype=image.dtype, order='C')
+
+    cdef int numChannels
+    if(image.ndim == 2):
+        numChannels = 1
+    elif(image.ndim == 3) & (image.shape[-1] == 3):
+        numChannels = 3
+    else:
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+    ippBorderType = __get_IppBorderType(mode)
+    if(ippBorderType == -1):
+        raise ValueError("Boundary mode not supported")
+
+    # TODO
+    # case when selem is shape or None
+    selem_width = selem.shape[1]
+    selem_height = selem.shape[0]
+
+    img_width = image.shape[1]
+    img_height = image.shape[0]
+
+    cyimage = <void*> cnp.PyArray_DATA(image)
+    cydestination = <void*> cnp.PyArray_DATA(out)
+    # TODO
+    # add adapter for ippiFilterMedianBorder
+    cdef IppDataTypeIndex ipp_src_dst_index = __ipp_equalent_number_for_numpy(image)
+    ippStatusIndex = ippiFilterMedianBorder(ipp_src_dst_index,
+                                            cyimage,
+                                            cydestination,
+                                            img_width,
+                                            img_height,
+                                            numChannels,
+                                            selem_width,
+                                            selem_height,
+                                            ippBorderType,
+                                            ippBorderValue)
+    __get_ipp_error(ippStatusIndex)
+    return out
 # <<< median filter module
+
 
 # >>> for tests
 def _get_cy__ipp_equalent_number_for_numpy(image):
