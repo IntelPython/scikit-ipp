@@ -36,6 +36,16 @@ cdef extern from "src/gaussian.c":
                        float ippBorderValue,
                        preserve_range_flag preserve_range)
 
+cdef extern from "src/dtypes.c":    
+    int image_ScaleC(IppDataTypeIndex src_index,   
+                     IppDataTypeIndex dst_index,   
+                     void * pSrc,  
+                     void * pDst,  
+                     int numChannels,  
+                     int img_width,    
+                     int img_height,   
+                     preserve_range_flag preserve_range);
+
 
 cdef extern from "src/dtypes.h":
     ctypedef enum IppDataTypeIndex:
@@ -311,6 +321,13 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
                             tr, ippBorderType, ippBorderValue, preserve_Range)
     return output
 # <<< gaussian filter module
+
+# >>> median filter module
+def median(image, selem=None, out=None, mask=None, shift_x=False,
+           shift_y=False, mode='nearest', cval=0.0, behavior='ipp'):
+    pass
+
+# <<< median filter module
 
 # >>> for tests
 def _get_cy__ipp_equalent_number_for_numpy(image):

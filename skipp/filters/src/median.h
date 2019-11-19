@@ -23,4 +23,17 @@ MedianFilterFLOAT32(void * pSRC,
                     int mask_width,
                     int mask_height,
                     int borderType); // const float * pBorderValue) <-----~~
+
+int
+ippiFilterMedianBorder(
+    IppDataTypeIndex ipp_src_dst_index,
+    void * pSrc,
+    void * pDst,
+    int img_width,
+    int img_height,
+    int numChannels,
+    int mask_width,
+    int mask_height,
+    IppiBorderType ippBorderType,
+    float ippBorderValue);
 #endif

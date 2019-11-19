@@ -175,59 +175,125 @@ EXIT_LINE
 }
 
 int
-MedianFilterFLOAT32(void * pSRC,
-                    int stepSize,
-                    void * pDST,
-                    int img_width,
-                    int img_height,
-                    int mask_width,
-                    int mask_height,
-                    int borderType) // const float * pBorderValue) <-----~~
+ippiFilterMedianBorder(
+    IppDataTypeIndex ipp_src_dst_index,
+    void * pSrc,
+    void * pDst,
+    int img_width,
+    int img_height,
+    int numChannels,
+    int mask_width,
+    int mask_height,
+    IppiBorderType ippBorderType,
+    float ippBorderValue)
 {
     IppStatus status = ippStsNoErr;
-    Ipp32f* pSrc = NULL, *pDst = NULL;     // Pointers to source and 
-                                          // destination images
-    int srcStep = stepSize, dstStep = stepSize;    // Steps, in bytes, through
-                                          //  the source/destination images
+    Ipp8u *pBuffer = NULL;                            // Pointer to the work buffer
+    int sizeof_src;
+    status = sizeof_ipp_dtype_by_index(&sizeof_src, ipp_src_dst_index);
+    check_sts(status);
+
+
+    int srcStep = numChannels * img_width * sizeof_src;      // Steps, in bytes, through the
+    int dstStep = srcStep;                                   //source/destination images
+
+    IppDataType ippDataType;
+
     IppiSize dstRoiSize = { img_width, img_height };  // Size of source and
-                                                 // destination ROI in pixels
+                                                      // destination ROI in pixels
 
     IppiSize maskSize = { mask_width, mask_height };  // Size of source and
-                                                 // destination ROI in pixels
-    Ipp8u *pBuffer = NULL;                   // Pointer to the work buffer
+                                                      // destination ROI in pixels
+
     int bufferSize;
 
-    pSrc = (Ipp32f *)pSRC;
-    pDst = (Ipp32f *)pDST;
+    status = ipp_type_index_as_IppDataType(&ippDataType, ipp_src_dst_index);
+    check_sts(status);
 
-    // IppiBorderType borderType = ippBorderRepl;
-    Ipp32f borderValue = 0;
-
-    int numChannels = 1;
-
-    // get buffer size
     status = ippiFilterMedianBorderGetBufferSize(dstRoiSize,
-                                                 maskSize,
-                                                 ipp32f,
-                                                 numChannels,
-                                                 &bufferSize);
+        maskSize,
+        ippDataType,
+        numChannels,
+        &bufferSize);
+    check_sts(status);
+
     pBuffer = ippsMalloc_8u(bufferSize);
-    if(NULL == pBuffer)
+    if (pBuffer == NULL)
     {
-        check_sts( status = ippStsMemAllocErr);
-    };
+        status = ippStsMemAllocErr;
+        check_sts(status);
+    }
 
-    status =  ippiFilterMedianBorder_32f_C1R(pSrc, 
-                                             srcStep,
-                                             pDst,
-                                             dstStep,
-                                             dstRoiSize,
-                                             maskSize,
-                                             borderType,
-                                             borderValue,
-                                             pBuffer);
-
+    if (numChannels == 1) {
+        switch (ipp_src_dst_index)
+        {
+        case ipp8u_index:
+        {
+            Ipp8u ippbordervalue = (Ipp8u)ippBorderValue;
+            status = ippiFilterMedianBorder_8u_C1R(pSrc, srcStep, pDst, dstStep, dstRoiSize,
+                maskSize, ippBorderType, ippbordervalue, pBuffer);
+            break;
+        }
+        case ipp16u_index:
+        {
+            Ipp16u ippbordervalue = (Ipp16u)ippBorderValue;
+            status = ippiFilterMedianBorder_16u_C1R(pSrc, srcStep, pDst, dstStep, dstRoiSize,
+                maskSize, ippBorderType, ippbordervalue, pBuffer);
+            break;
+        }
+        case ipp16s_index:
+        {
+            Ipp16s ippbordervalue = (Ipp16s)ippBorderValue;
+            status = ippiFilterMedianBorder_16s_C1R(pSrc, srcStep, pDst, dstStep, dstRoiSize,
+                maskSize, ippBorderType, ippbordervalue, pBuffer);
+            break;
+        }
+        case ipp32f_index:
+        {
+            Ipp32f ippbordervalue = (Ipp32f)ippBorderValue;
+            status = ippiFilterMedianBorder_32f_C1R(pSrc, srcStep, pDst, dstStep, dstRoiSize,
+                                                    maskSize, ippBorderType, ippbordervalue, pBuffer);
+            break;
+        }
+        default:
+        {
+            status = ippStsErr;
+        }
+        }
+    }
+    else if (numChannels == 3)
+    {
+        switch (ipp_src_dst_index)
+        {
+        case ipp8u_index:
+        {
+            Ipp8u ippbordervalue[3] = { (Ipp8u)ippBorderValue, (Ipp8u)ippBorderValue , (Ipp8u)ippBorderValue };
+            status = ippiFilterMedianBorder_8u_C3R(pSrc, srcStep, pDst, dstStep, dstRoiSize,
+                                                    maskSize, ippBorderType, ippbordervalue, pBuffer);
+            break;
+        }
+        case ipp16u_index:
+        {
+            Ipp16u ippbordervalue[3] = { (Ipp16u)ippBorderValue, (Ipp16u)ippBorderValue , (Ipp16u)ippBorderValue };
+            status = ippiFilterMedianBorder_16u_C3R(pSrc, srcStep, pDst, dstStep, dstRoiSize,
+                                                    maskSize, ippBorderType, ippbordervalue, pBuffer);
+            break;
+        }
+        case ipp16s_index:
+        {
+            Ipp16s ippbordervalue[3] = { (Ipp16s)ippBorderValue, (Ipp16s)ippBorderValue , (Ipp16s)ippBorderValue };
+            status = ippiFilterMedianBorder_16s_C3R(pSrc, srcStep, pDst, dstStep, dstRoiSize,
+                                                    maskSize, ippBorderType, ippbordervalue, pBuffer);
+            break;
+        }
+        }
+    }
+    else
+    {
+        status = ippStsErr;
+    }
+    check_sts(status);
 EXIT_LINE
     ippsFree(pBuffer);
-    return (int)status;
+    return(int)status;
 }
