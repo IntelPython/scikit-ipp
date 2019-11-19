@@ -1,6 +1,7 @@
-#include "ipp.h"
 #ifndef MEDIAN_H
 #define MEDIAN_H
+#include "ipp.h"
+#include "dtypes.h"
 
 int
 MedianFilter_32f_C1_3D(
@@ -13,16 +14,6 @@ MedianFilter_32f_C1_3D(
     int mask_height,
     int mask_depth,
     int borderType);
-
-int
-MedianFilterFLOAT32(void * pSRC,
-                    int stepSize,
-                    void * pDST,
-                    int img_width,
-                    int img_height,
-                    int mask_width,
-                    int mask_height,
-                    int borderType); // const float * pBorderValue) <-----~~
 
 int
 ippiFilterMedianBorder(

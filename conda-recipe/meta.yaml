@@ -37,7 +37,8 @@ test:
     commands:
       - pytest -vv
     source_files:
-      - skipp/filters/tests/
+      - skipp/filters/tests/test_gaussian.py
+      - skipp/filters/tests/test_median.py
 
 about:
      license: BSD-3-Clause
