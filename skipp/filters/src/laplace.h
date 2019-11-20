@@ -3,6 +3,10 @@
 #include "ipp.h"
 #include "dtypes.h"
 
+//                           -1 -1 -1
+//          Laplace (3x3)    -1  8 -1
+//                           -1 -1 -1
+
 int
 ippiFilterLaplaceBorder(
     IppDataTypeIndex ipp_src_dst_index,
