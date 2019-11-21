@@ -39,6 +39,7 @@ test:
     source_files:
       - skipp/filters/tests/test_gaussian.py
       - skipp/filters/tests/test_median.py
+      - skipp/filters/tests/test_laplace.py
 
 about:
      license: BSD-3-Clause

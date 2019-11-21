@@ -85,6 +85,14 @@ cdef extern from "ipptypes.h":
     ctypedef int IppStatus
 
 cdef extern from "ipptypes.h":
+    ctypedef enum  IppRoundMode:
+        ippRndZero = 0
+        ippRndNear = 1
+        ippRndFinancial = 2 
+        ippRndHintAccurate = 0x10
+
+
+cdef extern from "ipptypes.h":
     ctypedef enum IppiBorderType:
         ippBorderRepl = 1
         ippBorderWrap = 2
@@ -93,6 +101,34 @@ cdef extern from "ipptypes.h":
         ippBorderDefault = 5
         ippBorderConst = 6
         ippBorderTransp = 7
+
+
+cdef extern from "src/borderfilter.c":
+    int ippiFilterBorder(IppDataTypeIndex ipp_src_dst_index,
+                         IppDataTypeIndex border_dtype_index,
+                         void * pSrc,
+                         void * pDst,
+                         void * pKernel,
+                         int img_width,
+                         int img_height,
+                         int kernel_width,
+                         int kernel_height,
+                         int numChannels,
+                         IppRoundMode roundMode,
+                         IppiBorderType ippBorderType,
+                         float ippBorderValue)
+
+
+cdef extern from "src/laplace.c":
+    int LaplaceFilter(IppDataTypeIndex input_index,
+                      IppDataTypeIndex output_index,
+                      void * pInput,
+                      void * pOutput,
+                      int img_width,
+                      int img_height,
+                      int numChannels,
+                      IppiBorderType ippBorderType,
+                      float ippBorderValue)
 
 
 cdef extern from "ippcore.h":
@@ -147,6 +183,23 @@ cdef IppDataTypeIndex __ipp_equalent_number_for_numpy(cnp.ndarray image):
     else:
         # ippUndef
         return ippUndef_index
+
+
+# ipp binary_erosion will be added for mask mode
+def _mask_filter_result(result, mask):
+    """Return result after masking.
+
+    Input masks are eroded so that mask areas in the original image don't
+    affect values in the result.
+    """
+    if mask is None:
+        result[0, :] = 0
+        result[-1, :] = 0
+        result[:, 0] = 0
+        result[:, -1] = 0
+        return result
+    else:
+        raise RuntimeError('mask mode not supported')
 
 
 def __get_IppBorderType(str mode):
@@ -410,6 +463,78 @@ cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
     __get_ipp_error(ippStatusIndex)
     return out
 # <<< median filter module
+
+# >>> laplace filter module
+
+cpdef laplace(image, ksize=3, mask=None):
+    """
+    # TODO
+    # add documentation
+    Notes
+    -----
+
+    """
+    # TODO
+    # investigate ksize
+
+    # TODO
+    # add _get_output
+    cdef int ippStatusIndex = 0  # OK
+
+    cdef void * cyimage
+    cdef void * cydestination
+    cdef IppDataTypeIndex image_index
+    cdef IppDataTypeIndex output_index
+    cdef int img_width
+    cdef int img_height
+    cdef IppiBorderType ippBorderType = ippBorderRepl
+    cdef float ippBorderValue = 0.0
+    cdef int numChannels
+    image_index = __ipp_equalent_number_for_numpy(image)
+
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    if(image.ndim == 2):
+        numChannels = 1
+    elif(image.ndim == 3) & (image.shape[-1] == 3):
+        numChannels = 3
+    else:
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+    if(image_index == ipp32f_index):
+        output = np.empty_like(image, dtype=image.dtype, order='C')
+    else:
+        # TODO
+        raise ValueError("currently not supported")
+        # output = np.empty_like(image, dtype=image.float64, order='C')
+    output_index = __ipp_equalent_number_for_numpy(output)
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+
+    cyimage = <void*> cnp.PyArray_DATA(image)
+    cydestination = <void*> cnp.PyArray_DATA(output)
+
+    img_width = image.shape[1]
+    img_height = image.shape[0]
+
+    ippStatusIndex = LaplaceFilter(image_index,
+                                   output_index,
+                                   cyimage,
+                                   cydestination,
+                                   img_width,
+                                   img_height,
+                                   numChannels,
+                                   ippBorderType,
+                                   ippBorderValue)
+
+    __get_ipp_error(ippStatusIndex)
+    # TODO
+    # implemented maskfilter IPP
+    return _mask_filter_result(output, mask)
+
+# <<< laplace filter module
 
 
 # >>> for tests

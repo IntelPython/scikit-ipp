@@ -130,3 +130,79 @@ EXIT_LINE
     ippsFree(pBuffer);
     return (int)status;
 }
+
+int
+LaplaceFilter(
+    IppDataTypeIndex input_index,
+    IppDataTypeIndex output_index,
+    void * pInput,
+    void * pOutput,
+    int img_width,
+    int img_height,
+    int numChannels,
+    IppiBorderType ippBorderType,
+    float ippBorderValue)
+{
+    // Kernel Values
+    //
+    //                                0 -1  0
+    //              Laplace (3x3)    -1  4 -1
+    //                                0 -1  0
+
+    IppStatus status = ippStsNoErr;
+    void * ipp_src = NULL;              // pointer to src array that is passes to ipp func
+    void * ipp_dst = NULL;              // pointers to dst array that is passes to ipp func
+    IppDataTypeIndex ipp_src_dst_index;
+    IppDataTypeIndex border_dtype_index;
+
+    preserve_range_flag preserve_range = preserve_range_false;
+
+    int kernel_width = 3;
+    int kernel_height = 3;
+    IppRoundMode roundMode = ippRndNear;
+
+    if (output_index = ipp32f_index)
+    {
+        ipp_src_dst_index = ipp32f_index;
+        border_dtype_index = ipp32f_index;
+        ipp_dst = pOutput;
+        if (input_index != ipp_src_dst_index)
+        {
+            ipp_src = malloc_by_dtype_index(ipp_src_dst_index, numChannels, img_width, img_height);
+            if (ipp_src == NULL) {
+                // specify corret error status
+                status = ippStsErr;
+                check_sts(status);
+            }
+            status = image_ScaleC(input_index, ipp_src_dst_index, pInput, ipp_src,
+                numChannels, img_width, img_height, preserve_range);
+            check_sts(status);
+        }
+        else
+        {
+            ipp_src = pInput;
+        }
+        Ipp32f ippbordervalue = (Ipp32f)ippBorderValue;
+    }
+    else if (output_index == ipp64f_index)
+    {
+        // TODO
+        // currently not supported
+        status = ippStsErr;
+    }
+    else
+    {
+        status = ippStsErr;
+    }
+    check_sts(status);
+    status = ippiFilterBorder(ipp_src_dst_index, border_dtype_index, ipp_src, ipp_dst, kernelLaplace, img_width, img_height, kernel_width, kernel_height,
+        numChannels, roundMode, ippBorderType, ippBorderValue);
+    check_sts(status);
+
+EXIT_LINE
+if (ipp_src != pInput && ipp_src != NULL)
+ippsFree(ipp_src);
+if (ipp_dst != pOutput && ipp_dst != NULL)
+ippsFree(ipp_dst);
+    return (int)status;
+}
