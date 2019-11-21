@@ -19,34 +19,6 @@ cdef extern from "ippbase.h":
 
 
 cdef extern from "src/edges.c":
-    int FilterBorderFLOAT32(void * pSRC,
-                            int srcStep,
-                            void * pDST,
-                            int dstStep,
-                            int img_width,
-                            int img_height,
-                            int borderType)
-
-    int LaplaceFilterFLOAT32(void * pSRC,
-                             int srcStep,
-                             void * pDST,
-                             int dstStep,
-                             int img_width,
-                             int img_height,
-                             int maskSize,
-                             int borderType,
-                             Ipp32f borderValue);
-
-    int LaplaceFilterFLOAT32RGB(void * pSRC,
-                                int srcStep,
-                                void * pDST,
-                                int dstStep,
-                                int img_width,
-                                int img_height,
-                                int maskSize,
-                                int borderType,
-                                Ipp32f borderValue)
-
     int PrewittFilterFLOAT32(void * pA_srcDst,
                              void * pB_srcDst,
                              int stepsize,

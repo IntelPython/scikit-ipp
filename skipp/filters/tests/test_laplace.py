@@ -43,3 +43,6 @@ def test_laplace_skimage_similarity(image):
     skimage_laplace_result = skimage_laplace(image)
     skipp_laplace_result = skipp_laplace(image)
     assert_array_almost_equal(skimage_laplace_result, skipp_laplace_result)
+
+# TODO
+# similarity test for 3 channel image and other dtypes
