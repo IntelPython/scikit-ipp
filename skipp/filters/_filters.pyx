@@ -131,6 +131,26 @@ cdef extern from "src/laplace.c":
                       float ippBorderValue)
 
 
+cdef extern from "src/prewitt.c":
+    int FilterPrewittHoriz(IppDataTypeIndex input_index,
+                           IppDataTypeIndex output_index,
+                           void * pInput,
+                           void * pOutput,
+                           int img_width,
+                           int img_height,
+                           int numChannels)
+
+
+cdef extern from "src/prewitt.c":
+    int FilterPrewittVert(IppDataTypeIndex input_index,
+                          IppDataTypeIndex output_index,
+                          void * pInput,
+                          void * pOutput,
+                          int img_width,
+                          int img_height,
+                          int numChannels)
+
+
 cdef extern from "ippcore.h":
     const char * ippGetStatusString(IppStatus stsCode)
 
@@ -532,8 +552,159 @@ cpdef laplace(image, ksize=3, mask=None):
     # TODO
     # implemented maskfilter IPP
     return _mask_filter_result(output, mask)
-
 # <<< laplace filter module
+
+
+# TODO
+# from skimage/_shared/utils.py
+def check_nD(array, ndim, arg_name='image'):
+    """
+    Verify an array meets the desired ndims and array isn't empty.
+    Parameters
+    ----------
+    array : array-like
+        Input array to be validated
+    ndim : int or iterable of ints
+        Allowable ndim or ndims for the array.
+    arg_name : str, optional
+        The name of the array in the original function.
+    """
+    array = np.asanyarray(array)
+    msg_incorrect_dim = "The parameter `%s` must be a %s-dimensional array"
+    msg_empty_array = "The parameter `%s` cannot be an empty array"
+    if isinstance(ndim, int):
+        ndim = [ndim]
+    if array.size == 0:
+        raise ValueError(msg_empty_array % (arg_name))
+    if array.ndim not in ndim:
+        raise ValueError(msg_incorrect_dim % (arg_name, '-or-'.join([str(n) for n in ndim])))
+
+
+# >>> prewitt filter module
+cpdef prewitt_h(image, mask=None):
+    """Find the horizontal edges of an image using the Prewitt transform.
+    # TODO
+    # add documentation
+    We use the following kernel::
+      1   1   1
+      0   0   0
+     -1  -1  -1
+    """
+    # TODO
+    # add _get_output
+    cdef int ippStatusIndex = 0  # OK
+
+    cdef void * cyimage
+    cdef void * cydestination
+    cdef IppDataTypeIndex image_index
+    cdef IppDataTypeIndex output_index
+    cdef int img_width
+    cdef int img_height
+    cdef int numChannels
+
+    check_nD(image, 2)
+    if(image.ndim == 2):
+        numChannels = 1
+    else:
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+    image_index = __ipp_equalent_number_for_numpy(image)
+
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    if(image_index == ipp32f_index):
+        output = np.empty_like(image, dtype=image.dtype, order='C')
+    else:
+        # TODO
+        raise ValueError("currently not supported")
+        # output = np.empty_like(image, dtype=image.float64, order='C')
+
+    output_index = __ipp_equalent_number_for_numpy(output)
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    cyimage = <void*> cnp.PyArray_DATA(image)
+    cydestination = <void*> cnp.PyArray_DATA(output)
+
+    img_width = image.shape[1]
+    img_height = image.shape[0]
+    # TODO
+    # in ipp wrapper
+    # image = img_as_float(image)
+    ippStatusIndex = FilterPrewittHoriz(image_index,
+                                        output_index,
+                                        cyimage,
+                                        cydestination,
+                                        img_width,
+                                        img_height,
+                                        numChannels)
+
+    return _mask_filter_result(output, mask)
+
+
+cpdef prewitt_v(image, mask=None):
+    """Find the vertical edges of an image using the Prewitt transform.
+    # TODO
+    # add documentation
+    -----
+    We use the following kernel::
+      1   0  -1
+      1   0  -1
+      1   0  -1
+    """
+    # TODO
+    # add _get_output
+    cdef int ippStatusIndex = 0  # OK
+
+    cdef void * cyimage
+    cdef void * cydestination
+    cdef IppDataTypeIndex image_index
+    cdef IppDataTypeIndex output_index
+    cdef int img_width
+    cdef int img_height
+    cdef int numChannels
+
+    check_nD(image, 2)
+    if(image.ndim == 2):
+        numChannels = 1
+    else:
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+    image_index = __ipp_equalent_number_for_numpy(image)
+
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    if(image_index == ipp32f_index):
+        output = np.empty_like(image, dtype=image.dtype, order='C')
+    else:
+        # TODO
+        raise ValueError("currently not supported")
+        # output = np.empty_like(image, dtype=image.float64, order='C')
+
+    output_index = __ipp_equalent_number_for_numpy(output)
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    cyimage = <void*> cnp.PyArray_DATA(image)
+    cydestination = <void*> cnp.PyArray_DATA(output)
+
+    img_width = image.shape[1]
+    img_height = image.shape[0]
+    # TODO
+    # in ipp wrapper
+    # image = img_as_float(image)
+    ippStatusIndex = FilterPrewittVert(image_index,
+                                       output_index,
+                                       cyimage,
+                                       cydestination,
+                                       img_width,
+                                       img_height,
+                                       numChannels)
+
+    return _mask_filter_result(output, mask)
+# <<< prewitt filter module
 
 
 # >>> for tests
