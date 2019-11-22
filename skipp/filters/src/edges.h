@@ -9,28 +9,6 @@ PrewittFilterFLOAT32(void * pA_srcDst,
                      int img_width,
                      int img_height);
 
-int
-PrewittFilterHorizonFLOAT32(void * pSRC,
-                            int srcStep,
-                            void * pDST,
-                            int dstStep,
-                            int img_width,
-                            int img_height,
-                            int maskSize,
-                            int borderType,
-                            Ipp32f borderValue);
-
-int
-PrewittFilterVertFLOAT32(void * pSRC,
-                         int srcStep,
-                         void * pDST,
-                         int dstStep,
-                         int img_width,
-                         int img_height,
-                         int maskSize,
-                         int borderType,
-                         Ipp32f borderValue);
-
 int 
 SobelFilterFLOAT32(void * pSRC,
                    int srcStep,
@@ -75,6 +53,4 @@ SobelFilterCrossFLOAT32(void * pSRC,
                         int maskSize,
                         int borderType,
                         Ipp32f borderValue);
-
-
 #endif

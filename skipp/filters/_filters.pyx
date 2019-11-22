@@ -512,7 +512,6 @@ cpdef laplace(image, ksize=3, mask=None):
     if(image_index == ippUndef_index):
         raise ValueError("Undefined ipp data type")
 
-
     cyimage = <void*> cnp.PyArray_DATA(image)
     cydestination = <void*> cnp.PyArray_DATA(output)
 
