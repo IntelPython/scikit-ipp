@@ -18,9 +18,11 @@ def test_prewitt_horizontal():
     assert (np.all(result[i == 0] == 1))
     assert_allclose(result[np.abs(i) > 1], 0, atol=1e-10)
 
-@pytest.mark.skip(reason="investigating")
+
 def test_prewitt_h_zeros():
     """Horizontal prewitt on an array of all zeros."""
-    result = skipp_prewitt_h(np.zeros((10, 10)),
-    	                     np.ones((10, 10), dtype=bool))
+    result = skipp_prewitt_h(np.zeros((10, 10), dtype=np.float32))
     assert_allclose(result, 0)
+
+# TODO
+# add tests

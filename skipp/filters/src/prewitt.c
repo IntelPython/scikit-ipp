@@ -168,40 +168,81 @@ EXIT_FUNC
 
 int
 FilterPrewittHoriz(
-	IppDataTypeIndex input_index,
-	IppDataTypeIndex output_index,
-	void * pInput,
-	void * pOutput,
-	int img_width,
-	int img_height,
-	int numChannels)
+    IppDataTypeIndex input_index,
+    IppDataTypeIndex output_index,
+    void * pInput,
+    void * pOutput,
+    int img_width,
+    int img_height,
+    int numChannels)
 {
-	IppStatus status = ippStsNoErr;
-	IppiMaskSize mask = ippMskSize3x3;
-	IppiBorderType ippBorderType = ippBorderRepl;
-	float ippBorderValue = 0.0;
+    IppStatus status = ippStsNoErr;
+    IppiMaskSize mask = ippMskSize3x3;
+    // TODO
+    // scikit-image's prewitt filter is a wrapper on scipy.ndimage's
+    // `convolve` func. `convolve` uses `reflect` border mode.
+    // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type  
+    // ippiFilterPrewittHorizBorder_<mode> doesn't supports this border type
+    IppiBorderType ippBorderType = ippBorderRepl;
+    float ippBorderValue = 0.0;
+    IppiSize roiSize = { img_width, img_height };  // Size of source and
+                                                   // destination ROI in pixels
 
-	status = ippiFilterPrewittHorizBorder(input_index, output_index, pInput, pOutput,
-		img_width, img_height, numChannels, mask, ippBorderType, ippBorderValue);
-	return (int)status;
+    status = ippiFilterPrewittHorizBorder(input_index, output_index, pInput, pOutput,
+        img_width, img_height, numChannels, mask, ippBorderType, ippBorderValue);
+    if (output_index == ipp32f_index)
+    {
+        Ipp32f value = (Ipp32f)3.0;
+        int srcStep = numChannels * img_width * sizeof(Ipp32f);
+        status = ippiDivC_32f_C1IR(value, pOutput, srcStep, roiSize);
+    }
+    else
+    {
+        status = ippStsErr;
+    }
+    check_sts(status);
+EXIT_FUNC
+    return (int)status;
 }
 
 int
 FilterPrewittVert(
-	IppDataTypeIndex input_index,
-	IppDataTypeIndex output_index,
-	void * pInput,
-	void * pOutput,
-	int img_width,
-	int img_height,
-	int numChannels)
+    IppDataTypeIndex input_index,
+    IppDataTypeIndex output_index,
+    void * pInput,
+    void * pOutput,
+    int img_width,
+    int img_height,
+    int numChannels)
 {
-	IppStatus status = ippStsNoErr;
-	IppiMaskSize mask = ippMskSize3x3;
-	IppiBorderType ippBorderType = ippBorderRepl;
-	float ippBorderValue = 0.0;
+    IppStatus status = ippStsNoErr;
+    IppiMaskSize mask = ippMskSize3x3;
 
-	status = ippiFilterPrewittVertBorder(input_index, output_index, pInput, pOutput,
-		img_width, img_height, numChannels, mask, ippBorderType, ippBorderValue);
-	return (int)status;
+    // TODO
+    // scikit-image's prewitt filter is a wrapper on scipy.ndimage's
+    // `convolve` func. `convolve` uses `reflect` border mode.
+    // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type  
+    // ippiFilterPrewittVertBorder_<mode> doesn't supports this border type
+    IppiBorderType ippBorderType = ippBorderRepl; 
+    float ippBorderValue = 0.0;
+
+    IppiSize roiSize = { img_width, img_height };  // Size of source and
+                                                   // destination ROI in pixels
+
+    status = ippiFilterPrewittVertBorder(input_index, output_index, pInput, pOutput,
+        img_width, img_height, numChannels, mask, ippBorderType, ippBorderValue);
+    if (output_index == ipp32f_index)
+    {
+        Ipp32f value = (Ipp32f)3.0;
+        int srcStep = numChannels * img_width * sizeof(Ipp32f);
+        status = ippiDivC_32f_C1IR(value, pOutput, srcStep, roiSize);
+    }
+    else
+    {
+        status = ippStsErr;
+    }
+    check_sts(status);
+EXIT_FUNC
+    return (int)status;
 }
+
