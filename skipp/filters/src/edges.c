@@ -36,55 +36,6 @@ EXIT_FUNC
     return (int)status; 
 };
 
-int 
-SobelFilterFLOAT32(void * pSRC,
-                   int srcStep,  
-                   void * pDST,
-                   int dstStep,
-                   int img_width,
-                   int img_height,
-                   int maskSize,    // IppiMaskSize
-                   int normType,    // IppNormType
-                   int borderType,  // IppiBorderType
-                   Ipp32f borderValue)
-{
-    IppStatus status = ippStsNoErr;
-    Ipp32f* pSrc1 = NULL, *pDst1 = NULL;     // Pointers to source and
-                                             // destination images
-    IppiSize roiSize = { img_width, img_height };  // Size of source and
-                                                   // destination ROI in pixels
-    pSrc1 = (Ipp32f *) pSRC;
-    pDst1 = (Ipp32f *) pDST;
-    int bufferSize;
-    Ipp8u *pBuffer = NULL;
-
-    check_sts( ippiFilterSobelGetBufferSize(roiSize,
-                                            maskSize,
-                                            normType,
-                                            ipp32f,
-                                            ipp32f,
-                                            1,        // number of channels
-                                            &bufferSize) );
-    pBuffer = ippsMalloc_8u(bufferSize);
-    if(NULL == pBuffer)
-    {
-        check_sts( status = ippStsMemAllocErr);
-    }
-    check_sts( ippiFilterSobel_32f_C1R(pSrc1,
-                                       srcStep,
-                                       pDst1,
-                                       dstStep,
-                                       roiSize,
-                                       maskSize,
-                                       normType,
-                                       borderType,
-                                       33,
-                                       pBuffer) );
-EXIT_FUNC
-    ippsFree(pBuffer);
-    return (int)status; 
-};
-
 int
 SobelFilterCrossFLOAT32(void * pSRC,
                         int srcStep,
