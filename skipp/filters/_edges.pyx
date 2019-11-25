@@ -25,25 +25,6 @@ cdef extern from "src/edges.c":
                              int img_width,
                              int img_height)
 
-    int PrewittFilterHorizonFLOAT32(void * pSRC,
-                                    int srcStep,
-                                    void * pDST,
-                                    int dstStep,
-                                    int img_width,
-                                    int img_height,
-                                    int maskSize,
-                                    int borderType,
-                                    Ipp32f borderValue)
-
-    int PrewittFilterVertFLOAT32(void * pSRC,
-                                 int srcStep,
-                                 void * pDST,
-                                 int dstStep,
-                                 int img_width,
-                                 int img_height,
-                                 int maskSize,
-                                 int borderType,
-                                 Ipp32f borderValue)
 
     int SobelFilterFLOAT32(void * pSRC,
                            int srcStep,
@@ -56,35 +37,6 @@ cdef extern from "src/edges.c":
                            int borderType,  # IppiBorderType
                            Ipp32f borderValue)
 
-    int SobelFilterHorizonFLOAT32(void * pSRC,
-                                  int srcStep,
-                                  void * pDST,
-                                  int dstStep,
-                                  int img_width,
-                                  int img_height,
-                                  int maskSize,
-                                  int borderType,
-                                  Ipp32f borderValue)
-
-    int SobelFilterVertFLOAT32(void * pSRC,
-                               int srcStep,
-                               void * pDST,
-                               int dstStep,
-                               int img_width,
-                               int img_height,
-                               int maskSize,
-                               int borderType,
-                               Ipp32f borderValue)
-
-    int SobelFilterCrossFLOAT32(void * pSRC,
-                                int srcStep,
-                                void * pDST,
-                                int dstStep,
-                                int img_width,
-                                int img_height,
-                                int maskSize,
-                                int borderType,
-                                Ipp32f borderValue)
 
 cdef int _getIPPNormType(normType):
     if normType == 'l1':
@@ -157,112 +109,6 @@ def sobel(cnp.ndarray image, mask=None, normType='l2'):
     return _mask_filter_result(destination, mask)
 
 
-
-def sobel_h(cnp.ndarray image, mask=None):
-    # currently doesnt use `mask`
-    # image = np.asarray(image, dtype=np.float32)
-
-    # curerntly uses skimage's utils.img_as_float
-    image = img_as_float32(image)
-
-    if not image.flags.c_contiguous:
-        image = np.ascontiguousarray(image)
-    if _get_number_of_channels(image) is not 1:
-        raise ValueError('invalid axis')
-
-    destination = np.zeros_like(image, dtype=np.float32, order='c')
-
-    cdef int img_width = int(image.shape[0])
-    cdef int img_height = int(image.shape[1])
-    cdef int stepsize = int(image.strides[0])
-
-    cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
-    cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
-
-    ippStatusIndex = SobelFilterHorizonFLOAT32(cyimage,
-                                               stepsize,
-                                               cydestination,
-                                               stepsize,
-                                               img_width,
-                                               img_height,
-                                               33, # mask size
-                                               1, # bordervalue reflect
-                                               0)
-    # ippStatusIndex: ipp error handler will be added
-    return _mask_filter_result(destination, mask)
-
-
-def sobel_v(cnp.ndarray image, mask=None):
-    # currently doesnt use `mask`
-    # image = np.asarray(image, dtype=np.float32)
-
-    # curerntly uses skimage's utils.img_as_float
-    image = img_as_float32(image)
-
-    if not image.flags.c_contiguous:
-        image = np.ascontiguousarray(image)
-    if _get_number_of_channels(image) is not 1:
-        raise ValueError('invalid axis')
-
-    destination = np.zeros_like(image, dtype=np.float32, order='c')
-
-    cdef int img_width = int(image.shape[0])
-    cdef int img_height = int(image.shape[1])
-    cdef int stepsize = int(image.strides[0])
-
-    cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
-    cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
-
-    ippStatusIndex = SobelFilterVertFLOAT32(cyimage,
-                                            stepsize,
-                                            cydestination,
-                                            stepsize,
-                                            img_width,
-                                            img_height,
-                                            33, # mask size
-                                            1, # bordervalue reflect
-                                            0)
-    # ippStatusIndex: ipp error handler will be added
-    return _mask_filter_result(destination, mask)
-
-
-def sobel_c(cnp.ndarray image, mask=None):
-    # currently doesnt use `mask`
-    # image = np.asarray(image, dtype=np.float32)
-
-    # curerntly uses skimage's utils.img_as_float
-    image = img_as_float32(image)
-
-    if not image.flags.c_contiguous:
-        image = np.ascontiguousarray(image)
-    if _get_number_of_channels(image) is not 1:
-        raise ValueError('invalid axis')
-
-    destination = np.zeros_like(image, dtype=np.float32, order='c')
-
-    cdef int img_width = int(image.shape[0])
-    cdef int img_height = int(image.shape[1])
-    cdef int stepsize = int(image.strides[0])
-
-    cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
-    cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
-
-    ippStatusIndex = SobelFilterCrossFLOAT32(cyimage,
-                                            stepsize,
-                                            cydestination,
-                                            stepsize,
-                                            img_width,
-                                            img_height,
-                                            33, # mask size
-                                            1, # bordervalue reflect
-                                            0)
-    # ippStatusIndex: ipp error handler will be added
-    return _mask_filter_result(destination, mask)
-
-
 def prewitt(image, mask=None):
     """
     currently like skimage implementation
@@ -308,70 +154,3 @@ def prewitt_proto(image, mask=None):
                                           img_height)
     # ippStatusIndex: ipp error handler will be added
     return B
-
-
-def prewitt_h(image, mask=None):
-    # currently doesnt use `mask`
-    # image = np.asarray(image, dtype=np.float32)
-
-    # curerntly uses skimage's utils.img_as_float
-    image = img_as_float32(image)
-
-    if not image.flags.c_contiguous:
-        image = np.ascontiguousarray(image)
-    if _get_number_of_channels(image) is not 1:
-        raise ValueError('invalid axis')
-
-    destination = np.zeros_like(image, dtype=np.float32, order='c')
-
-    cdef int img_width = int(image.shape[0])
-    cdef int img_height = int(image.shape[1])
-    cdef int stepsize = int(image.strides[0])
-
-    cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
-    cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
-    ippStatusIndex = PrewittFilterHorizonFLOAT32(cyimage,
-                                                 stepsize,
-                                                 cydestination,
-                                                 stepsize,
-                                                 img_width,
-                                                 img_height,
-                                                 33, # mask size
-                                                 1, # bordervalue reflect
-                                                 0)
-    # ippStatusIndex: ipp error handler will be added
-    return _mask_filter_result(destination, mask)
-
-def prewitt_v(image, mask=None):
-    # currently doesnt use `mask`
-    # image = np.asarray(image, dtype=np.float32)
-
-    # curerntly uses skimage's utils.img_as_float
-    image = img_as_float32(image)
-
-    if not image.flags.c_contiguous:
-        image = np.ascontiguousarray(image)
-    if _get_number_of_channels(image) is not 1:
-        raise ValueError('invalid axis')
-
-    destination = np.zeros_like(image, dtype=np.float32, order='c')
-
-    cdef int img_width = int(image.shape[0])
-    cdef int img_height = int(image.shape[1])
-    cdef int stepsize = int(image.strides[0])
-
-    cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
-    cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
-    ippStatusIndex = PrewittFilterVertFLOAT32(cyimage,
-                                             stepsize,
-                                             cydestination,
-                                             stepsize,
-                                             img_width,
-                                             img_height,
-                                             33, # mask size
-                                             1, # bordervalue reflect
-                                             0)
-    # ippStatusIndex: ipp error handler will be added
-    return _mask_filter_result(destination, mask)
