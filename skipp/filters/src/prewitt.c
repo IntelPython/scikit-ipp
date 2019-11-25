@@ -223,6 +223,10 @@ FilterPrewittVert(
     // `convolve` func. `convolve` uses `reflect` border mode.
     // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type  
     // ippiFilterPrewittVertBorder_<mode> doesn't supports this border type
+
+    // TODO
+    // scikit-images's Vert prewitt filter and IPP's prewitt filter
+    // differ in signs
     IppiBorderType ippBorderType = ippBorderRepl; 
     float ippBorderValue = 0.0;
 
