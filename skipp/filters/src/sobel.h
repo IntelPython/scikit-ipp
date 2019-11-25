@@ -44,6 +44,16 @@ ippiFilterSobelVertBorder(
     float ippBorderValue);
 
 int
+FilterSobel(
+    IppDataTypeIndex input_index,
+    IppDataTypeIndex output_index,
+    void * pInput,
+    void * pOutput,
+    int img_width,
+    int img_height,
+    int numChannels);
+
+int
 FilterSobelHoriz(
     IppDataTypeIndex input_index,
     IppDataTypeIndex output_index,

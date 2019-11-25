@@ -5,18 +5,6 @@ cimport cython
 
 cnp.import_array()
 
-cdef extern from "ippbase.h":
-    ctypedef unsigned char  Ipp8u
-    ctypedef unsigned short Ipp16u
-    ctypedef unsigned int   Ipp32u
-    ctypedef signed char    Ipp8s
-    ctypedef signed short   Ipp16s
-    ctypedef signed int     Ipp32s
-    ctypedef float          Ipp32f
-    # ctypedef IPP_INT64    Ipp64s
-    # ctypedef IPP_UINT64   Ipp64u
-    ctypedef double         pp64f
-
 
 cdef extern from "src/edges.c":
     int PrewittFilterFLOAT32(void * pA_srcDst,
@@ -24,27 +12,6 @@ cdef extern from "src/edges.c":
                              int stepsize,
                              int img_width,
                              int img_height)
-
-
-    int SobelFilterFLOAT32(void * pSRC,
-                           int srcStep,
-                           void * pDST,
-                           int dstStep,
-                           int img_width,
-                           int img_height,
-                           int maskSize,   # 33 or 55
-                           int normType,   # 2 or 4 in skimage supports l2 only
-                           int borderType,  # IppiBorderType
-                           Ipp32f borderValue)
-
-
-cdef int _getIPPNormType(normType):
-    if normType == 'l1':
-      return 2
-    elif normType == 'l2':
-      return 4
-    else:
-      raise RuntimeError('norm type not supported')
 
 
 cdef int _get_number_of_channels(image):
@@ -55,58 +22,6 @@ cdef int _get_number_of_channels(image):
     else:
         raise ValueError('invalid axis')
     return channels
-
-# ipp binary_erosion will be added for mask mode
-def _mask_filter_result(result, mask):
-    """Return result after masking.
-
-    Input masks are eroded so that mask areas in the original image don't
-    affect values in the result.
-    """
-    if mask is None:
-        result[0, :] = 0
-        result[-1, :] = 0
-        result[:, 0] = 0
-        result[:, -1] = 0
-        return result
-    else:
-        raise RuntimeError('mask mode not supported')
-
-
-def sobel(cnp.ndarray image, mask=None, normType='l2'):
-    # currently doesnt use `mask`
-    # image = np.asarray(image, dtype=np.float32)
-
-    # curerntly uses skimage's utils.img_as_float
-    image = img_as_float32(image)
-
-    if not image.flags.c_contiguous:
-        image = np.ascontiguousarray(image)
-    if _get_number_of_channels(image) is not 1:
-        raise ValueError('invalid axis')
-
-    destination = np.zeros_like(image, dtype=np.float32, order='c')
-
-    cdef int img_width = int(image.shape[0])
-    cdef int img_height = int(image.shape[1])
-    cdef int stepsize = int(image.strides[0])
-    cdef int normtype = _getIPPNormType(normType)
-
-    cdef void * cyimage = <void * > cnp.PyArray_DATA(image)
-    cdef void * cydestination = <void * > cnp.PyArray_DATA(destination)
-    cdef int ippStatusIndex = 0  # OK 
-    ippStatusIndex = SobelFilterFLOAT32(cyimage,
-                                        stepsize,
-                                        cydestination,
-                                        stepsize,
-                                        img_width,
-                                        img_height,
-                                        33, # mask size
-                                        normtype, # l2 norm default
-                                        1, # bordervalue reflect
-                                        0)
-    # ippStatusIndex: ipp error handler will be added
-    return _mask_filter_result(destination, mask)
 
 
 def prewitt(image, mask=None):
