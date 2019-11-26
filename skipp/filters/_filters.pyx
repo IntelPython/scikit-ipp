@@ -982,6 +982,7 @@ cpdef sobel_v(image, mask=None):
     return _mask_filter_result(output, mask)
 # <<< sobel filter module
 
+
 # >>> for tests
 def _get_cy__ipp_equalent_number_for_numpy(image):
     # cdef int __ipp_equalent_number_fornumpy(cnp.ndarray image):

@@ -355,10 +355,6 @@ FilterSobelVert(
     // `convolve` func. `convolve` uses `reflect` border mode.
     // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type  
     // ippiFilterSobelVertBorder_<mode> doesn't supports this border type
-
-    // TODO
-    // scikit-images's Vert Sobel filter and IPP's Sobel filter
-    // differ in signs
     IppiBorderType ippBorderType = ippBorderRepl;
     float ippBorderValue = 0.0;
 
@@ -370,7 +366,7 @@ FilterSobelVert(
     check_sts(status);
     if (output_index == ipp32f_index)
     {
-        Ipp32f value = (Ipp32f)4.0;
+        Ipp32f value = (Ipp32f)(-4.0);
         int srcStep = numChannels * img_width * sizeof(Ipp32f);
         status = ippiDivC_32f_C1IR(value, pOutput, srcStep, roiSize);
     }
