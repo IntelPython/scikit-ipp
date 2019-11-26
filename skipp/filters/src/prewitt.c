@@ -167,6 +167,82 @@ EXIT_FUNC
 }
 
 int
+FilterPrewitt(
+    IppDataTypeIndex input_index,
+    IppDataTypeIndex output_index,
+    void * pInput,
+    void * pOutput,
+    int img_width,
+    int img_height,
+    int numChannels)
+{
+    // computes the square root of the sum of squares of the horizontal
+    // and vertical Prewitt transforms.
+    // sqrt(A**2 + B**2)/sqrt(2) 
+    IppStatus status = ippStsNoErr;
+    Ipp32f * pAsrcDst = NULL;    // Pointer to sobel_h result
+    Ipp32f * pBsrcDst = NULL;    // Pointer to sobel_v result
+
+    IppiSize roiSize = { img_width, img_height };  // Size of source-destination
+                                                   // ROI in pixels
+
+    // currently supporeted only Ipp32f input/output
+    if (!(input_index == ipp32f_index &&
+          output_index == ipp32f_index &&
+          numChannels == 1))
+    {
+        status = ippStsErr;
+        check_sts(status);
+    }
+    int sizeofIppDataType = sizeof(Ipp32f);
+    pAsrcDst = (void *)ippsMalloc_8u((img_width * sizeofIppDataType * numChannels) * img_height);
+    if (pAsrcDst == NULL)
+    {
+        status = ippStsMemAllocErr;
+        check_sts(status);
+    };
+
+    status = FilterPrewittHoriz(input_index, output_index, pInput, pAsrcDst, img_width, img_height, numChannels);
+    check_sts(status);
+
+    pBsrcDst = (void *)ippsMalloc_8u((img_width * sizeofIppDataType * numChannels) * img_height);
+    if (pBsrcDst == NULL)
+    {
+        status = ippStsMemAllocErr;
+        check_sts(status);
+    };
+
+    status = FilterPrewittVert(input_index, output_index, pInput, pBsrcDst, img_width, img_height, numChannels);
+    check_sts(status);
+
+    int srcDstStep = sizeofIppDataType * img_width * numChannels;
+
+    status = ippiSqr_32f_C1IR(pAsrcDst, srcDstStep, roiSize);
+    check_sts(status);
+
+    status = ippiSqr_32f_C1IR(pBsrcDst, srcDstStep, roiSize);
+    check_sts(status);
+
+    status = ippiAdd_32f_C1R(pAsrcDst, srcDstStep, pBsrcDst, srcDstStep, pOutput, srcDstStep, roiSize);
+    check_sts(status);
+
+    status = ippiSqrt_32f_C1IR(pOutput, srcDstStep, roiSize);
+    check_sts(status);
+
+    Ipp32f sqrt2 = (Ipp32f)IPP_SQRT2;
+
+    status = ippiDivC_32f_C1IR(sqrt2, pOutput, srcDstStep, roiSize);
+    check_sts(status);
+
+EXIT_FUNC
+if (pAsrcDst !=  NULL)
+    ippsFree(pAsrcDst);
+if (pBsrcDst != NULL)
+    ippsFree(pBsrcDst);
+    return (int)status;
+}
+
+int
 FilterPrewittHoriz(
     IppDataTypeIndex input_index,
     IppDataTypeIndex output_index,
@@ -249,4 +325,3 @@ FilterPrewittVert(
 EXIT_FUNC
     return (int)status;
 }
-

@@ -132,6 +132,16 @@ cdef extern from "src/laplace.c":
 
 
 cdef extern from "src/prewitt.c":
+    int FilterPrewitt(IppDataTypeIndex input_index,
+                      IppDataTypeIndex output_index,
+                      void * pInput,
+                      void * pOutput,
+                      int img_width,
+                      int img_height,
+                      int numChannels)
+
+
+cdef extern from "src/prewitt.c":
     int FilterPrewittHoriz(IppDataTypeIndex input_index,
                            IppDataTypeIndex output_index,
                            void * pInput,
@@ -611,6 +621,63 @@ def check_nD(array, ndim, arg_name='image'):
 
 
 # >>> prewitt filter module
+cpdef prewitt(image, mask=None):
+    """Find the edge magnitude using the Prewitt transform.
+    # TODO
+    # add documentation
+    """
+    # TODO
+    # add _get_output
+    cdef int ippStatusIndex = 0  # OK
+
+    cdef void * cyimage
+    cdef void * cydestination
+    cdef IppDataTypeIndex image_index
+    cdef IppDataTypeIndex output_index
+    cdef int img_width
+    cdef int img_height
+    cdef int numChannels
+
+    check_nD(image, 2)
+    if(image.ndim == 2):
+        numChannels = 1
+    else:
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+    image_index = __ipp_equalent_number_for_numpy(image)
+
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    if(image_index == ipp32f_index):
+        output = np.empty_like(image, dtype=image.dtype, order='C')
+    else:
+        # TODO
+        raise ValueError("currently not supported")
+        # output = np.empty_like(image, dtype=image.float64, order='C')
+
+    output_index = __ipp_equalent_number_for_numpy(output)
+    if(image_index == ippUndef_index):
+        raise ValueError("Undefined ipp data type")
+
+    cyimage = <void*> cnp.PyArray_DATA(image)
+    cydestination = <void*> cnp.PyArray_DATA(output)
+
+    img_width = image.shape[1]
+    img_height = image.shape[0]
+    # TODO
+    # in ipp wrapper
+    # image = img_as_float(image)
+    ippStatusIndex = FilterPrewitt(image_index,
+                                   output_index,
+                                   cyimage,
+                                   cydestination,
+                                   img_width,
+                                   img_height,
+                                   numChannels)
+    return _mask_filter_result(output, mask)
+
+
 cpdef prewitt_h(image, mask=None):
     """Find the horizontal edges of an image using the Prewitt transform.
     # TODO

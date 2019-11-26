@@ -30,6 +30,16 @@ ippiFilterPrewittVertBorder(
 	float ippBorderValue);
 
 int
+FilterPrewitt(
+    IppDataTypeIndex input_index,
+    IppDataTypeIndex output_index,
+    void * pInput,
+    void * pOutput,
+    int img_width,
+    int img_height,
+    int numChannels);
+
+int
 FilterPrewittHoriz(
 	IppDataTypeIndex input_index,
 	IppDataTypeIndex output_index,
