@@ -283,7 +283,8 @@ FilterSobel(
     check_sts(status);
     if (output_index == ipp32f_index)
     {
-        Ipp32f value = (Ipp32f)4.0;
+        Ipp32f sqrt2 = (Ipp32f)IPP_SQRT2;
+        Ipp32f value = (Ipp32f)(4.0 * sqrt2);
         int srcStep = numChannels * img_width * sizeof(Ipp32f);
         status = ippiDivC_32f_C1IR(value, pOutput, srcStep, roiSize);
     }
