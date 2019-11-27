@@ -24,8 +24,7 @@ def test_prewitt_mask():
                              np.zeros((10, 10), dtype=bool))
     assert_allclose(np.abs(result), 0)
 
-# TODO
-@pytest.mark.skip(reason="investigating")
+
 def test_prewitt_horizontal():
     """Prewitt on an edge should be a horizontal line."""
     i, j = np.mgrid[-5:6, -5:6]
@@ -33,7 +32,7 @@ def test_prewitt_horizontal():
     result = skipp_prewitt(image) * np.sqrt(2)
     # Check if result match transform direction
     i[np.abs(j) == 5] = 10000
-    assert (np.all(result[i == 0] == 1))
+    assert_allclose(result[i == 0], 1)
     assert_allclose(result[np.abs(i) > 1], 0, atol=1e-10)
 
 

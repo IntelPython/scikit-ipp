@@ -36,14 +36,13 @@ def test_sobel_horizontal():
     assert (np.all(result[np.abs(i) > 1] == 0))
 
 
-@pytest.mark.skip(reason="deveoloping in progress")
 def test_sobel_vertical():
     """Sobel on a vertical edge should be a vertical line."""
     i, j = np.mgrid[-5:6, -5:6]
     image = (j >= 0).astype(np.float32)
     result = skipp_sobel(image) * np.sqrt(2)
     j[np.abs(i) == 5] = 10000
-    assert (np.all(result[j == 0] == 1))
+    assert_allclose(result[j == 0], 1)
     assert (np.all(result[np.abs(j) > 1] == 0))
 
 
