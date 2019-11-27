@@ -33,6 +33,17 @@ def test_laplace_zeros():
                              [0., 0., 0., 0., 0., 0., 0., 0., 0.]])
     assert_allclose(result, check_result)
 
+# TODO
+@pytest.mark.skip(reason="deveoloping _mask_filter_result in progress")
+def test_laplace_mask():
+    """Laplace on a masked array should be zero."""
+    # Create a synthetic 2D image
+    image = np.zeros((9, 9), dtype=np.float32)
+    image[3:-3, 3:-3] = 1
+    # Define the mask
+    result = skipp_laplace(image, ksize=3, mask=np.zeros((9, 9), dtype=bool))
+    assert (np.all(result == 0))
+
 
 def test_laplace_skimage_similarity(image):
     """
