@@ -1,118 +1,35 @@
-#include "ipp.h"
 #ifndef GAUSSIAN_H
 #define GAUSSIAN_H
+#include "ipp.h"
+#include "dtypes.h"
 
-int GaussianFilterUINT8(void * pSRC,
-                        void * pDST,
-                        int img_width,
-                        int img_height,
-                        int numChannels,
-                        float sigma_,
-                        int kernelSize,
-                        int stepSize,
-                        int ippBorderType,
-                        float ippBorderValue);
+#define IPP_GAUSSIAN_SUPPORTED_DTYPES  0x2C2    // 1011000010
 
-int GaussianFilterUINT8RGB(void * pSRC,
-                           void * pDST,
-                           int img_width,
-                           int img_height,
-                           int numChannels,
-                           float sigma_,
-                           int kernelSize,
-                           int stepSize,
-                           int ippBorderType,
-                           float ippBorderValue);
+int
+ippiFilterGaussianBorder(
+  IppDataTypeIndex ipp_src_dst_index,
+  void * pSrc,
+  void * pDst,
+  int img_width,
+  int img_height,
+  int numChannels,
+  float sigma_,
+  int kernelSize,
+  IppiBorderType ippBorderType,
+  float ippBorderValue);
 
-int GaussianFilterUINT16(void * pSRC,
-                         void * pDST,
-                         int img_width,
-                         int img_height,
-                         int numChannels,
-                         float sigma_,
-                         int kernelSize,
-                         int stepSize,
-                         int ippBorderType,
-                         float ippBorderValue);
-
-int GaussianFilterUINT16RGB(void * pSRC,
-                            void * pDST,
-                            int img_width,
-                            int img_height,
-                            int numChannels,
-                            float sigma_,
-                            int kernelSize,
-                            int stepSize,
-                            int ippBorderType,
-                            float ippBorderValue);
-
-int GaussianFilterINT16(void * pSRC,
-                        void * pDST,
-                        int img_width,
-                        int img_height,
-                        int numChannels,
-                        float sigma_,
-                        int kernelSize,
-                        int stepSize,
-                        int ippBorderType,
-                        float ippBorderValue);
-
-int GaussianFilterINT16RGB(void * pSRC,
-                           void * pDST,
-                           int img_width,
-                           int img_height,
-                           int numChannels,
-                           float sigma_,
-                           int kernelSize,
-                           int stepSize,
-                           int ippBorderType,
-                           float ippBorderValue);
-
-int GaussianFilterFLOAT32(void * pSRC,
-                          void * pDST,
-                          int img_width,
-                          int img_height,
-                          int numChannels,
-                          float sigma_,
-                          int kernelSize,
-                          int stepSize,
-                          int ippBorderType,
-                          float ippBorderValue);
-
-int GaussianFilterFLOAT32RGB(void * pSRC,
-                             void * pDST,
-                             int img_width,
-                             int img_height,
-                             int numChannels,
-                             float sigma_,
-                             int kernelSize,
-                             int stepSize,
-                             int ippBorderType,
-                             float ippBorderValue);
-
-typedef 
-int(*funcHandler)(void *pSRC,
-                  void * pDST, 
-                  int img_width, 
-                  int img_height,
-                  int numChannels, 
-                  float sigma_, 
-                  int kernelSize, 
-                  int stepSize, 
-                  int ippBorderType, 
-                  float ippBorderValue);
-
-
-int GaussianFilter(int index,
-                   void * pSRC,
-                   void * pDST,
-                   int img_width,
-                   int img_height,
-                   int numChannels,
-                   float sigma_,
-                   int kernelSize,
-                   int stepSize,
-                   int ippBorderType,
-                   float ippBorderValue);
-
+int
+GaussianFilter(
+  IppDataTypeIndex input_index,
+  IppDataTypeIndex output_index,
+  void * pInput,
+  void * pOutput,
+  int img_width,
+  int img_height,
+  int numChannels,
+  float sigma,
+  int kernelSize,
+  IppiBorderType ippBorderType,
+  float ippBorderValue,
+  preserve_range_flag preserve_range);
 #endif

@@ -24,11 +24,11 @@ def configuration(parent_package='', top_path=None):
 
     try:
         from Cython.Build import cythonize
-        sources = [join(filters_dir, '_gaussian.pyx')]
+        sources = [join(filters_dir, '_filters.pyx')]
         have_cython = True
     except ImportError as e:
         have_cython = False
-        sources = [join(filters_dir, '_gaussian.c')]
+        sources = [join(filters_dir, '_filters.c')]
         if not exists(sources[0]):
             raise ValueError(str(e) + '. ' +
                              'Cython is required to build the initial .c file.')

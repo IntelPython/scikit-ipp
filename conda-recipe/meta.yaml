@@ -26,14 +26,22 @@ requirements:
 
 test:
     requires:
+      - numpy
       - pytest
+      - pytest-benchmark
+      - scikit-image
+      - scipy
     imports:
       - skipp
       - skipp.skipp.filters
     commands:
-      - pytest -v
+      - pytest -vv
     source_files:
-      - skipp/filters/tests
+      - skipp/filters/tests/test_gaussian.py
+      - skipp/filters/tests/test_median.py
+      - skipp/filters/tests/test_laplace.py
+      - skipp/filters/tests/test_prewitt.py
+      - skipp/filters/tests/test_sobel.py
 
 about:
      license: BSD-3-Clause
