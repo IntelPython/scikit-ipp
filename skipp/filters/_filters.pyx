@@ -19,7 +19,7 @@ cdef extern from "ippbase.h":
     ctypedef float          Ipp32f
     # ctypedef IPP_INT64    Ipp64s
     # ctypedef IPP_UINT64   Ipp64u
-    ctypedef double         pp64f
+    ctypedef double         Ipp64f
 
 # gaussian
 cdef extern from "src/gaussian.c":
