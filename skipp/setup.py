@@ -22,23 +22,40 @@ def configuration(parent_package='', top_path=None):
     filters_dir = 'filters'
     filters_dir_w = join(filters_dir, 'src')
 
+    morphology_dir = 'morphology'
+    morphology_dir_w = join(morphology_dir, 'src')
+
     try:
         from Cython.Build import cythonize
-        sources = [join(filters_dir, '_filters.pyx')]
+        filters_sources = [join(filters_dir, '_filters.pyx')]
+        morphology_sources = [join(morphology_dir, '_morphology.pyx')]
+        sources = filters_sources + morphology_sources
         have_cython = True
     except ImportError as e:
         have_cython = False
-        sources = [join(filters_dir, '_filters.c')]
-        if not exists(sources[0]):
-            raise ValueError(str(e) + '. ' +
-                             'Cython is required to build the initial .c file.')
+        filters_sources = [join(filters_dir, '_filters.c')]
+        morphology_sources = [join(morphology_dir, '_morphology.c')]
+        sources = filters_sources + morphology_sources
+        for source in sources:
+            if not exists(source):
+                raise ValueError(str(e) + '. ' +
+                                 'Cython is required to build the initial .c file.')
 
     include_dirs = [get_numpy_include(), get_python_include()]
     include_dirs.extend(ipp_include_dir)
 
     config.add_extension(
         name='filters',
-        sources=sources,
+        sources=filters_sources,
+        language="c",
+        libraries=ipp_libraries,
+        include_dirs=include_dirs,
+        library_dirs=ipp_library_dirs
+    )
+
+    config.add_extension(
+        name='morphology',
+        sources=morphology_sources,
         language="c",
         libraries=ipp_libraries,
         include_dirs=include_dirs,
@@ -47,7 +64,8 @@ def configuration(parent_package='', top_path=None):
 
     if have_cython:
         config.ext_modules = cythonize(config.ext_modules,
-                                       include_path=[filters_dir, filters_dir_w])
+                                       include_path=[filters_dir, filters_dir_w,
+                                                     morphology_dir, morphology_dir_w])
 
     return config
 
