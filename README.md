@@ -21,4 +21,4 @@ This will build the conda package and tell you where to find it (```.../scikit-i
 conda install <path-to-conda-package-as-built-above>
 ```
 ## Examples
-Introductory examples for scikit-ipp [link](https://github.intel.com/SAT/scikit-ipp/blob/features/gaussian_filter/examples/scikit-ipp_examples.ipynb)
+Introductory examples for scikit-ipp [link](https://github.intel.com/SAT/scikit-ipp/blob/master/examples/scikit-ipp_examples.ipynb)
