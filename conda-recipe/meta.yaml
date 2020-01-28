@@ -34,7 +34,6 @@ test:
     imports:
       - skipp
       - skipp.skipp.filters
-      - skipp.skipp.morphology
     commands:
       - pytest -vv
     source_files:

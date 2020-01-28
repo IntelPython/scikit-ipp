@@ -1,6 +1,3 @@
-from __future__ import division, print_function, absolute_import
-import io
-import re
 import os
 
 from os.path import join, split, dirname, abspath
@@ -19,23 +16,35 @@ def configuration(parent_package='', top_path=None):
     ipp_library_dirs = [join(ipp_root, 'lib')]
     ipp_libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
 
-    filters_dir = 'filters'
-    filters_dir_w = join(filters_dir, 'src')
+    extension_names = []
+    extension_sources = {}
+    extension_includes = {}
+    include_path = []
 
-    morphology_dir = 'morphology'
-    morphology_dir_w = join(morphology_dir, 'src')
+    extension_names.append('filters')
+    # extension_names.append('morphology')
+    # extension_names.append('transform')
 
+    for extension_name in extension_names:
+        extension_dir = extension_name
+        extension_src_dir = join(extension_dir, 'src')
+        extension_includes[extension_name] = [extension_dir, extension_src_dir]
+        include_path.extend(extension_includes[extension_name])
     try:
         from Cython.Build import cythonize
-        filters_sources = [join(filters_dir, '_filters.pyx')]
-        morphology_sources = [join(morphology_dir, '_morphology.pyx')]
-        sources = filters_sources + morphology_sources
+        for extension_name in extension_names:
+            extension_source = join(extension_includes[extension_name][0],
+                                    f'_{extension_name}.pyx')
+            extension_sources[extension_name] = [extension_source]
         have_cython = True
     except ImportError as e:
         have_cython = False
-        filters_sources = [join(filters_dir, '_filters.c')]
-        morphology_sources = [join(morphology_dir, '_morphology.c')]
-        sources = filters_sources + morphology_sources
+        sources = []
+        for extension_name in extension_names:
+            extension_source = join(extension_includes[extension_name][0],
+                                    f'_{extension_name}.c')
+            sources.append(extension_source)
+            extension_sources[extension_name] = [extension_source]
         for source in sources:
             if not exists(source):
                 raise ValueError(str(e) + '. ' +
@@ -44,29 +53,17 @@ def configuration(parent_package='', top_path=None):
     include_dirs = [get_numpy_include(), get_python_include()]
     include_dirs.extend(ipp_include_dir)
 
-    config.add_extension(
-        name='filters',
-        sources=filters_sources,
-        language="c",
-        libraries=ipp_libraries,
-        include_dirs=include_dirs,
-        library_dirs=ipp_library_dirs
-    )
-
-    config.add_extension(
-        name='morphology',
-        sources=morphology_sources,
-        language="c",
-        libraries=ipp_libraries,
-        include_dirs=include_dirs,
-        library_dirs=ipp_library_dirs
-    )
-
+    for extension_name in extension_names:
+        config.add_extension(
+            name=extension_name,
+            sources=extension_sources[extension_name],
+            language="c",
+            libraries=ipp_libraries,
+            include_dirs=include_dirs,
+            library_dirs=ipp_library_dirs)
     if have_cython:
         config.ext_modules = cythonize(config.ext_modules,
-                                       include_path=[filters_dir, filters_dir_w,
-                                                     morphology_dir, morphology_dir_w])
-
+                                       include_path=include_path)
     return config
 
 
