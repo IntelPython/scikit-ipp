@@ -1,5 +1,6 @@
 #ifndef BORDERFILTER_H
 #define BORDERFILTER_H
+#include <stddef.h>
 #include "ipp.h"
 #include "dtypes.h"
 

@@ -22,7 +22,7 @@ cdef extern from "ippbase.h":
     ctypedef double         Ipp64f
 
 # gaussian
-cdef extern from "src/gaussian.c":
+cdef extern from "gaussian.h":
     int GaussianFilter(IppDataTypeIndex input_index,
                        IppDataTypeIndex output_index,
                        void * pInput,
@@ -37,7 +37,7 @@ cdef extern from "src/gaussian.c":
                        preserve_range_flag preserve_range)
 
 
-cdef extern from "src/dtypes.c":
+cdef extern from "dtypes.h":
     int image_ScaleC(IppDataTypeIndex src_index,
                      IppDataTypeIndex dst_index,
                      void * pSrc,
@@ -48,7 +48,7 @@ cdef extern from "src/dtypes.c":
                      preserve_range_flag preserve_range)
 
 
-cdef extern from "src/median.c":
+cdef extern from "median.h":
     int ippiFilterMedianBorder(IppDataTypeIndex ipp_src_dst_index,
                                void * pSrc,
                                void * pDst,
@@ -61,7 +61,7 @@ cdef extern from "src/median.c":
                                float ippBorderValue)
 
 
-cdef extern from "src/dtypes.h":
+cdef extern from "dtypes.h":
     ctypedef enum IppDataTypeIndex:
         ipp8u_index = 0
         ipp8s_index = 1
@@ -103,7 +103,7 @@ cdef extern from "ipptypes.h":
         ippBorderTransp = 7
 
 
-cdef extern from "src/borderfilter.c":
+cdef extern from "borderfilter.h":
     int ippiFilterBorder(IppDataTypeIndex ipp_src_dst_index,
                          IppDataTypeIndex border_dtype_index,
                          void * pSrc,
@@ -119,7 +119,7 @@ cdef extern from "src/borderfilter.c":
                          float ippBorderValue)
 
 
-cdef extern from "src/laplace.c":
+cdef extern from "laplace.h":
     int LaplaceFilter(IppDataTypeIndex input_index,
                       IppDataTypeIndex output_index,
                       void * pInput,
@@ -131,7 +131,7 @@ cdef extern from "src/laplace.c":
                       float ippBorderValue)
 
 
-cdef extern from "src/prewitt.c":
+cdef extern from "prewitt.h":
     int FilterPrewitt(IppDataTypeIndex input_index,
                       IppDataTypeIndex output_index,
                       void * pInput,
@@ -141,7 +141,7 @@ cdef extern from "src/prewitt.c":
                       int numChannels)
 
 
-cdef extern from "src/prewitt.c":
+cdef extern from "prewitt.h":
     int FilterPrewittHoriz(IppDataTypeIndex input_index,
                            IppDataTypeIndex output_index,
                            void * pInput,
@@ -151,7 +151,7 @@ cdef extern from "src/prewitt.c":
                            int numChannels)
 
 
-cdef extern from "src/prewitt.c":
+cdef extern from "prewitt.h":
     int FilterPrewittVert(IppDataTypeIndex input_index,
                           IppDataTypeIndex output_index,
                           void * pInput,
@@ -161,7 +161,7 @@ cdef extern from "src/prewitt.c":
                           int numChannels)
 
 
-cdef extern from "src/sobel.c":
+cdef extern from "sobel.h":
     int FilterSobelHoriz(IppDataTypeIndex input_index,
                          IppDataTypeIndex output_index,
                          void * pInput,
@@ -171,7 +171,7 @@ cdef extern from "src/sobel.c":
                          int numChannels)
 
 
-cdef extern from "src/sobel.c":
+cdef extern from "sobel.h":
     int FilterSobelVert(IppDataTypeIndex input_index,
                         IppDataTypeIndex output_index,
                         void * pInput,
@@ -181,7 +181,7 @@ cdef extern from "src/sobel.c":
                         int numChannels)
 
 
-cdef extern from "src/sobel.c":
+cdef extern from "sobel.h":
     int FilterSobel(IppDataTypeIndex input_index,
                     IppDataTypeIndex output_index,
                     void * pInput,

@@ -1,5 +1,6 @@
 #ifndef LAPLACE_H
 #define LAPLACE_H
+#include <stddef.h>
 #include "ipp.h"
 #include "dtypes.h"
 #include "borderfilter.h"

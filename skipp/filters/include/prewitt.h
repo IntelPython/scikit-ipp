@@ -1,5 +1,6 @@
 #ifndef PREWITT_H
 #define PREWITT_H
+#include <stddef.h>
 #include "ipp.h"
 #include "dtypes.h"
 

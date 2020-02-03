@@ -1,5 +1,6 @@
 #ifndef GAUSSIAN_H
 #define GAUSSIAN_H
+#include <stddef.h>
 #include "ipp.h"
 #include "dtypes.h"
 

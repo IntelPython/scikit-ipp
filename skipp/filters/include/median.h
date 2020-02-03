@@ -1,5 +1,6 @@
 #ifndef MEDIAN_H
 #define MEDIAN_H
+#include <stddef.h>
 #include "ipp.h"
 #include "dtypes.h"
 
