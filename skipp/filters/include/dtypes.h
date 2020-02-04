@@ -2,6 +2,7 @@
 // #include "ippcore_tl.h"
 #ifndef DTYPES_H
 #define DTYPES_H
+#include <stddef.h>
 
 #define MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE 0x2AAAAAAA
 

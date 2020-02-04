@@ -1,5 +1,6 @@
 #ifndef SOBEL_H
 #define SOBEL_H
+#include <stddef.h>
 #include "ipp.h"
 #include "dtypes.h"
 
