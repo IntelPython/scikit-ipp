@@ -35,11 +35,13 @@ test:
       - skipp
       - skipp.skipp.filters
       - skipp.skipp.morphology
+      - skipp.skipp.transform
     commands:
       - pytest -vv
     source_files:
       - skipp/filters/tests/
       - skipp/morphology/tests/
+      - skipp/transform/tests/
 
 about:
      license: BSD-3-Clause

@@ -52,7 +52,7 @@ def configuration(parent_package='', top_path=None):
 
     extension_names.append('filters')
     extension_names.append('morphology')
-    # extension_names.append('transform')
+    extension_names.append('transform')
     extension_sources, extension_includes = _get_sources_and_includes(extension_names +
                                                                       _ipp_utils_dir)
     try:
