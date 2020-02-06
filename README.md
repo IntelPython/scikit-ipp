@@ -1,14 +1,20 @@
 # Scikit-IPP (skipp)
 __scikit-ipp__ is optimization of open-source image processing library [scikit-image](https://scikit-image.org/) by using Intel® Integrated Performance Primitives (Intel® IPP) library.
 
-* Filters:
+### Modules:
+* __Filters:__
   + Gaussian
   + Sobel (sobel, sobel_h, sobel_v, sobel_c)
   + Prewitt (prewitt, prewitt_h, prewitt_v)
   + Laplace
   + Median
+* __Morpholgy:__
+  + Erosion
+  + Dilation
+* __Transform:__
+  + Rotate
 
-### Building scikit-ipp
+### Building `scikit-ipp`
 ````
 cd <checkout-dir>
 conda build -c intel conda-recipe
