@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 include "../_ipp_utils/_ippi.pxd"
 
-cdef extern from "transform.h":
+cdef extern from "warp.h":
     IppStatus ippi_Warp(IppDataType ippDataType,
                         void * pSrc,
                         void * pDst,
