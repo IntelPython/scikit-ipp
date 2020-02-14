@@ -1,3 +1,4 @@
+/* -*- c -*- */
 #include "morphology.h"
 
 #define EXIT_FUNC exitLine:             /* Label for Exit */
@@ -13,35 +14,22 @@ ippiMorphologyBorderGetSize(
     int * pBufferSize)
 {
     IppStatus status = ippStsNoErr;
+
+
     if (numChannels == 1)
     {
         switch (datatype)
         {
-        case ipp1u:
+        /**begin repeat
+         *
+         * #ipp_type = 1u, 8u, 16u, 16s, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            status = ippiMorphologyBorderGetSize_1u_C1R(roiSize, maskSize, pSpecSize, pBufferSize);
+            status = ippiMorphologyBorderGetSize_@ipp_type@_C1R(roiSize, maskSize, pSpecSize, pBufferSize);
             break;
         }
-        case ipp8u:
-        {
-            status = ippiMorphologyBorderGetSize_8u_C1R(roiSize, maskSize, pSpecSize, pBufferSize);
-            break;
-        }
-        case ipp16u:
-        {
-            status = ippiMorphologyBorderGetSize_16u_C1R(roiSize, maskSize, pSpecSize, pBufferSize);
-            break;
-        }
-        case ipp16s:
-        {
-            status = ippiMorphologyBorderGetSize_16s_C1R(roiSize, maskSize, pSpecSize, pBufferSize);
-            break;
-        }
-        case ipp32f:
-        {
-            status = ippiMorphologyBorderGetSize_32f_C1R(roiSize, maskSize, pSpecSize, pBufferSize);
-            break;
-        }
+        /**end repeat**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -52,17 +40,16 @@ ippiMorphologyBorderGetSize(
     {
         switch (datatype)
         {
-
-        case ipp8u:
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            status = ippiMorphologyBorderGetSize_8u_C3R(roiSize, maskSize, pSpecSize, pBufferSize);
+            status = ippiMorphologyBorderGetSize_@ipp_type@_C3R(roiSize, maskSize, pSpecSize, pBufferSize);
             break;
         }
-        case ipp32f:
-        {
-            status = ippiMorphologyBorderGetSize_32f_C3R(roiSize, maskSize, pSpecSize, pBufferSize);
-            break;
-        }
+        /**end repeat**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -73,17 +60,16 @@ ippiMorphologyBorderGetSize(
     {
         switch (datatype)
         {
-
-        case ipp8u:
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            status = ippiMorphologyBorderGetSize_8u_C4R(roiSize, maskSize, pSpecSize, pBufferSize);
+            status = ippiMorphologyBorderGetSize_@ipp_type@_C4R(roiSize, maskSize, pSpecSize, pBufferSize);
             break;
         }
-        case ipp32f:
-        {
-            status = ippiMorphologyBorderGetSize_32f_C4R(roiSize, maskSize, pSpecSize, pBufferSize);
-            break;
-        }
+        /**end repeat**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -116,31 +102,16 @@ ippiMorphologyBorderInit(
     {
         switch (datatype)
         {
-        case ipp1u:
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 16u, 16s, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            status = ippiMorphologyBorderInit_1u_C1R(roiSize, pMask, maskSize, pSpec, pBuffer);
+            status = ippiMorphologyBorderInit_@ipp_type@_C1R(roiSize, pMask, maskSize, pSpec, pBuffer);
             break;
         }
-        case ipp8u:
-        {
-            status = ippiMorphologyBorderInit_8u_C1R(roiSize, pMask, maskSize, pSpec, pBuffer);
-            break;
-        }
-        case ipp16u:
-        {
-            status = ippiMorphologyBorderInit_16u_C1R(roiSize, pMask, maskSize, pSpec, pBuffer);
-            break;
-        }
-        case ipp16s:
-        {
-            status = ippiMorphologyBorderInit_16s_C1R(roiSize, pMask, maskSize, pSpec, pBuffer);
-            break;
-        }
-        case ipp32f:
-        {
-            status = ippiMorphologyBorderInit_32f_C1R(roiSize, pMask, maskSize, pSpec, pBuffer);
-            break;
-        }
+        /**end repeat**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -151,17 +122,16 @@ ippiMorphologyBorderInit(
     {
         switch (datatype)
         {
-
-        case ipp8u:
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            status = ippiMorphologyBorderInit_8u_C3R(roiSize, pMask, maskSize, pSpec, pBuffer);
+            status = ippiMorphologyBorderInit_@ipp_type@_C3R(roiSize, pMask, maskSize, pSpec, pBuffer);
             break;
         }
-        case ipp32f:
-        {
-            status = ippiMorphologyBorderInit_32f_C3R(roiSize, pMask, maskSize, pSpec, pBuffer);
-            break;
-        }
+        /**end repeat**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -172,17 +142,16 @@ ippiMorphologyBorderInit(
     {
         switch (datatype)
         {
-
-        case ipp8u:
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            status = ippiMorphologyBorderInit_8u_C4R(roiSize, pMask, maskSize, pSpec, pBuffer);
+            status = ippiMorphologyBorderInit_@ipp_type@_C4R(roiSize, pMask, maskSize, pSpec, pBuffer);
             break;
         }
-        case ipp32f:
-        {
-            status = ippiMorphologyBorderInit_32f_C4R(roiSize, pMask, maskSize, pSpec, pBuffer);
-            break;
-        }
+        /**end repeat**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -198,9 +167,12 @@ ippiMorphologyBorderInit(
         return status;
 }
 
-
+/**begin repeat
+ *
+ * #ippi_morphology_func = Erode, Dilate#
+ */
 IppStatus
-ippiErodeBorder(
+ippi@ippi_morphology_func@Border(
     IppDataType datatype,
     int numChannels,
     void * pSrc,
@@ -220,41 +192,18 @@ ippiErodeBorder(
     {
         switch (datatype)
         {
-        case ipp1u:
+        /**begin repeat1
+         *
+         * #ipp_type = 8u, 16u, 16s, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            //status = ippiErodeBorder_1u_C1R(pSrc, srcStep, pDst, dstStep, roiSize, borderType,
-            //  borderValue, pSpec, pBuffer);
-            status = ippStsErr;
-            break;
-        }
-        case ipp8u:
-        {
-            Ipp8u ippbordervalue = (Ipp8u)ippBorderValue;
-            status = ippiErodeBorder_8u_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
+            Ipp@ipp_type@ ippbordervalue = (Ipp@ipp_type@)ippBorderValue;
+            status = ippi@ippi_morphology_func@Border_@ipp_type@_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
                 ippbordervalue, pSpec, pBuffer);
             break;
         }
-        case ipp16u:
-        {
-            Ipp16u ippbordervalue = (Ipp16u)ippBorderValue;
-            status = ippiErodeBorder_16u_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        case ipp16s:
-        {
-            Ipp16s ippbordervalue = (Ipp16s)ippBorderValue;
-            status = ippiErodeBorder_16s_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        case ipp32f:
-        {
-            Ipp32f ippbordervalue = (Ipp32f)ippBorderValue;
-            status = ippiErodeBorder_32f_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
+        /**end repeat1**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -265,20 +214,20 @@ ippiErodeBorder(
     {
         switch (datatype)
         {
-        case ipp8u:
+        /**begin repeat1
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            Ipp8u ippbordervalue[3] = { (Ipp8u)ippBorderValue, (Ipp8u)ippBorderValue , (Ipp8u)ippBorderValue };
-            status = ippiErodeBorder_8u_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
+            Ipp@ipp_type@ ippbordervalue[3] = { (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue };
+            status = ippi@ippi_morphology_func@Border_@ipp_type@_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
                 ippbordervalue, pSpec, pBuffer);
             break;
         }
-        case ipp32f:
-        {
-            Ipp32f ippbordervalue[3] = { (Ipp32f)ippBorderValue, (Ipp32f)ippBorderValue , (Ipp32f)ippBorderValue };
-            status = ippiErodeBorder_32f_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
+        /**end repeat1**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -289,21 +238,21 @@ ippiErodeBorder(
     {
         switch (datatype)
         {
-
-        case ipp8u:
+        /**begin repeat1
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
         {
-            Ipp8u ippbordervalue[4] = { (Ipp8u)ippBorderValue, (Ipp8u)ippBorderValue , (Ipp8u)ippBorderValue, (Ipp8u)ippBorderValue };
-            status = ippiErodeBorder_8u_C4R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
+            Ipp@ipp_type@ ippbordervalue[4] = { (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue };
+            status = ippi@ippi_morphology_func@Border_@ipp_type@_C4R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
                 ippbordervalue, pSpec, pBuffer);
             break;
         }
-        case ipp32f:
-        {
-            Ipp32f ippbordervalue[4] = { (Ipp32f)ippBorderValue, (Ipp32f)ippBorderValue , (Ipp32f)ippBorderValue, (Ipp32f)ippBorderValue };
-            status = ippiErodeBorder_32f_C4R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
+        /**end repeat1**/
         default:
         {
             status = ippStsDataTypeErr;
@@ -316,124 +265,7 @@ ippiErodeBorder(
     }
     return status;
 }
-
-IppStatus
-ippiDilateBorder(
-    IppDataType datatype,
-    int numChannels,
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    IppiSize roiSize,
-    IppiBorderType ippBorderType,
-    float ippBorderValue,
-    const IppiMorphState * pSpec,
-    Ipp8u* pBuffer
-)
-{
-    IppStatus status = ippStsNoErr;
-
-    if (numChannels == 1)
-    {
-        switch (datatype)
-        {
-        case ipp1u:
-        {
-            //status = ippiDilateBorder_1u_C1R(pSrc, srcStep, pDst, dstStep, roiSize, borderType,
-            //  borderValue, pSpec, pBuffer);
-            status = ippStsErr;
-            break;
-        }
-        case ipp8u:
-        {
-            Ipp8u ippbordervalue = (Ipp8u)ippBorderValue;
-            status = ippiDilateBorder_8u_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        case ipp16u:
-        {
-            Ipp16u ippbordervalue = (Ipp16u)ippBorderValue;
-            status = ippiDilateBorder_16u_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        case ipp16s:
-        {
-            Ipp16s ippbordervalue = (Ipp16s)ippBorderValue;
-            status = ippiDilateBorder_16s_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        case ipp32f:
-        {
-            Ipp32f ippbordervalue = (Ipp32f)ippBorderValue;
-            status = ippiDilateBorder_32f_C1R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        default:
-        {
-            status = ippStsDataTypeErr;
-        }
-        }
-    }
-    else if (numChannels == 3)
-    {
-        switch (datatype)
-        {
-        case ipp8u:
-        {
-            Ipp8u ippbordervalue[3] = { (Ipp8u)ippBorderValue, (Ipp8u)ippBorderValue , (Ipp8u)ippBorderValue };
-            status = ippiDilateBorder_8u_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        case ipp32f:
-        {
-            Ipp32f ippbordervalue[3] = { (Ipp32f)ippBorderValue, (Ipp32f)ippBorderValue , (Ipp32f)ippBorderValue };
-            status = ippiDilateBorder_32f_C3R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        default:
-        {
-            status = ippStsDataTypeErr;
-        }
-        }
-    }
-    else if (numChannels == 4)
-    {
-        switch (datatype)
-        {
-
-        case ipp8u:
-        {
-            Ipp8u ippbordervalue[4] = { (Ipp8u)ippBorderValue, (Ipp8u)ippBorderValue , (Ipp8u)ippBorderValue, (Ipp8u)ippBorderValue };
-            status = ippiDilateBorder_8u_C4R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        case ipp32f:
-        {
-            Ipp32f ippbordervalue[4] = { (Ipp32f)ippBorderValue, (Ipp32f)ippBorderValue , (Ipp32f)ippBorderValue, (Ipp32f)ippBorderValue };
-            status = ippiDilateBorder_32f_C4R(pSrc, srcStep, pDst, dstStep, roiSize, ippBorderType,
-                ippbordervalue, pSpec, pBuffer);
-            break;
-        }
-        default:
-        {
-            status = ippStsDataTypeErr;
-        }
-        }
-    }
-    else
-    {
-        status = ippStsErr;
-    }
-    return status;
-}
+/**end repeat**/
 
 IppStatus
 ippiMorphology(
