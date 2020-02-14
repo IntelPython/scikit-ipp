@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 
 import skimage.filters
-import skipp.skipp.filters
+import skipp.filters
 import scipy.ndimage.filters
 
 def get_image_data(image_dtype, shape=(300, 400)):
@@ -16,7 +16,7 @@ def get_image_data(image_dtype, shape=(300, 400)):
                                    ])
 @pytest.mark.parametrize("shape", [pytest.param((300, 400), id="300x400")
                                    ])
-@pytest.mark.parametrize("function",[pytest.param(skipp.skipp.filters.gaussian, id="skipp_gaussina"),
+@pytest.mark.parametrize("function",[pytest.param(skipp.filters.gaussian, id="skipp_gaussina"),
                                      pytest.param(skimage.filters.gaussian, id="skimage_gaussian"),
                                      pytest.param(scipy.ndimage.filters.gaussian_filter, id="scipy_gaussian")
                                      ])
@@ -31,19 +31,19 @@ def test_gaussian(benchmark, function, input_dtype, shape, sigma):
 @pytest.mark.parametrize("input_dtype", [np.float32])
 @pytest.mark.parametrize("shape", [pytest.param((300, 400), id="300x400")
                                    ])
-@pytest.mark.parametrize("function",[pytest.param(skipp.skipp.filters.sobel, id="skipp_sobel"),
+@pytest.mark.parametrize("function",[pytest.param(skipp.filters.sobel, id="skipp_sobel"),
                                      pytest.param(skimage.filters.sobel, id="skimage_sobel"),
-                                     pytest.param(skipp.skipp.filters.sobel_v, id="skipp_sobel_v"),
+                                     pytest.param(skipp.filters.sobel_v, id="skipp_sobel_v"),
                                      pytest.param(skimage.filters.sobel_v, id="skimage_sobel_v"),
-                                     pytest.param(skipp.skipp.filters.sobel_h, id="skipp_sobel_h"),
+                                     pytest.param(skipp.filters.sobel_h, id="skipp_sobel_h"),
                                      pytest.param(skimage.filters.sobel_h, id="skimage_sobel_h"),
-                                     pytest.param(skipp.skipp.filters.prewitt, id="skipp_prewitt"),
+                                     pytest.param(skipp.filters.prewitt, id="skipp_prewitt"),
                                      pytest.param(skimage.filters.prewitt, id="skimage_prewitt"),
-                                     pytest.param(skipp.skipp.filters.prewitt_v, id="skipp_prewitt_v"),
+                                     pytest.param(skipp.filters.prewitt_v, id="skipp_prewitt_v"),
                                      pytest.param(skimage.filters.prewitt_v, id="skimage_prewitt_v"),
-                                     pytest.param(skipp.skipp.filters.prewitt_h, id="skipp_prewitt_h"),
+                                     pytest.param(skipp.filters.prewitt_h, id="skipp_prewitt_h"),
                                      pytest.param(skimage.filters.prewitt_h, id="skimage_prewitt_h"),
-                                     pytest.param(skipp.skipp.filters.laplace, id="skipp_laplace"),
+                                     pytest.param(skipp.filters.laplace, id="skipp_laplace"),
                                      pytest.param(skimage.filters.laplace, id="skimage_laplace")
                                      ])
 def test_edges(benchmark, function, input_dtype, shape):
@@ -64,7 +64,7 @@ def test_edges(benchmark, function, input_dtype, shape):
 @pytest.mark.parametrize("input_dtype", [np.uint8])
 @pytest.mark.parametrize("shape", [pytest.param((300, 400), id="300x400")])
 @pytest.mark.parametrize("mask_shape", [pytest.param((3, 5), id="3x5")])
-@pytest.mark.parametrize("function",[pytest.param(skipp.skipp.filters.median, id="skipp_median"),
+@pytest.mark.parametrize("function",[pytest.param(skipp.filters.median, id="skipp_median"),
                                      pytest.param(skimage.filters.median, id="skimage_median")])
 def test_median(benchmark, function, input_dtype, shape, mask_shape):
     """

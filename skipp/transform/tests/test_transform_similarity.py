@@ -4,7 +4,7 @@ from numpy.testing import (assert_array_almost_equal, assert_allclose,
                            assert_array_equal, assert_allclose, assert_almost_equal)
 from skimage._shared.testing import (assert_equal,TestCase, parametrize)
 
-import skipp.skipp.transform
+import skipp.transform
 import skimage.transform
 
 # TODO
@@ -23,5 +23,5 @@ def test_rotate_skimage_similarity(image_dtype, angle, order, preserve_range):
     #image = np.arange(50*40, dtype=image_dtype).reshape((50, 40))
     image = np.random.RandomState(0).randn(40, 50).astype(np.float32)
     skimage_rotate = skimage.transform.rotate(image, angle=angle, order=order, preserve_range=preserve_range)
-    skipp_rotate = skipp.skipp.transform.rotate(image, angle=angle, order=order, preserve_range=preserve_range)
+    skipp_rotate = skipp.transform.rotate(image, angle=angle, order=order, preserve_range=preserve_range)
     assert_allclose(skipp_rotate, skimage_rotate, rtol=1e-05)

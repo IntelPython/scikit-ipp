@@ -2,9 +2,9 @@ import pytest
 import numpy as np
 from numpy.testing import (assert_array_almost_equal, assert_allclose)
 
-from skipp.skipp.filters import sobel as skipp_sobel
-from skipp.skipp.filters import sobel_h as skipp_sobel_h
-from skipp.skipp.filters import sobel_v as skipp_sobel_v
+from skipp.filters import sobel as skipp_sobel
+from skipp.filters import sobel_h as skipp_sobel_h
+from skipp.filters import sobel_v as skipp_sobel_v
 
 from skimage.filters import sobel as skimage_sobel
 from skimage.filters import sobel_h as skimage_sobel_h

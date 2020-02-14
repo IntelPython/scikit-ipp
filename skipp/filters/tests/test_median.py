@@ -6,7 +6,7 @@ from numpy.testing import (assert_array_equal, assert_array_almost_equal,
                            assert_almost_equal, assert_, assert_warns,
                            assert_no_warnings)
 from skimage.filters import median as skimage_median
-from skipp.skipp.filters import median as skipp_median
+from skipp.filters import median as skipp_median
 
 @pytest.fixture
 def image():

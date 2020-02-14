@@ -3,7 +3,7 @@ import numpy as np
 from numpy.testing import (assert_array_almost_equal, assert_allclose)
 from numpy import allclose
 from scipy.ndimage.filters import gaussian_filter as scipy_gaussian
-from skipp.skipp.filters import gaussian
+from skipp.filters import gaussian
 from skimage.filters import gaussian as skimage_gaussian
 
 

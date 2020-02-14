@@ -2,9 +2,9 @@ import pytest
 import numpy as np
 from numpy.testing import (assert_array_almost_equal, assert_allclose)
 
-from skipp.skipp.filters import prewitt as skipp_prewitt
-from skipp.skipp.filters import prewitt_h as skipp_prewitt_h
-from skipp.skipp.filters import prewitt_v as skipp_prewitt_v
+from skipp.filters import prewitt as skipp_prewitt
+from skipp.filters import prewitt_h as skipp_prewitt_h
+from skipp.filters import prewitt_v as skipp_prewitt_v
 
 from skimage.filters import prewitt as skimage_prewitt
 from skimage.filters import prewitt_h as skimage_prewitt_h

@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from numpy.testing import (assert_array_almost_equal, assert_allclose)
 
-from skipp.skipp.filters import laplace as skipp_laplace
+from skipp.filters import laplace as skipp_laplace
 from skimage.filters import laplace as skimage_laplace
 
 

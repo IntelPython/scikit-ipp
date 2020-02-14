@@ -8,7 +8,7 @@ from skimage.morphology import grey, selem
 from skimage._shared.testing import (assert_equal, TestCase, parametrize)
 from skimage import img_as_uint
 
-import skipp.skipp.morphology
+import skipp.morphology
 
 
 class TestEccentricStructuringElements(TestCase):
@@ -21,13 +21,13 @@ class TestEccentricStructuringElements(TestCase):
 
     def test_dilate_erode_symmetry(self):
         for s in self.selems:
-            c = skipp.skipp.morphology.erosion(self.black_pixel, s)
-            d = skipp.skipp.morphology.dilation(self.white_pixel, s)
+            c = skipp.morphology.erosion(self.black_pixel, s)
+            d = skipp.morphology.dilation(self.white_pixel, s)
             assert np.all(c == (255 - d))
 
 
-@pytest.mark.parametrize("function", [pytest.param(skipp.skipp.morphology.dilation, id="dilation"),
-                                      pytest.param(skipp.skipp.morphology.erosion, id="erosion")])
+@pytest.mark.parametrize("function", [pytest.param(skipp.morphology.dilation, id="dilation"),
+                                      pytest.param(skipp.morphology.erosion, id="erosion")])
 def test_default_selem(function):
     strel = selem.diamond(radius=1)
     image = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -69,15 +69,15 @@ dilated = np.array([[0.72, 0.72, 0.89, 0.96, 0.54],
 
 
 def test_float():
-    np.testing.assert_allclose(skipp.skipp.morphology.erosion(im), eroded)
-    np.testing.assert_allclose(skipp.skipp.morphology.dilation(im), dilated)
+    np.testing.assert_allclose(skipp.morphology.erosion(im), eroded)
+    np.testing.assert_allclose(skipp.morphology.dilation(im), dilated)
 
 
 def test_uint16():
     im16, eroded16, dilated16 = (
         map(img_as_uint, [im, eroded, dilated]))
-    np.testing.assert_allclose(skipp.skipp.morphology.erosion(im16), eroded16)
-    np.testing.assert_allclose(skipp.skipp.morphology.dilation(im16), dilated16)
+    np.testing.assert_allclose(skipp.morphology.erosion(im16), eroded16)
+    np.testing.assert_allclose(skipp.morphology.dilation(im16), dilated16)
 
 
 @pytest.mark.skip(reason="needs __get_output implementation")
@@ -97,21 +97,21 @@ def test_discontiguous_out_array():
                                  [2, 0, 2, 0, 1],
                                  [0, 0, 0, 0, 0],
                                  [3, 0, 1, 0, 1]], np.uint8)
-    skipp.skipp.morphology.dilation(image, out=out_array)
+    skipp.morphology.dilation(image, out=out_array)
     assert_array_equal(out_array_big, expected_dilation)
-    skipp.skipp.morphology.erosion(image, out=out_array)
+    skipp.morphology.erosion(image, out=out_array)
     assert_array_equal(out_array_big, expected_erosion)
 
 
 def test_1d_erosion():
     image = np.array([1, 2, 3, 2, 1], dtype=np.uint8)
     expected = np.array([1, 1, 2, 1, 1], dtype=np.uint8)
-    eroded = skipp.skipp.morphology.erosion(image)
+    eroded = skipp.morphology.erosion(image)
     assert_array_equal(eroded, expected)
 
 
 def test_1d_dilation():
     image = np.array([1, 2, 3, 2, 1], dtype=np.uint8)
     expected = np.array([2, 3, 3, 3, 2], dtype=np.uint8)
-    dilated = skipp.skipp.morphology.dilation(image)
+    dilated = skipp.morphology.dilation(image)
     assert_array_equal(dilated, expected)
