@@ -1,0 +1,255 @@
+/* -*- c -*- */
+#include "warp.h"
+
+#define EXIT_FUNC exitLine:             /* Label for Exit */
+#define check_sts(st) if((st) != ippStsNoErr) goto exitLine
+
+IppStatus
+ippiWarpAffine_interpolation(
+    IppDataType ippDataType,
+    IppiInterpolationType interpolation,
+    int numChannels,
+    void * pSrc,
+    int srcStep,
+    void * pDst,
+    int dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    IppiWarpSpec* pSpec,
+    Ipp8u * pBuffer)
+{
+    IppStatus status = ippStsNoErr;
+
+    // Adapter for:  Intel(R) IPP's ippiWarpAffine<interpolation>_<ipp_type>_<channels>,
+    // where <interpolation> is `Nearest`, `Linear` or `Cubic`,
+    // <ipp_type> is `8u`, `16u`, `16s`, `32f` or `64f`,
+    // <channels> is C1R, C3R or C4R.
+
+    /**begin repeat
+     *
+     * #_numChannels = 1, 3, 4#
+     * #cond_stat = if, else if, else if#
+     */
+    @cond_stat@ (numChannels == @_numChannels@)
+    {
+        switch (interpolation)
+        {
+        /**begin repeat1
+         *
+         * #_ipp_interpolation = Nearest, Linear, Cubic#
+         */
+        case ipp@_ipp_interpolation@:
+        {
+            switch (ippDataType)
+            {
+                /**begin repeat2
+                 *
+                 * #ipp_type = 8u, 16u, 16s, 32f, 64f#
+                 */
+                case ipp@ipp_type@:
+                {
+                    status = ippiWarpAffine@_ipp_interpolation@_@ipp_type@_C@_numChannels@R(pSrc,srcStep, pDst,
+                                                                       dstStep, dstOffset, dstSize, pSpec, pBuffer);
+                    break;
+                }
+                /**end repeat2**/
+                default:
+                {
+                    status = ippStsDataTypeErr;
+                }
+            }
+            break;
+        }
+        /**end repeat1**/
+        default:
+        {
+            status = ippStsErr;
+        }
+        }
+    }
+    /**end repeat**/
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+IppStatus
+ippi_RotateCoeffs(
+    double angle,
+    double xCenter,
+    double yCenter,
+    double *coeffs)
+{
+    IppStatus status = ippStsNoErr;
+    double xShift;
+    double yShift;
+    status = ippiGetRotateShift(xCenter, yCenter, angle, &xShift, &yShift);
+    check_sts(status);
+    status = ippiGetRotateTransform(angle, xShift, yShift, (double(*)[3])coeffs);
+    check_sts(status);
+EXIT_FUNC
+    return status;
+}
+
+IppStatus
+ippi_GetAffineDstSize(
+    int img_width,
+    int img_height,
+    int * dst_width,
+    int * dst_height,
+    double * coeffs)
+{
+    IppStatus status = ippStsNoErr;
+    double bound[2][2] = { 0 };
+    IppiRect srcRoi;
+    srcRoi.x = 0;
+    srcRoi.y = 0;
+    srcRoi.width = img_width;
+    srcRoi.height = img_height;
+
+    status = ippiGetAffineBound(srcRoi, bound, (double(*)[3])coeffs);
+    check_sts(status);
+    // TODO
+    // more correct formula
+    *dst_width = (int)(bound[1][0] - bound[0][0] + 2);
+    *dst_height = (int)(bound[1][1] - bound[0][1] + 2);
+
+    // unused
+    //IppiSize dstSize_new = { *dst_width, *dst_height };  // size of destination images
+EXIT_FUNC
+    return status;
+}
+
+IppStatus
+ippi_Warp(
+    IppDataType ippDataType,
+    void * pSrc,
+    void * pDst,
+    int img_width,
+    int img_height,
+    int dst_width,
+    int dst_height,
+    int numChannels,
+    double * coeffs,
+    IppiInterpolationType interpolation,
+    IppiWarpDirection direction,
+    IppiBorderType ippBorderType,
+    double ippBorderValue)
+{
+    IppStatus status = ippStsNoErr;
+    IppiWarpSpec* pSpec = NULL;                    // Pointer to the specification structure
+
+    Ipp8u* pInitBuf = NULL;
+
+    // ``scikit-image`` uses Catmull-Rom spline (0.0, 0.5)
+    // Catmull-Rom spline (0.0, 0.5)
+    // Don P. Mitchell, Arun N. Netravali. Reconstruction Filters in Computer Graphics.
+    // Computer Graphics, Volume 22, Number 4, AT&T Bell Laboratories, Murray Hill, 
+    // New Jersey, August 1988.
+    Ipp64f valueB = 0.0;
+    Ipp64f valueC = 0.5;
+
+    Ipp8u * pBuffer = NULL;
+
+    Ipp64f pBorderValue[4];
+    IppiSize srcSize = { img_width, img_height };  // Size of source image
+    IppiSize dstSize = { dst_width, dst_height };  // size of destination images
+    int srcStep, dstStep;                // Steps, in bytes, through the source/destination images
+
+    IppiPoint dstOffset = { 0, 0 };      // Offset of the destination image ROI with respect to
+                                         // the destination image origin
+    int specSize = 0, initSize = 0, bufSize = 0; // Work buffer size
+
+    int sizeof_src;
+
+    status = get_sizeof(ippDataType, &sizeof_src);
+    check_sts(status);
+
+    srcStep = numChannels * img_width * sizeof_src;
+    dstStep = numChannels * dst_width * sizeof_src;;
+
+    if (numChannels == 1) {
+        pBorderValue[0] = (Ipp64f)ippBorderValue;
+    }
+    else if (numChannels == 3)
+    {
+        pBorderValue[0] = (Ipp64f)ippBorderValue;
+        pBorderValue[1] = (Ipp64f)ippBorderValue;
+        pBorderValue[2] = (Ipp64f)ippBorderValue;
+    }
+    else if (numChannels == 4)
+    {
+        pBorderValue[0] = (Ipp64f)ippBorderValue;
+        pBorderValue[1] = (Ipp64f)ippBorderValue;
+        pBorderValue[2] = (Ipp64f)ippBorderValue;
+        pBorderValue[3] = (Ipp64f)ippBorderValue;
+    }
+    else
+    {
+        status = ippStsErr;
+        check_sts(status);
+    }
+    // Spec and init buffer sizes
+    status = ippiWarpAffineGetSize(srcSize, dstSize, ippDataType, (double(*)[3])coeffs, interpolation, direction,
+        ippBorderType, &specSize, &initSize);
+    check_sts(status);
+
+    pInitBuf = ippsMalloc_8u(initSize);
+    if (pInitBuf == NULL)
+    {
+        status = ippStsNoMemErr;
+        check_sts(status);
+    }
+    pSpec = (IppiWarpSpec*)ippsMalloc_8u(specSize);
+    if (pSpec == NULL)
+    {
+        status = ippStsMemAllocErr;
+        check_sts(status);
+    }
+    // Filter initialization
+    switch (interpolation)
+    {
+    case ippCubic:
+    {
+        status = ippiWarpAffineCubicInit(srcSize, dstSize, ippDataType, (double(*)[3])coeffs, direction,
+            numChannels, valueB, valueC, ippBorderType, pBorderValue, 0, pSpec, pInitBuf);
+        break;
+    }
+    case ippNearest:
+    {
+        status = ippiWarpAffineNearestInit(srcSize, dstSize, ippDataType, (double(*)[3])coeffs, direction,
+            numChannels, ippBorderType, pBorderValue, 0, pSpec);
+        break;
+    }
+    case ippLinear:
+    {
+        status = ippiWarpAffineLinearInit(srcSize, dstSize, ippDataType, (double(*)[3])coeffs, direction,
+            numChannels, ippBorderType, pBorderValue, 0, pSpec);
+        break;
+    }
+    default:
+    {
+        status = ippStsErr;
+    }
+    }
+    check_sts(status);
+    // Get work buffer size
+    status = ippiWarpGetBufferSize(pSpec, dstSize, &bufSize);
+    check_sts(status);
+
+    pBuffer = ippsMalloc_8u(bufSize);
+    if (pBuffer == NULL)
+    {
+        check_sts(status = ippStsMemAllocErr);
+    };
+    status = ippiWarpAffine_interpolation(ippDataType, interpolation, numChannels, pSrc, srcStep,
+            pDst, dstStep, dstOffset, dstSize, pSpec, pBuffer);
+    check_sts(status);
+EXIT_FUNC
+    ippsFree(pInitBuf);
+    ippsFree(pBuffer);
+    ippsFree(pSpec);
+    return status;
+}
