@@ -5,7 +5,7 @@
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine
 
 IppStatus
-ippiWarpAffine_interpolation(
+_ippiWarpAffine_interpolation(
     IppDataType ippDataType,
     IppiInterpolationType interpolation,
     int numChannels,
@@ -244,7 +244,7 @@ ippi_Warp(
     {
         check_sts(status = ippStsMemAllocErr);
     };
-    status = ippiWarpAffine_interpolation(ippDataType, interpolation, numChannels, pSrc, srcStep,
+    status = _ippiWarpAffine_interpolation(ippDataType, interpolation, numChannels, pSrc, srcStep,
             pDst, dstStep, dstOffset, dstSize, pSpec, pBuffer);
     check_sts(status);
 EXIT_FUNC

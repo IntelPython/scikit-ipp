@@ -4,9 +4,17 @@
 #include "ipp.h"
 #include "utils.h"
 
+/**
+* _ippiWarpAffine_interpolation:
+* Adapter for:  Intel(R) IPP's ippiWarpAffine<interpolation>_<ipp_type>_<channels>,
+* where <interpolation> is `Nearest`, `Linear` or `Cubic`,
+* <ipp_type> is `8u`, `16u`, `16s`, `32f` or `64f`,
+* <channels> is C1R, C3R or C4R.
+*/
 IppStatus
-ippiWarpAffineCubic(
+_ippiWarpAffine_interpolation(
     IppDataType ippDataType,
+    IppiInterpolationType interpolation,
     int numChannels,
     void * pSrc,
     int srcStep,
@@ -15,36 +23,7 @@ ippiWarpAffineCubic(
     IppiPoint dstOffset,
     IppiSize dstSize,
     IppiWarpSpec* pSpec,
-    Ipp8u * pBuffer
-);
-
-IppStatus
-ippiWarpAffineNearest(
-    IppDataType ippDataType,
-    int numChannels,
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    IppiPoint dstOffset,
-    IppiSize dstSize,
-    IppiWarpSpec* pSpec,
-    Ipp8u * pBuffer
-);
-
-IppStatus
-ippiWarpAffineLinear(
-    IppDataType ippDataType,
-    int numChannels,
-    void * pSrc,
-    int srcStep,
-    void * pDst,
-    int dstStep,
-    IppiPoint dstOffset,
-    IppiSize dstSize,
-    IppiWarpSpec* pSpec,
-    Ipp8u * pBuffer
-);
+    Ipp8u * pBuffer);
 
 IppStatus
 ippi_RotateCoeffs(
