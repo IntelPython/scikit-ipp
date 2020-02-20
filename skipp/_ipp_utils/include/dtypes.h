@@ -1,12 +1,25 @@
-#include "ipp.h"
+///////////////////////////////////////////////////////////////////////////////////////////
+//                                  
+//    Data types conversion module.
+//    Most of the Intel IPP function support only small scope of data types. This module
+//    was created in order to support all the functionality of `scikit-image`, which
+//    processes on all types of numpy array.          
+//                                                                                       
+//    Note: this modules was implemented for data types conversion. this implementation is
+//          deprecated. Currently it is unused. It will be re-implemented. 
+//                                                                                         
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// #include "ipp.h"
 // #include "ippcore_tl.h"
-#ifndef DTYPES_H
-#define DTYPES_H
-#include <stddef.h>
+// #ifndef DTYPES_H
+// #define DTYPES_H
+// #include <stddef.h>
 
-#define MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE 0x2AAAAAAA
+// #define MAX_C3_IMG_WIDTH_BY_INT32_ROI_DTYPE 0x2AAAAAAA
 
-#define IPP_TYPES_NUMBER 10
+// #define IPP_TYPES_NUMBER 10
+/*
 #define IPPi_ScaleC_SUPPORTED_TYPES_NUMBER 7
 
 typedef enum {
@@ -123,3 +136,4 @@ image_32s_as_32u_Converting_XorC(
     int img_width,
     int img_height);
 #endif
+*/

@@ -1,9 +1,23 @@
+///////////////////////////////////////////////////////////////////////////////////////////
+//                                  
+//    Data types conversion module.
+//    Most of the Intel IPP function support only small scope of data types. This module
+//    was created in order to support all the functionality of `scikit-image`, which
+//    processes on all types of numpy array.          
+//                                                                                       
+//    Note: this modules was implemented for data types conversion. this implementation is
+//          deprecated. Currently it is unused. It will be re-implemented. 
+//                                                                                         
+///////////////////////////////////////////////////////////////////////////////////////////
+
 // #include "numpy/npy_common.h" /* npy_intp */
-#include "dtypes.h"
+//#include "dtypes.h"
 
-#define EXIT_FUNC exitLine:             /* Label for Exit */
-#define check_sts(st) if((st) != ippStsNoErr) goto exitLine;
+//#define EXIT_FUNC exitLine:             /* Label for Exit */
+//#define check_sts(st) if((st) != ippStsNoErr) goto exitLine;
 
+
+/*
 static
 int IppDataTypeMaskArray[IPP_TYPES_NUMBER] = { ipp8u_c,
                                               ipp8s_c,
@@ -598,3 +612,4 @@ image_32s_as_32u_Converting_XorC(
         EXIT_FUNC
         return (int)status;
 }
+*/

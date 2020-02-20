@@ -46,6 +46,7 @@ def configuration(parent_package='', top_path=None):
     ipp_libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
 
     _ipp_utils_dir = ['_ipp_utils']
+    _ipp_wr_dir = ['_ipp_wr']
 
     extension_names = []  # extension names and their dir names are the same
     extension_cy_src = {}
@@ -54,7 +55,8 @@ def configuration(parent_package='', top_path=None):
     extension_names.append('morphology')
     extension_names.append('transform')
     extension_sources, extension_includes = _get_sources_and_includes(extension_names +
-                                                                      _ipp_utils_dir)
+                                                                      _ipp_utils_dir +
+                                                                      _ipp_wr_dir)
     try:
         from Cython.Build import cythonize
         for extension_name in extension_names:
