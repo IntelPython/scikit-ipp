@@ -193,4 +193,79 @@ ippiFilterPrewittVertBorder(
     IppiBorderType ippBorderType,
     float ippBorderValue,
     Ipp8u * pBuffer);
+
+/**************************************************************************************
+ * morphology module
+ * funcs ...
+ **************************************************************************************/
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for Intel(R) IPP's ippiMorphologyBorderGetSize_<mode> function, where <mode>
+// is: 1u_C1R 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiMorphologyBorderGetSize(
+    IppDataType datatype,
+    IppiSize roiSize,
+    IppiSize maskSize,
+    int numChannels,
+    int * pSpecSize,
+    int * pBufferSize);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for Intel(R) IPP's ippiMorphologyBorderInit_<mode> function, where <mode>
+// is: 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiMorphologyBorderInit(
+    IppDataType datatype,
+    int numChannels,
+    IppiSize roiSize,
+    const Ipp8u * pMask,
+    IppiSize maskSize,
+    IppiMorphState* pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for Intel(R) IPP's ippiErodeBorder_<mode> function, where <mode> is:
+// 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiErodeBorder(
+    IppDataType datatype,
+    int numChannels,
+    void * pSrc,
+    int srcStep,
+    void * pDst,
+    int dstStep,
+    IppiSize roiSize,
+    IppiBorderType ippBorderType,
+    float ippBorderValue,
+    const IppiMorphState * pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for Intel(R) IPP's ippiDilateBorder_<mode> function, where <mode> is:
+// 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiDilateBorder(
+    IppDataType datatype,
+    int numChannels,
+    void * pSrc,
+    int srcStep,
+    void * pDst,
+    int dstStep,
+    IppiSize roiSize,
+    IppiBorderType ippBorderType,
+    float ippBorderValue,
+    const IppiMorphState * pSpec,
+    Ipp8u* pBuffer);
 #endif  // _IPP_WR_H

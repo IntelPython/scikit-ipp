@@ -1,14 +1,14 @@
 from __future__ import absolute_import
 include "../_ipp_utils/_ippi.pxd"
 
-cdef extern from "morphology.h":
+cdef extern from "own_morphology.h":
     ctypedef enum ippiMorphologyFunction:
         IppiErodeBorder
         IppiDilateBorder
 
 
-cdef extern from "morphology.h":
-    IppStatus ippiMorphology(IppDataType datatype,
+cdef extern from "own_morphology.h":
+    IppStatus own_Morphology(IppDataType datatype,
                              ippiMorphologyFunction ippiFunc,
                              void * pSrc,
                              void * pDst,

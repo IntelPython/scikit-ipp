@@ -430,3 +430,292 @@ ippiFilter@filter_type@@filter_magnitude@Border(
 }
 /**end repeat1**/
 /**end repeat**/
+
+/**************************************************************************************
+ * morphology module
+ * funcs ...
+ **************************************************************************************/
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for Intel(R) IPP's ippiMorphologyBorderGetSize_<mode> function, where <mode>
+// is: 1u_C1R 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiMorphologyBorderGetSize(
+    IppDataType datatype,
+    IppiSize roiSize,
+    IppiSize maskSize,
+    int numChannels,
+    int * pSpecSize,
+    int * pBufferSize)
+{
+    IppStatus status = ippStsNoErr;
+
+
+    if (numChannels == 1)
+    {
+        switch (datatype)
+        {
+        /**begin repeat
+         *
+         * #ipp_type = 1u, 8u, 16u, 16s, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            status = ippiMorphologyBorderGetSize_@ipp_type@_C1R(roiSize, maskSize,
+                pSpecSize, pBufferSize);
+            break;
+        }
+        /**end repeat**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else if (numChannels == 3)
+    {
+        switch (datatype)
+        {
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            status = ippiMorphologyBorderGetSize_@ipp_type@_C3R(roiSize, maskSize,
+                pSpecSize, pBufferSize);
+            break;
+        }
+        /**end repeat**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else if (numChannels == 4)
+    {
+        switch (datatype)
+        {
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            status = ippiMorphologyBorderGetSize_@ipp_type@_C4R(roiSize, maskSize,
+                pSpecSize, pBufferSize);
+            break;
+        }
+        /**end repeat**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for Intel(R) IPP's ippiMorphologyBorderInit_<mode> function, where <mode>
+// is: 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiMorphologyBorderInit(
+    IppDataType datatype,
+    int numChannels,
+    IppiSize roiSize,
+    const Ipp8u * pMask,
+    IppiSize maskSize,
+    IppiMorphState* pSpec,
+    Ipp8u* pBuffer)
+{
+    IppStatus status = ippStsNoErr;
+    if (numChannels == 1)
+    {
+        switch (datatype)
+        {
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 16u, 16s, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            status = ippiMorphologyBorderInit_@ipp_type@_C1R(roiSize, pMask,
+                maskSize, pSpec, pBuffer);
+            break;
+        }
+        /**end repeat**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else if (numChannels == 3)
+    {
+        switch (datatype)
+        {
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            status = ippiMorphologyBorderInit_@ipp_type@_C3R(roiSize, pMask,
+                maskSize, pSpec, pBuffer);
+            break;
+        }
+        /**end repeat**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else if (numChannels == 4)
+    {
+        switch (datatype)
+        {
+        /**begin repeat
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            status = ippiMorphologyBorderInit_@ipp_type@_C4R(roiSize, pMask,
+                maskSize, pSpec, pBuffer);
+            break;
+        }
+        /**end repeat**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapters for Intel(R) IPP's ippiErodeBorder_<mode> and ippiDilateBorder_<mode>
+// function, where <mode> is: 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R,
+// 8u_C3R or 32f_C3R. 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+/**begin repeat
+ *
+ * #ippi_morphology_func = Erode, Dilate#
+ */
+IppStatus
+ippi@ippi_morphology_func@Border(
+    IppDataType datatype,
+    int numChannels,
+    void * pSrc,
+    int srcStep,
+    void * pDst,
+    int dstStep,
+    IppiSize roiSize,
+    IppiBorderType ippBorderType,
+    float ippBorderValue,
+    const IppiMorphState * pSpec,
+    Ipp8u* pBuffer
+    )
+{
+    IppStatus status = ippStsNoErr;
+
+    if (numChannels == 1)
+    {
+        switch (datatype)
+        {
+        /**begin repeat1
+         *
+         * #ipp_type = 8u, 16u, 16s, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            Ipp@ipp_type@ ippbordervalue = (Ipp@ipp_type@)ippBorderValue;
+            status = ippi@ippi_morphology_func@Border_@ipp_type@_C1R(pSrc, srcStep,
+                pDst, dstStep, roiSize, ippBorderType,
+                ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        /**end repeat1**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else if (numChannels == 3)
+    {
+        switch (datatype)
+        {
+        /**begin repeat1
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            Ipp@ipp_type@ ippbordervalue[3] = { (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue };
+            status = ippi@ippi_morphology_func@Border_@ipp_type@_C3R(pSrc, srcStep,
+                pDst, dstStep, roiSize, ippBorderType,
+                ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        /**end repeat1**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else if (numChannels == 4)
+    {
+        switch (datatype)
+        {
+        /**begin repeat1
+         *
+         * #ipp_type = 8u, 32f#
+         */
+        case ipp@ipp_type@:
+        {
+            Ipp@ipp_type@ ippbordervalue[4] = { (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue,
+                                                (Ipp@ipp_type@)ippBorderValue };
+            status = ippi@ippi_morphology_func@Border_@ipp_type@_C4R(pSrc, srcStep,
+                pDst, dstStep, roiSize, ippBorderType,
+                ippbordervalue, pSpec, pBuffer);
+            break;
+        }
+        /**end repeat1**/
+        default:
+        {
+            status = ippStsDataTypeErr;
+        }
+        }
+    }
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+/**end repeat**/

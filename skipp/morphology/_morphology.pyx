@@ -153,7 +153,7 @@ cpdef dilation(image, selem=None, out=None, shift_x=False, shift_y=False):
     cydestination = <void*> cnp.PyArray_DATA(out)
     cyselem = <void*> cnp.PyArray_DATA(selem)
 
-    ippStatusIndex = morph.ippiMorphology(ipp_src_datatype,
+    ippStatusIndex = morph.own_Morphology(ipp_src_datatype,
                                           ippiFunc,
                                           cyimage,
                                           cydestination,
@@ -305,7 +305,7 @@ cpdef erosion(image, selem=None, out=None, shift_x=False, shift_y=False):
     cydestination = <void*> cnp.PyArray_DATA(out)
     cyselem = <void*> cnp.PyArray_DATA(selem)
 
-    ippStatusIndex = morph.ippiMorphology(ipp_src_datatype,
+    ippStatusIndex = morph.own_Morphology(ipp_src_datatype,
                                           ippiFunc,
                                           cyimage,
                                           cydestination,
