@@ -54,7 +54,7 @@ def test_gaussian_null_sigma():
 
 
 # TODO: investigate why skimage in test_energy_decrease_gaussian uses `reflect` mode
-# Intel IPP's GaussianFilterBorder doesn't support `reflect` mode
+# Intel(R) IPP GaussianFilterBorder doesn't support `reflect` mode
 def test_gaussian_energy_decrease():
     a = np.zeros((3, 3), dtype=np.float32)
     a[1, 1] = 1.
@@ -64,7 +64,7 @@ def test_gaussian_energy_decrease():
 
 def test_gaussian_unsupported_mode():
     """
-    Intel IPP's GaussianFilterBorder doesn't support `reflect` mode
+    Intel(R) IPP GaussianFilterBorder doesn't support `reflect` mode
     """
     a = np.zeros((3, 3), dtype=np.float32)
     with pytest.raises(RuntimeError):
