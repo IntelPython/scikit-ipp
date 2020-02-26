@@ -70,6 +70,22 @@ cdef extern from "ipptypes.h":
         ippHahn = 0
         ippSuper = IPPI_INTER_SUPER
 
+# TODO:
+# for different os versions
+# update defining of IPP_UINT64 and IPP_INT64
+# and usage of __int64
+
+# cdef extern from "ippbase.h":
+#IF _WIN32:
+    #cdef __int64 IPP_INT64
+    #cdef unsigned __int64 IPP_UINT64
+#ELIF _WIN64:
+    #cdef __int64 IPP_INT64
+    #cdef unsigned __int64 IPP_UINT64
+#ELSE:
+    #cdef long long IPP_INT64
+    #cdef unsigned long long IPP_UINT64
+
 
 cdef extern from "ippbase.h":
     ctypedef unsigned char  Ipp8u
@@ -79,8 +95,9 @@ cdef extern from "ippbase.h":
     ctypedef signed short   Ipp16s
     ctypedef signed int     Ipp32s
     ctypedef float          Ipp32f
-    # ctypedef IPP_INT64    Ipp64s
-    # ctypedef IPP_UINT64   Ipp64u
+    #ctypedef IPP_INT64      Ipp64s
+    ctypedef long long      Ipp64s
+    #ctypedef IPP_UINT64     Ipp64u
     ctypedef double         Ipp64f
 
 
@@ -109,3 +126,18 @@ cdef extern from "ipptypes.h":
 
 cdef extern from "ippcore.h":
     const char * ippGetStatusString(IppStatus stsCode)
+
+
+cdef extern from "ipptypes_l.h":
+#IF _M_AMD64 :
+    ctypedef Ipp64s IppSizeL
+#ELIF __x86_64__:
+    ctypedef Ipp64s IppSizeL
+#ELSE:
+    ctypedef int IppSizeL
+
+
+#cdef extern from "ipptypes_l.h":
+#    cdef struct IppiSizeL:
+#        IppSizeL width
+#        IppSizeL height
