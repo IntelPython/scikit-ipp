@@ -14,7 +14,6 @@ def test_rotate():
     assert_allclose(x90, np.rot90(x), rtol=1e-06)
 
 
-@pytest.mark.skip(reason="needs resize implementation")
 def test_rotate_resize():
     x = np.zeros((10, 10), dtype=np.double)
 
