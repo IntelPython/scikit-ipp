@@ -186,10 +186,10 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
         dst_width = output_shape[1]
         dst_height = output_shape[0]
         if numChannels == 1:
-            output = np.empty_like((dst_height, dst_width), dtype=image.dtype,
+            output = np.empty((dst_height, dst_width), dtype=image.dtype,
                                    order='C')
         else:
-            output = np.empty_like((dst_height, dst_width, numChannels),
+            output = np.empty((dst_height, dst_width, numChannels),
                                    dtype=image.dtype, order='C')
     else:
         dst_width = img_width
