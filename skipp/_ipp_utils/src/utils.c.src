@@ -1,0 +1,33 @@
+#include "utils.h"
+
+IppStatus
+get_sizeof(
+    IppDataType datatype,
+    int * sizeof_datatype)
+{
+    IppStatus status = ippStsNoErr;
+    switch (datatype)
+    {
+    case ipp1u:
+    {
+        *sizeof_datatype = sizeof(Ipp8u);
+        break;
+    }
+    /**begin repeat
+     *
+     * #ipp_type = 8s, 8u, 8sc, 16u, 16uc, 16s, 16sc, 32u, 32s, 32sc, 32f, 32fc, 64u, 64s, 64sc, 64f, 64fc#
+     */
+    case ipp@ipp_type@:
+    {
+        *sizeof_datatype = sizeof(Ipp@ipp_type@);
+        break;
+    }
+    /**end repeat**/
+
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
