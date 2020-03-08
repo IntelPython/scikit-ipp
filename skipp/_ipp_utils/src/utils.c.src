@@ -1,3 +1,4 @@
+/* -*- c -*- */
 #include "utils.h"
 
 IppStatus
