@@ -13,6 +13,13 @@ __scikit-ipp__ is optimization of open-source image processing library [scikit-i
   + Dilation
 * __Transform:__
   + Rotate
+  + Resize
+  + Warp
+  + AffineTranform:
+    - shear
+    - rotation
+    - scale
+    - translation
 
 ### Building `scikit-ipp`
 ````
