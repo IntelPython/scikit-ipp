@@ -1,11 +1,109 @@
+# cython: profile=True
 from __future__ import absolute_import
 include "../_ipp_utils/_ipp_utils.pxd"
 include "../_ipp_utils/_ippi.pxd"
 
 import numpy as np
 cimport numpy as cnp
+import math
 cimport _transform as transform
 cnp.import_array()
+
+
+class AffineTransform(object):
+    """2D affine transformation.
+
+    Has the following form::
+
+        X = a0*x + a1*y + a2 =
+          = sx*x*cos(rotation) - sy*y*sin(rotation + shear) + a2
+
+        Y = b0*x + b1*y + b2 =
+          = sx*x*sin(rotation) + sy*y*cos(rotation + shear) + b2
+
+    where ``sx`` and ``sy`` are scale factors in the x and y directions,
+    and the homogeneous transformation matrix is::
+
+        [[a0  a1  a2]
+         [b0  b1  b2]
+         [0   0    1]]
+
+    Parameters
+    ----------
+    matrix : (3, 3) array, optional
+        Homogeneous transformation matrix.
+    scale : (sx, sy) as array, list or tuple, optional
+        Scale factors.
+    rotation : float, optional
+        Rotation angle in counter-clockwise direction as radians.
+    shear : float, optional
+        Shear angle in counter-clockwise direction as radians.
+    translation : (tx, ty) as array, list or tuple, optional
+        Translation parameters.
+
+    Attributes
+    ----------
+    params : (3, 3) array
+        Homogeneous transformation matrix.
+
+    """
+
+    _coeffs = range(6)
+
+    def __init__(self, matrix=None, scale=None, rotation=None, shear=None,
+                 translation=None):
+        params = any(param is not None
+                     for param in (scale, rotation, shear, translation))
+
+        if params and matrix is not None:
+            raise ValueError("You cannot specify the transformation matrix and"
+                             " the implicit parameters at the same time.")
+        elif matrix is not None:
+            if matrix.shape != (3, 3):
+                raise ValueError("Invalid shape of transformation matrix.")
+            self.params = matrix
+        elif params:
+            if scale is None:
+                scale = (1, 1)
+            if rotation is None:
+                rotation = 0
+            if shear is None:
+                shear = 0
+            if translation is None:
+                translation = (0, 0)
+
+            sx, sy = scale
+            sx = 1/sx
+            sy = 1/sy
+            #shear = -shear
+            rotation = -rotation
+            tx, ty = translation
+            translation = (-tx, -ty)
+
+            self.params = np.array([
+                [sx * math.cos(rotation), -sy * math.sin(rotation + shear), 0],
+                [sx * math.sin(rotation),  sy * math.cos(rotation + shear), 0],
+                [                      0,                                0, 1]
+            ], order='C')
+            self.params[0:2, 2] = translation
+        else:
+            # default to an identity transform
+            self.params = np.eye(3)
+
+    def scale(self):
+        sx = math.sqrt(self.params[0, 0] ** 2 + self.params[1, 0] ** 2)
+        sy = math.sqrt(self.params[0, 1] ** 2 + self.params[1, 1] ** 2)
+        return sx, sy
+
+    def rotation(self):
+        return math.atan2(self.params[1, 0], self.params[0, 0])
+
+    def shear(self):
+        beta = math.atan2(- self.params[0, 1], self.params[1, 1])
+        return beta - self.rotation
+
+    def translation(self):
+        return self.params[0:2, 2]
 
 
 cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
@@ -128,17 +226,31 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     cdef void * cyimage
     cdef void * cydestination
     cdef double * cy_coeffs
-    cdef double * cy_inverse_map_matrix  # ndarray: ``(3, 3)`` homogeneous transformation matrix
+    #cdef double * cy_inverse_map_matrix  # ndarray: ``(3, 3)`` homogeneous transformation matrix
 
-    cdef cnp.ndarray coeffs =  np.zeros((2, 3),dtype = np.double, order='C')
+    #cdef cnp.ndarray coeffs =  np.zeros((2, 3), dtype = np.double, order='C')
     # ~~~~ currently
     #cy_coeffs = <double*> cnp.PyArray_DATA(coeffs)
-    cy_coeffs = <double*> cnp.PyArray_DATA(inverse_map)
+    if isinstance(inverse_map, AffineTransform):
+        cy_coeffs = <double * > cnp.PyArray_DATA(inverse_map.params[:2])
+    elif isinstance(inverse_map, np.ndarray):
+        if inverse_map.shape == (3, 3):
+            inverse_map = inverse_map.astype(np.double)
+            cy_coeffs = <double*> cnp.PyArray_DATA(inverse_map[:2])
+        elif inverse_map.shape == (2, 3):
+            inverse_map = inverse_map.astype(np.double)
+            cy_coeffs = <double*> cnp.PyArray_DATA(inverse_map)
+        else:
+            raise ValueError("Invalid shape of transformation matrix.")
+    else:
+        # TODO:
+        # change the raised error msg
+        raise ValueError("inverse_map type not supported")
 
     # TODO
     # check if inverse_map C-order, if ndarray
-    cdef cnp.ndarray inverse_map_matrix =  np.zeros((3, 3),dtype = np.double, order='C')
-    cy_inverse_map_matrix = <double*> cnp.PyArray_DATA(inverse_map_matrix)
+    #cdef cnp.ndarray inverse_map_matrix =  np.zeros((3, 3), dtype = np.double, order='C')
+    #cy_inverse_map_matrix = <double*> cnp.PyArray_DATA(inverse_map_matrix)
 
     cdef IppDataType ipp_src_datatype
 
@@ -199,19 +311,19 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     cyimage = <void*> cnp.PyArray_DATA(image)
     cydestination = <void*> cnp.PyArray_DATA(output)
 
-    ippStatusIndex = transform.ippi_Warp(ipp_src_datatype,
-                                         cyimage,
-                                         cydestination,
-                                         img_width,
-                                         img_height,
-                                         dst_width,
-                                         dst_height,
-                                         numChannels,
-                                         cy_coeffs,
-                                         interpolation,
-                                         direction,
-                                         ippBorderType,
-                                         ippBorderValue)
+    ippStatusIndex = transform.own_Warp(ipp_src_datatype,
+                                        cyimage,
+                                        cydestination,
+                                        img_width,
+                                        img_height,
+                                        dst_width,
+                                        dst_height,
+                                        numChannels,
+                                        cy_coeffs,
+                                        interpolation,
+                                        direction,
+                                        ippBorderType,
+                                        ippBorderValue)
     __get_ipp_error(ippStatusIndex)
     return output
 
@@ -347,11 +459,11 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
     # correct coeffs, if `resize` is `True`
     # TODO
     # move ippi_RotateCoeffs, by using `warp` function's `map_args` param 
-    ippStatusIndex = transform.ippi_RotateCoeffs(cy_angle, cy_xCenter,
+    ippStatusIndex = transform.own_RotateCoeffs(cy_angle, cy_xCenter,
                                                  cy_yCenter, cy_coeffs)
     __get_ipp_error(ippStatusIndex)
 
-    ippStatusIndex = transform.ippi_GetAffineDstSize(img_width, img_height, &dst_width,
+    ippStatusIndex = transform.own_GetAffineDstSize(img_width, img_height, &dst_width,
                                                      &dst_height, cy_coeffs)
     __get_ipp_error(ippStatusIndex)
 
@@ -369,3 +481,169 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
     #~~~~~~ currently `coeffs` instead of `inverse_map_matrix`
     return warp(image, inverse_map=coeffs, map_args={}, output_shape=output_shape, order=order,
                 mode=mode, cval=cval, clip=clip, preserve_range=preserve_range)
+
+
+cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
+             preserve_range=False, anti_aliasing=True, anti_aliasing_sigma=None):
+
+    """Resize image to match a certain size.
+    # TODO docstrings
+    # update for scikit-ipp
+    Performs interpolation to up-size or down-size N-dimensional images. Note
+    that anti-aliasing should be enabled when down-sizing images to avoid
+    aliasing artifacts. For down-sampling with an integer factor also see
+    `skimage.transform.downscale_local_mean`.
+
+    Parameters
+    ----------
+    image : ndarray
+        Input image.
+    output_shape : tuple or ndarray
+        Size of the generated output image `(rows, cols[, ...][, dim])`. If
+        `dim` is not provided, the number of channels is preserved. In case the
+        number of input channels does not equal the number of output channels a
+        n-dimensional interpolation is applied.
+
+    Returns
+    -------
+    resized : ndarray
+        Resized version of the input.
+
+    Other parameters
+    ----------------
+    order : int, optional
+        The order of the spline interpolation, default is 1. The order has to
+        be in the range 0-5. See `skimage.transform.warp` for detail.
+    mode : {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}, optional
+        Points outside the boundaries of the input are filled according
+        to the given mode.  Modes match the behaviour of `numpy.pad`.
+    cval : float, optional
+        Used in conjunction with mode 'constant', the value outside
+        the image boundaries.
+    clip : bool, optional
+        Whether to clip the output to the range of values of the input image.
+        This is enabled by default, since higher order interpolation may
+        produce values outside the given input range.
+    preserve_range : bool, optional
+        Whether to keep the original range of values. Otherwise, the input
+        image is converted according to the conventions of `img_as_float`.
+        Also see https://scikit-image.org/docs/dev/user_guide/data_types.html
+    anti_aliasing : bool, optional
+        Whether to apply a Gaussian filter to smooth the image prior to
+        down-scaling. It is crucial to filter when down-sampling the image to
+        avoid aliasing artifacts.
+    anti_aliasing_sigma : {float, tuple of floats}, optional
+        Standard deviation for Gaussian filtering to avoid aliasing artifacts.
+        By default, this value is chosen as (s - 1) / 2 where s is the
+        down-scaling factor, where s > 1. For the up-size case, s < 1, no
+        anti-aliasing is performed prior to rescaling.
+
+    Notes
+    -----
+    Modes 'reflect' and 'symmetric' are similar, but differ in whether the edge
+    pixels are duplicated during the reflection.  As an example, if an array
+    has values [0, 1, 2] and was padded to the right by four values using
+    symmetric, the result would be [0, 1, 2, 2, 1, 0, 0], while for reflect it
+    would be [0, 1, 2, 1, 0, 1, 2].
+
+    # TODO
+    # Notes
+    # * `preserve_range` disabled. Call ``skimage.img_as_float32`` before using
+    #   skipp.tranform.resize. This func doesn't convert provided image to float
+    #   types and `preserve_range` feature is not implemented
+    # * supported borders
+    # * supported interpolations
+    # * supported data types
+    # * supported dimentions
+    # * disabled params
+    # * Bi-cubic
+    # Examples
+    # * examples with image_as_float (for `preserve_range`)
+
+    Examples
+    --------
+    >>> from skimage import data
+    >>> from skimage.transform import resize
+    >>> image = data.camera()
+    >>> resize(image, (100, 100)).shape
+    (100, 100)
+
+    """
+    cdef int ippStatusIndex = 0  # OK
+    cdef void * cyimage
+    cdef void * cydestination
+
+    cdef IppDataType ipp_src_datatype
+
+    cdef int img_width
+    cdef int img_height
+
+    cdef int dst_width
+    cdef int dst_height
+
+    cdef int numChannels
+
+    cdef IppiInterpolationType interpolation
+
+    cdef Ipp32u antialiasing
+
+    # TODO
+    # check after
+    cdef double ippBorderValue = cval
+
+    ipp_src_datatype = __get_ipp_data_type(image)
+    if(ipp_src_datatype == ippUndef):
+        raise ValueError("Image data type not supported")
+
+    interpolation = __get_IppiInterpolationType(order)
+    if(interpolation == UndefValue):
+        raise ValueError("Undef `order` or not supported")
+
+    if(image.ndim == 2):
+        numChannels = 1
+    elif(image.ndim == 3) & (image.shape[-1] == 3):
+        numChannels = 3
+    else:
+        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
+
+    cdef IppiBorderType ippBorderType = __get_IppBorderType(mode)
+    if(ippBorderType == UndefValue):
+        raise ValueError("Boundary mode not supported")
+
+    if anti_aliasing:
+        antialiasing = <Ipp32u>1
+    else:
+        antialiasing = <Ipp32u>0
+
+    # TODO
+    # more safe initialization
+    img_width = image.shape[1]
+    img_height = image.shape[0]
+
+    dst_width = output_shape[1]
+    dst_height = output_shape[0]
+
+    if numChannels == 1:
+        output = np.empty((dst_height, dst_width), dtype=image.dtype,
+                               order='C')
+    else:
+        output = np.empty((dst_height, dst_width, numChannels),
+                               dtype=image.dtype, order='C')
+
+    cyimage = <void*> cnp.PyArray_DATA(image)
+    cydestination = <void*> cnp.PyArray_DATA(output)
+
+    ippStatusIndex = transform.own_Resize(ipp_src_datatype,
+                                          cyimage,
+                                          cydestination,
+                                          img_width,
+                                          img_height,
+                                          dst_width,
+                                          dst_height,
+                                          numChannels,
+                                          antialiasing,
+                                          interpolation,
+                                          ippBorderType,
+                                          ippBorderValue)
+    __get_ipp_error(ippStatusIndex)
+    return output

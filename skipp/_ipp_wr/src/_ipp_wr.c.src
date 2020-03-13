@@ -719,3 +719,616 @@ ippi@ippi_morphology_func@Border(
     return status;
 }
 /**end repeat**/
+
+/**************************************************************************************
+ * transform module
+ * funcs ...
+ **************************************************************************************/
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for:  Intel(R) IPP's ippiWarpAffineNearest_<mode>,
+//    ippiWarpAffineLinear_<mode> and ippiWarpAffineCubic_<mode>, where <mode> is:
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 64fC1R, 8uC3R, 16uC3R, 16sC3R, 32fC3R, 64fC3R,
+//    8uC4R, 16uC4R, 16sC4R, 32fC4R or 64fC4R.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+_ippiWarpAffine_interpolation(
+    IppDataType ippDataType,
+    IppiInterpolationType interpolation,
+    int numChannels,
+    void * pSrc,
+    int srcStep,
+    void * pDst,
+    int dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    IppiWarpSpec* pSpec,
+    Ipp8u * pBuffer)
+{
+    IppStatus status = ippStsNoErr;
+    /**begin repeat
+     *
+     * #chn = 1, 3, 4#
+     * #cond_stat = if, else if, else if#
+     */
+    @cond_stat@ (numChannels == @chn@)
+    {
+        switch (interpolation)
+        {
+        /**begin repeat1
+         *
+         * #_ipp_interpolation = Nearest, Linear, Cubic#
+         */
+        case ipp@_ipp_interpolation@:
+        {
+            switch (ippDataType)
+            {
+                /**begin repeat2
+                 *
+                 * #ipp_type = 8u, 16u, 16s, 32f, 64f#
+                 */
+                case ipp@ipp_type@:
+                {
+                    status = ippiWarpAffine@_ipp_interpolation@_@ipp_type@_C@chn@R(pSrc,
+                        srcStep, pDst, dstStep, dstOffset, dstSize, pSpec, pBuffer);
+                    break;
+                }
+                /**end repeat2**/
+                default:
+                {
+                    status = ippStsDataTypeErr;
+                }
+            }
+            break;
+        }
+        /**end repeat1**/
+        default:
+        {
+            status = ippStsErr;
+        }
+        }
+    }
+    /**end repeat**/
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeGetSize_<mode> function, where <mode> is:
+//    8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetSize(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    IppiInterpolationType interpolation,
+    Ipp32u antialiasing,
+    int* pSpecSize,
+    int* pInitBufSize)
+{
+    IppStatus status = ippStsNoErr;
+    switch (ippDataType)
+    {
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeGetSize_@ipp_type@(srcSize, dstSize, interpolation,
+            antialiasing, pSpecSize, pInitBufSize);
+        break;
+    }
+    /**end repeat**/
+    /*
+    case ipp64f:
+    {
+        // TODO
+        // needs specific pSpecSize initialization
+        status = ippiResizeGetSize_64f(srcSize, dstSize, interpolation,
+                  antialiasing, pSpecSize, pInitBufSize);
+        break;
+    }
+    */
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeGetBufferSize_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetBufferSize(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiSize dstSize,
+    Ipp32u numChannels,
+    int* pBufSize)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeGetBufferSize_@ipp_type@(pSpec, dstSize,
+            numChannels, pBufSize);
+        break;
+    }
+    /**end repeat**/
+    /*
+    // TODO
+    pSpec is not 32f
+    case ipp64f:
+    {
+        status = ippiResizeGetBufferSize_64f(pSpec, dstSize, numChannels, pBufSize);
+        break;
+    }
+    */
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeAntialiasing_<mode> function, where <mode>
+//    is: 8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R, 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeAntialiasing(
+    IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer)
+{
+    IppStatus status = ippStsNoErr;
+
+    /**begin repeat
+     *
+     * #chn = 1, 3, 4#
+     * #cond_stat = if, else if, else if#
+     */
+    @cond_stat@ (numChannels == @chn@)
+    {
+        switch (ippDataType)
+        {
+            /**begin repeat1
+             *
+             * #ipp_type = 8u, 16u, 16s, 32f#
+             */
+            case ipp@ipp_type@:
+            {
+                status = ippiResizeAntialiasing_@ipp_type@_C@chn@R(pSrc, srcStep, pDst,
+                    dstStep, dstOffset, dstSize, border, 0, pSpec, pBuffer);
+                break;
+            }
+            /**end repeat1**/
+            default:
+            {
+                status = ippStsDataTypeErr;
+            }
+        }
+    }
+    /**end repeat**/
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeNearest, ippiResizeLinear and ippiResizeCubic
+//    Intel(R) IPP functions.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResize(IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,
+    IppiInterpolationType interpolation,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer)
+{
+    IppStatus status = ippStsNoErr;
+    switch (interpolation)
+    {
+    case ippNearest:
+    {
+        status = ippiResizeNearest(ippDataType, pSrc, srcStep, pDst, dstStep,
+            dstOffset, dstSize, numChannels, pSpec, pBuffer);
+        break;
+    }
+    case ippLinear:
+    {
+        status = ippiResizeLinear(ippDataType, pSrc, srcStep, pDst, dstStep,
+            dstOffset, dstSize, numChannels, border, pBorderValue, pSpec, pBuffer);
+        break;
+    }
+    case ippCubic:
+    {
+        status = ippiResizeCubic(ippDataType, pSrc, srcStep, pDst, dstStep,
+            dstOffset, dstSize, numChannels, border, pBorderValue, pSpec, pBuffer);
+        status = ippStsErr;
+        break;
+    }
+    default:
+    {
+        status = ippStsInterpolationErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeNearest_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeNearest(IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer)
+{
+    // adapter for: ippiResizeNearest_<mod>,
+    // where <mode> is ...
+    IppStatus status = ippStsNoErr;
+
+    /**begin repeat
+     *
+     * #_numChannels = 1, 3, 4#
+     * #Cond_stat = if, else if, else if#
+     */
+    @Cond_stat@ (numChannels == @_numChannels@)
+    {
+        switch (ippDataType)
+        {
+            /**begin repeat1
+             *
+             * #ipp_type = 8u, 16u, 16s, 32f#
+             */
+            case ipp@ipp_type@:
+            {
+                status = ippiResizeNearest_@ipp_type@_C@_numChannels@R(pSrc, srcStep,
+                    pDst, dstStep, dstOffset, dstSize, pSpec, pBuffer);
+            break;
+            }
+            /**end repeat1**/
+            default:
+            {
+                status = ippStsDataTypeErr;
+            }
+        }
+    }
+    /**end repeat**/
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeLinear_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeLinear(IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,               // TODO
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer)
+{
+    // adapter for: ippiResizeLinear_<mod>,
+    // where <mode> is ...
+    IppStatus status = ippStsNoErr;
+
+    /**begin repeat
+     *
+     * #_numChannels = 1, 3, 4#
+     * #Cond_stat = if, else if, else if#
+     */
+    @Cond_stat@ (numChannels == @_numChannels@)
+    {
+        switch (ippDataType)
+        {
+            /**begin repeat1
+             *
+             * #ipp_type = 8u, 16u, 16s, 32f#
+             */
+            case ipp@ipp_type@:
+            {
+                status = ippiResizeLinear_@ipp_type@_C@_numChannels@R(pSrc, srcStep,
+                    pDst, dstStep, dstOffset, dstSize, border,0, pSpec, pBuffer);
+            break;
+            }
+            /**end repeat1**/
+
+            /*
+            * TODO:
+            * adding ippiResizeLinear_64f_C<number_of_channels>R
+            *
+            */
+            /*
+            case ipp64f:
+            {
+                status = ippiResizeLinear_64f_C@_numChannels@R(pSrc, srcStep, pDst,
+                dstStep, dstOffset, dstSize, border, 0, pSpec, pBuffer);
+                break;
+            }
+            */
+            default:
+            {
+                status = ippStsDataTypeErr;
+            }
+        }
+    }
+    /**end repeat**/
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeCubic_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeCubic(IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,               // TODO
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer)
+{
+    // adapter for: ippiResizeCubic_<mod>,
+    // where <mode> is ...
+    IppStatus status = ippStsNoErr;
+
+    /**begin repeat
+     *
+     * #_numChannels = 1, 3, 4#
+     * #Cond_stat = if, else if, else if#
+     */
+    @Cond_stat@ (numChannels == @_numChannels@)
+    {
+        switch (ippDataType)
+        {
+            /**begin repeat1
+             *
+             * #ipp_type = 8u, 16u, 16s, 32f#
+             */
+            case ipp@ipp_type@:
+            {
+                status = ippiResizeCubic_@ipp_type@_C@_numChannels@R(pSrc, srcStep,
+                    pDst, dstStep, dstOffset, dstSize, border, 0, pSpec, pBuffer);
+            break;
+            }
+            /**end repeat1**/
+
+            /*
+            * TODO:
+            * adding ippiResizeCubic_64f_C<number_of_channels>R
+            *
+            */
+            /*
+            case ipp64f:
+            {
+                status = ippiResizeCubic_64f_C@_numChannels@R(pSrc, srcStep,
+                pDst, dstStep, dstOffset, dstSize, border, 0, pSpec, pBuffer);
+            }
+            */
+            default:
+            {
+                status = ippStsDataTypeErr;
+            }
+        }
+    }
+    /**end repeat**/
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeNearestInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeNearestInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    IppiResizeSpec_32f* pSpec)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeNearestInit_@ipp_type@(srcSize, dstSize, pSpec);
+        break;
+    }
+    /**end repeat**/
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeLinearInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeLinearInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    IppiResizeSpec_32f* pSpec)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeLinearInit_@ipp_type@(srcSize, dstSize, pSpec);
+        break;
+    }
+    /**end repeat**/
+    /*
+     * TODO:
+     * 64f
+    case ipp64f:
+    {
+        status = ippiResizeLinearInit_64f(srcSize, dstSize, pSpec);
+        break;
+    }
+    */
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeCubicInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeCubicInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    Ipp32f valueB,
+    Ipp32f valueC,
+    IppiResizeSpec_32f* pSpec,
+    Ipp8u* pInitBuf)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeCubicInit_@ipp_type@(srcSize, dstSize, valueB, valueC,
+            pSpec, pInitBuf);
+        break;
+    }
+    /**end repeat**/
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}

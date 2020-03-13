@@ -268,4 +268,214 @@ ippiDilateBorder(
     float ippBorderValue,
     const IppiMorphState * pSpec,
     Ipp8u* pBuffer);
+
+/**************************************************************************************
+ * transform module
+ * funcs ...
+ **************************************************************************************/
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for:  Intel(R) IPP's ippiWarpAffineNearest_<mode>,
+//    ippiWarpAffineLinear_<mode> and ippiWarpAffineCubic_<mode>, where <mode> is:
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 64fC1R, 8uC3R, 16uC3R, 16sC3R, 32fC3R, 64fC3R,
+//    8uC4R, 16uC4R, 16sC4R, 32fC4R or 64fC4R.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+_ippiWarpAffine_interpolation(
+    IppDataType ippDataType,
+    IppiInterpolationType interpolation,
+    int numChannels,
+    void * pSrc,
+    int srcStep,
+    void * pDst,
+    int dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    IppiWarpSpec* pSpec,
+    Ipp8u * pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeGetSize_<mode> function, where <mode> is:
+//    8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetSize(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    IppiInterpolationType interpolation,
+    Ipp32u antialiasing,
+    int* pSpecSize,
+    int* pInitBufSize);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeGetBufferSize_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetBufferSize(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiSize dstSize,
+    Ipp32u numChannels,
+    int* pBufSize);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeNearest, ippiResizeLinear and ippiResizeCubic
+//    Intel(R) IPP functions.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResize(IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,
+    IppiInterpolationType interpolation,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeAntialiasing_<mode> function, where <mode>
+//    is: 8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R, 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeAntialiasing(
+    IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeLinear_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeLinear(IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,               // TODO
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeNearest_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeNearest(IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeCubic_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeCubic(IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeNearestInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeNearestInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    IppiResizeSpec_32f* pSpec);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeLinearInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeLinearInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    IppiResizeSpec_32f* pSpec);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for Intel(R) IPP's ippiResizeCubicInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeCubicInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    Ipp32f valueB,
+    Ipp32f valueC,
+    IppiResizeSpec_32f* pSpec,
+    Ipp8u* pInitBuf);
 #endif  // _IPP_WR_H
