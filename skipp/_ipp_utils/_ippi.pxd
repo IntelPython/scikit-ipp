@@ -128,13 +128,13 @@ cdef extern from "ippcore.h":
     const char * ippGetStatusString(IppStatus stsCode)
 
 
-cdef extern from "ipptypes_l.h":
+#cdef extern from "ipptypes_l.h":
 #IF _M_AMD64 :
-    ctypedef Ipp64s IppSizeL
+#    ctypedef Ipp64s IppSizeL
 #ELIF __x86_64__:
-    ctypedef Ipp64s IppSizeL
+#    ctypedef Ipp64s IppSizeL
 #ELSE:
-    ctypedef int IppSizeL
+#    ctypedef int IppSizeL
 
 
 #cdef extern from "ipptypes_l.h":
