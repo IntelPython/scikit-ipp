@@ -36,7 +36,6 @@ import skimage.transform
 
 # TODO
 # add checks
-# "image_dtype", [np.float32])
 # @pytest.mark.parametrize("preserve_range", [True, False])
 @pytest.mark.skip(reason="in progress")
 @pytest.mark.parametrize("image_dtype", [np.float32])
@@ -47,8 +46,9 @@ def test_rotate_skimage_similarity(image_dtype, angle, order, preserve_range):
     """
     # Testing scikit-image's and scikit-ipp's rotate transform results
     """
-    #image = np.arange(50*40, dtype=image_dtype).reshape((50, 40))
     image = np.random.RandomState(0).randn(40, 50).astype(np.float32)
-    skimage_rotate = skimage.transform.rotate(image, angle=angle, order=order, preserve_range=preserve_range)
-    skipp_rotate = skipp.transform.rotate(image, angle=angle, order=order, preserve_range=preserve_range)
+    skimage_rotate = skimage.transform.rotate(image, angle=angle, order=order,
+                                              preserve_range=preserve_range)
+    skipp_rotate = skipp.transform.rotate(image, angle=angle, order=order,
+                                          preserve_range=preserve_range)
     assert_allclose(skipp_rotate, skimage_rotate, rtol=1e-05)
