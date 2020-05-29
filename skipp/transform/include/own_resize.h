@@ -25,6 +25,12 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    scikit-ipp's own functions for resizing images, that uses
+//    Intel(R) Integrated Performance Primitives (Intel(R) IPP)
+//
+////////////////////////////////////////////////////////////////////////////////////////
 #ifndef RESIZE_H
 #define RESIZE_H
 #include <stddef.h>

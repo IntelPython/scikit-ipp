@@ -25,6 +25,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ******************************************************************************
 
+# Used acronyms
+# Intel(R) Integrated Performance Primitives (Intel(R) IPP)
+
 import pytest
 import numpy as np
 from skipp.filters import gaussian

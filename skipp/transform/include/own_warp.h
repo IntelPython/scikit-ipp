@@ -27,7 +27,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    scikit-ipp's own functions for image transformations, that uses Intel(R) IPP.
+//    scikit-ipp's own functions for image warp transformations, that uses
+//    Intel(R) Integrated Performance Primitives (Intel(R) IPP).
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 #ifndef WARP_H
@@ -41,7 +42,7 @@
 //
 //    own_RotateCoeffs
 //
-//    own_RotateCoeffs uses Intel(R) IPP's ippiGetRotateShift and
+//    own_RotateCoeffs uses Intel(R) IPP ippiGetRotateShift and
 //    ippiGetRotateTransform functions for getting affine coefficients for the rotation
 //    transform. ippiGetRotateShift, computes shift values for rotation of an image
 //    around the specified center. ippiGetRotateTransform computes the affine
@@ -59,7 +60,7 @@ own_RotateCoeffs(
 //
 //    own_GetAffineDstSize
 //
-//    own_GetAffineDstSize uses Intel(R) IPP's ippiGetAffineBound for computing size
+//    own_GetAffineDstSize uses Intel(R) IPP ippiGetAffineBound for computing size
 //    destination image for the provided coeffs for the affine transformations.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +76,7 @@ own_GetAffineDstSize(
 //
 //    own_Warp
 //
-//    own_Warp uses Intel(R) IPP's funcstions for implementing image warp
+//    own_Warp uses Intel(R) IPP funcstions for implementing image warp
 //    transformations
 //
 //    TODO: complete the description.

@@ -227,7 +227,7 @@ ippiFilterPrewittVertBorder(
  **************************************************************************************/
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-// Adapter for Intel(R) IPP's ippiMorphologyBorderGetSize_<mode> function, where <mode>
+// Adapter for ippiMorphologyBorderGetSize_<mode> function, where <mode>
 // is: 1u_C1R 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ ippiMorphologyBorderGetSize(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-// Adapter for Intel(R) IPP's ippiMorphologyBorderInit_<mode> function, where <mode>
+// Adapter for ippiMorphologyBorderInit_<mode> function, where <mode>
 // is: 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ ippiMorphologyBorderInit(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-// Adapter for Intel(R) IPP's ippiErodeBorder_<mode> function, where <mode> is:
+// Adapter for ippiErodeBorder_<mode> function, where <mode> is:
 // 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -278,7 +278,7 @@ ippiErodeBorder(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-// Adapter for Intel(R) IPP's ippiDilateBorder_<mode> function, where <mode> is:
+// Adapter for ippiDilateBorder_<mode> function, where <mode> is:
 // 8u_C1R, 16u_C1R, 16s_C1R, 32f_C1R, 8u_C3R, 32f_C3R, 8u_C3R or 32f_C3R. 
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -302,7 +302,7 @@ ippiDilateBorder(
  **************************************************************************************/
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for:  Intel(R) IPP's ippiWarpAffineNearest_<mode>,
+//    Adapter for ippiWarpAffineNearest_<mode>,
 //    ippiWarpAffineLinear_<mode> and ippiWarpAffineCubic_<mode>, where <mode> is:
 //    8uC1R, 16uC1R, 16sC1R, 32fC1R, 64fC1R, 8uC3R, 16uC3R, 16sC3R, 32fC3R, 64fC3R,
 //    8uC4R, 16uC4R, 16sC4R, 32fC4R or 64fC4R.
@@ -324,7 +324,7 @@ _ippiWarpAffine_interpolation(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeGetSize_<mode> function, where <mode> is:
+//    Adapter for ippiResizeGetSize_<mode> function, where <mode> is:
 //    8u, 16u, 16s or 32f.
 //
 //    Note: currently ipp64f is not supported. TODO implement this.
@@ -342,7 +342,7 @@ ippiResizeGetSize(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeGetBufferSize_<mode> function, where <mode>
+//    Adapter for ippiResizeGetBufferSize_<mode> function, where <mode>
 //    is: 8u, 16u, 16s or 32f.
 //
 //    Note: currently ipp64f is not supported. TODO implement this.
@@ -359,7 +359,7 @@ ippiResizeGetBufferSize(
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 //    Adapter for ippiResizeNearest, ippiResizeLinear and ippiResizeCubic
-//    Intel(R) IPP functions.
+//    functions.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 IppStatus
@@ -379,7 +379,7 @@ ippiResize(IppDataType ippDataType,
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeAntialiasing_<mode> function, where <mode>
+//    Adapter for ippiResizeAntialiasing_<mode> function, where <mode>
 //    is: 8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
 //    16sC4R or 32fC4R, 
 //
@@ -401,7 +401,7 @@ ippiResizeAntialiasing(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeLinear_<mode> functions, where <mode> is
+//    Adapter for ippiResizeLinear_<mode> functions, where <mode> is
 //    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
 //    16sC4R or 32fC4R.
 //
@@ -424,7 +424,7 @@ ippiResizeLinear(IppDataType ippDataType,
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeNearest_<mode> functions, where <mode> is
+//    Adapter for ippiResizeNearest_<mode> functions, where <mode> is
 //    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
 //    16sC4R or 32fC4R.
 //
@@ -443,7 +443,7 @@ ippiResizeNearest(IppDataType ippDataType,
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeCubic_<mode> functions, where <mode> is
+//    Adapter for ippiResizeCubic_<mode> functions, where <mode> is
 //    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
 //    16sC4R or 32fC4R.
 //
@@ -466,7 +466,7 @@ ippiResizeCubic(IppDataType ippDataType,
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeNearestInit_<mode> functions, where <mode>
+//    Adapter for ippiResizeNearestInit_<mode> functions, where <mode>
 //    is: 8u, 16u, 16s or 32f.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -479,7 +479,7 @@ ippiResizeNearestInit(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeLinearInit_<mode> functions, where <mode>
+//    Adapter for ippiResizeLinearInit_<mode> functions, where <mode>
 //    is: 8u, 16u, 16s or 32f.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -492,7 +492,7 @@ ippiResizeLinearInit(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for Intel(R) IPP's ippiResizeCubicInit_<mode> functions, where <mode>
+//    Adapter for ippiResizeCubicInit_<mode> functions, where <mode>
 //    is: 8u, 16u, 16s or 32f.
 //
 ////////////////////////////////////////////////////////////////////////////////////////

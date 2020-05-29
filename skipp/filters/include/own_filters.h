@@ -27,7 +27,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    scikit-ipp's own functions for filterring images, that uses Intel(R) IPP.
+//    scikit-ipp's own functions for filterring images, that uses
+//    Intel(R) Integrated Performance Primitives (Intel(R) IPP)
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,8 +62,7 @@ typedef enum {
 //
 //          General border filter
 //
-//    Note: own_FilterBorder Intel(R) IPP functions on the backend for implementing
-//          gaussian filtering of image as is in scikit-image.
+//    Note: own_FilterBorder uses Intel IPP functions on the backend
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 IppStatus
@@ -87,8 +87,8 @@ own_FilterBorder(
 //
 //          Gaussian filter
 //
-//    Note: own_FilterGaussian Intel(R) IPP functions on the backend for implementing
-//          gaussian filtering of image as is in scikit-image.
+//    Note: own_FilterGaussian uses Intel IPP functions on the backend for
+//          implementing gaussian filtering of image as is in scikit-image.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 IppStatus
@@ -110,7 +110,7 @@ own_FilterGaussian(
 //
 //          Median filter
 //
-//          own_FilterGaussian uses Intel(R) IPP functions on the backend for
+//          own_FilterGaussian uses Intel IPP functions on the backend for
 //          implementing median filtering of image as is in scikit-image.
 //
 ////////////////////////////////////////////////////////////////////////////////////////

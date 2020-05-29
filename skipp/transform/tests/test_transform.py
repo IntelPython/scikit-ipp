@@ -36,6 +36,8 @@ from skipp.transform import resize
 from skipp.transform import rotate
 from skipp.transform import warp
 
+# Used acronyms
+# Intel(R) Integrated Performance Primitives (Intel(R) IPP)
  
 @pytest.mark.skip(reason="skip: adding invers method")
 def test_warp_tform():

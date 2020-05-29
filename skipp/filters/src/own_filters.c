@@ -27,7 +27,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    scikit-ipp's own functions for filterring images, that uses Intel(R) IPP.
+//    scikit-ipp's own functions for filterring images, that uses
+//    Intel(R) Integrated Performance Primitives (Intel(R) IPP)
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 #include "own_filters.h"
@@ -42,7 +43,7 @@
 //
 //          General border filter
 //
-//    Note: own_FilterBorder Intel(R) IPP functions on the backend for implementing
+//    Note: own_FilterBorder functions on the backend for implementing
 //          gaussian filtering of image as is in scikit-image.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +114,7 @@ own_FilterBorder(
 //
 //          Gaussian filter
 //
-//    Note: own_FilterGaussian Intel(R) IPP functions on the backend for implementing
+//    Note: own_FilterGaussian functions on the backend for implementing
 //          gaussian filtering of image as is in scikit-image.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +178,7 @@ own_FilterGaussian(
 //
 //          Median filter
 //
-//          own_FilterGaussian uses Intel(R) IPP functions on the backend for
+//          own_FilterGaussian uses functions on the backend for
 //          implementing median filtering of image as is in scikit-image.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -339,7 +340,7 @@ own_FilterEdge(
     int sizeof_dst;
     status = get_sizeof(ippDstDataType, &sizeof_dst);
     check_sts(status);
-    // currently IPP supports only 1C images for filtering by prewitt kernels
+    // currently Intel(R) IPP supports only 1C images for filtering by prewitt kernels
     srcStep = numChannels * img_width * sizeof_src;
     dstStep = numChannels * img_width * sizeof_dst;
 
@@ -433,7 +434,7 @@ own_FilterEdge(
         // NOTE:
         // scikit-image's Sobel filter is a wrapper on scipy.ndimage's
         // `convolve` func. `convolve` uses `reflect` border mode.
-        // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type
+        // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type
         // ippiFilterSobelVertBorder_<mode> doesn't supports this border type
         Ipp32f value = (Ipp32f)(-4.0);
         status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
@@ -444,7 +445,7 @@ own_FilterEdge(
         // NOTE:
         // scikit-image's Sobel filter is a wrapper on scipy.ndimage's
         // `convolve` func. `convolve` uses `reflect` border mode.
-        // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type
+        // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type
         // ippiFilterSobelHorizBorder_<mode> doesn't supports this border type
         Ipp32f value = (Ipp32f)4.0;
         status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
@@ -455,7 +456,7 @@ own_FilterEdge(
         // NOTE:
         // scikit-image's Sobel filter is a wrapper on scipy.ndimage's
         // `convolve` func. `convolve` uses `reflect` border mode.
-        // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type
+        // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type
         // ippiFilterSobelBorder_<mode> doesn't supports this border type
         Ipp32f sqrt2 = (Ipp32f)IPP_SQRT2;
         Ipp32f value = (Ipp32f)(4.0 * sqrt2);
@@ -467,7 +468,7 @@ own_FilterEdge(
         // NOTE:
         // scikit-image's prewitt filter is a wrapper on scipy.ndimage's
         // `convolve` func. `convolve` uses `reflect` border mode.
-        // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type  
+        // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type  
         // ippiFilterPrewittVertBorder_<mode> doesn't supports this border type
         Ipp32f value = (Ipp32f)-3.0;
         status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
@@ -479,7 +480,7 @@ own_FilterEdge(
         // NOTE:
         // scikit-image's prewitt filter is a wrapper on scipy.ndimage's
         // `convolve` func. `convolve` uses `reflect` border mode.
-        // In `reflect` border mode is equalen of IPP's ippBorderMirrorR border type
+        // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type
         // ippiFilterPrewittHorizBorder_<mode> doesn't supports this border type
         Ipp32f value = (Ipp32f)3.0;
         status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
