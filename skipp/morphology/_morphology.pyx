@@ -48,9 +48,11 @@ cpdef dilation(image, selem=None, out=None, shift_x=False, shift_y=False):
     in the neighborhood centered at (i,j). Dilation enlarges bright regions
     and shrinks dark regions.
 
+    The function has `skimage.morphology.dilation` like signature,
+    see: https://scikit-image.org/
+
     Parameters
     ----------
-
     image : ndarray
         Image array.
     selem : ndarray, optional
@@ -63,30 +65,30 @@ cpdef dilation(image, selem=None, out=None, shift_x=False, shift_y=False):
     shift_x, shift_y : bool, optional
         shift structuring element about center point. This only affects
         eccentric structuring elements (i.e. selem with even numbered sides).
-
     Returns
     -------
-    dilated : uint8 array, same shape and type as `image`
+    dilated : array, same shape and type as `image`
         The result of the morphological dilation.
 
     Notes
-    -----
-    * Selem should be only `uint8` dtype.
-    * `image` and `out` should be the same data type
-    * Currently `dilation` function supports `image` the following types:
-      one channel image: `uint8`, `uint16`, `int16`, `float32`
-      three channel image: `uint8`, `float32`
-      four channel image: `uint8`, `float32`
-    * scikit-ipp's `dilation` function currently doesn't process `shift_x`,
-      and `shift_y` params.
-    * In `scikit-image` if selem is None, it generates by scipy.ndimage's function
-      generate_binary_structure, like this:
-        if selem is None:
-            selem = ndi.generate_binary_structure(image.ndim, image.ndim)
-      `scikit-ipp` creates directly ndarray of ones with shape (3, 1) for 1D images,
-      ndarraywith shape (3, 3) like a `skimage.morphology.selem.diamond(radius=1)` for
-      2D grayscale images and ndarray with shape (3, 3, 3)
-      (`skimage.morphology.selem.diamond(radius=1) for each channel).
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiDilateBorder_<mod> on the backend,
+    that performs dilation of an image, see: `DilateBorder` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
+    - The `selem` should be only `uint8` dtype.
+    - The `image` and `out` should be the same data type
+    - Currently `dilation` function supports `image` of the following types:
+        one channel image: `uint8`, `uint16`, `int16`, `float32`
+        three channel image: `uint8`, `float32`
+        four channel image: `uint8`, `float32`
+    - Currently `out`, `shift_x`, `shift_y` are not processed.
+    - If `selem` is None:
+        `scikit-ipp` creates directly ndarray with shape (3, 3) like a
+        `skimage.morphology.selem.diamond(radius=1)` for
+        2D grayscale images and ndarray with shape (3, 3, 3) like a
+        (`skimage.morphology.selem.diamond(radius=1) for each channel).
 
     Examples
     --------
@@ -203,6 +205,9 @@ cpdef erosion(image, selem=None, out=None, shift_x=False, shift_y=False):
     in the neighborhood centered at (i,j). Erosion shrinks bright regions and
     enlarges dark regions.
 
+    The function has `skimage.morphology.erosion` like signature,
+    see: https://scikit-image.org/
+
     Parameters
     ----------
     image : ndarray
@@ -219,27 +224,28 @@ cpdef erosion(image, selem=None, out=None, shift_x=False, shift_y=False):
 
     Returns
     -------
-    eroded : array, same shape as `image`
+    eroded : array, same shape and type as `image`
         The result of the morphological erosion.
 
     Notes
-    -----
-    * Selem should be only `uint8` dtype.
-    * `image` and `out` should be the same data type
-    * Currently `erosion` function supports `image` the following types:
-      one channel image: `uint8`, `uint16`, `int16`, `float32`
-      three channel image: `uint8`, `float32`
-      four channel image: `uint8`, `float32`
-    * scikit-ipp's `erosion` function currently doesn't process `shift_x`,
-      and `shift_y` params.
-    * In `scikit-image` if selem is None, it generates by scipy.ndimage's function
-      generate_binary_structure, like this:
-        if selem is None:
-            selem = ndi.generate_binary_structure(image.ndim, image.ndim)
-      `scikit-ipp` creates directly ndarray of ones with shape (3, 1) for 1D images,
-      ndarraywith shape (3, 3) like a `skimage.morphology.selem.diamond(radius=1)` for
-      2D grayscale images and ndarray with shape (3, 3, 3)
-      (`skimage.morphology.selem.diamond(radius=1) for each channel).
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiErodeBorder_<mod> on the backend,
+    that performs dilation of an image, see: `ErodeBorder` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
+    - The `selem` should be only `uint8` dtype.
+    - The `image` and `out` should be the same data type
+    - Currently `dilation` function supports `image` of the following types:
+        one channel image: `uint8`, `uint16`, `int16`, `float32`
+        three channel image: `uint8`, `float32`
+        four channel image: `uint8`, `float32`
+    - Currently `out`, `shift_x`, `shift_y` are not processed.
+    - If `selem` is None:
+       `scikit-ipp` creates directly ndarray with shape (3, 3) like a
+       `skimage.morphology.selem.diamond(radius=1)` for
+       2D grayscale images and ndarray with shape (3, 3, 3) like a
+       (`skimage.morphology.selem.diamond(radius=1) for each channel).
 
     Examples
     --------

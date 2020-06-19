@@ -136,12 +136,15 @@ class AffineTransform(object):
 cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
            mode='constant', cval=0., clip=True, preserve_range=False):
     """Warp an image according to a given coordinate transformation.
-    # TODO - update docstrings
+
+    The function has `skimage.transform.warp` like signature,
+    see: https://scikit-image.org/
+
     Parameters
     ----------
     image : ndarray
         Input image.
-    inverse_map : transformation object, callable ``cr = f(cr, **kwargs)``, or ndarray
+    inverse_map : transformation object or ndarray
         Inverse coordinate map, which transforms coordinates in the output
         images into their corresponding coordinates in the input image.
         There are a number of different options to define this map, depending
@@ -149,28 +152,13 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
         dimensions for gray-scale images, or 3 dimensions with color
         information.
          - For 2-D images, you can directly pass a transformation object,
-           e.g. `skimage.transform.SimilarityTransform`, or its inverse.
+           e.g. `skipp.transform.AffineTransform`.
          - For 2-D images, you can pass a ``(3, 3)`` homogeneous
-           transformation matrix, e.g.
-           `skimage.transform.SimilarityTransform.params`.
-         - For 2-D images, a function that transforms a ``(M, 2)`` array of
-           ``(col, row)`` coordinates in the output image to their
-           corresponding coordinates in the input image. Extra parameters to
-           the function can be specified through `map_args`.
-         - For N-D images, you can directly pass an array of coordinates.
-           The first dimension specifies the coordinates in the input image,
-           while the subsequent dimensions determine the position in the
-           output image. E.g. in case of 2-D images, you need to pass an array
-           of shape ``(2, rows, cols)``, where `rows` and `cols` determine the
-           shape of the output image, and the first dimension contains the
-           ``(row, col)`` coordinate in the input image.
-           See `scipy.ndimage.map_coordinates` for further documentation.
+           transformation matrix, e.g. `skipp.transform.AffineTransform.params`.
         Note, that a ``(3, 3)`` matrix is interpreted as a homogeneous
-        transformation matrix, so you cannot interpolate values from a 3-D
-        input, if the output is of shape ``(3,)``.
+        transformation matrix.
         See example section for usage.
     map_args : dict, optional
-        Keyword arguments passed to `inverse_map`.
     output_shape : tuple (rows, cols), optional
         Shape of the output image generated. By default the shape of the input
         image is preserved.  Note that, even for multi-band images, only rows
@@ -178,14 +166,14 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     order : int, optional
         The order of interpolation. The order has to be in the range 0-5:
          - 0: Nearest-neighbor
-         - 1: Bi-linear (default)
-         - 2: Bi-quadratic
-         - 3: Bi-cubic
-         - 4: Bi-quartic
-         - 5: Bi-quintic
-    mode : {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}, optional
+         - 1: linear (default)
+         - 2: Bi-quadratic [not supported]
+         - 3: cubic
+         - 4: Bi-quartic [not supported]
+         - 5: Bi-quintic [not supported]
+    mode : {'constant', 'nearest', 'transp'}, optional
         Points outside the boundaries of the input are filled according
-        to the given mode.  Modes match the behaviour of `numpy.pad`.
+        to the given mode.
     cval : float, optional
         Used in conjunction with mode 'constant', the value outside
         the image boundaries.
@@ -194,70 +182,58 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
         This is enabled by default, since higher order interpolation may
         produce values outside the given input range.
     preserve_range : bool, optional
-        Whether to keep the original range of values. Otherwise, the input
-        image is converted according to the conventions of `img_as_float`.
-        Also see
-        https://scikit-image.org/docs/dev/user_guide/data_types.html
+        Whether to keep the original range of values.
     Returns
     -------
-    warped : double ndarray
-        The warped input image.
+    warped : ndarray
+        The warped input image, same type as `image`.
     Notes
-    -----
-    - The input image is converted to a `double` image.
-    - In case of a `SimilarityTransform`, `AffineTransform` and
-      `ProjectiveTransform` and `order` in [0, 3] this function uses the
-      underlying transformation matrix to warp the image with a much faster
-      routine.
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiWarpAffineLinear_<mod>,  ippiWarpAffineNearest_<mod>
+    and ippiWarpAffineCubic_<mod> on the backend, that performs
+    warp affine transformation of an image using the linear,
+    nearest neighbor or cubic interpolation method, see: `WarpAffineLinear`,
+    `WarpAffineCubic`, `WarpAffineNearest` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
+    - Currently `rotate` function supports `image` of the following types
+      for one, three and four channel images:
+        `uint8`, `uint16`, `int16`, `float32`, `float64`
+    - Currently modes don't match the behaviour of `numpy.pad`.
+    - Currently `map_args`, `clip`, `preserve_range` are not processed.
+    - ``scikit-image`` uses Catmull-Rom spline (0.0, 0.5). In `scikit-ipp` the same
+      method was implemented. [1]
+    References
+    ----------
+    .. [1] Don P. Mitchell, Arun N. Netravali. Reconstruction Filters in Computer Graphics.
+           Computer Graphics, Volume 22, Number 4, AT&T Bell Laboratories, Murray Hill,
+           New Jersey, August 1988.
+
     Examples
     --------
-    >>> from skimage.transform import warp
+    >>> from skipp.transform import warp
     >>> from skimage import data
     >>> image = data.camera()
+
     The following image warps are all equal but differ substantially in
     execution time. The image is shifted to the bottom.
-    Use a geometric transform to warp an image (fast):
-    >>> from skimage.transform import SimilarityTransform
-    >>> tform = SimilarityTransform(translation=(0, -10))
-    >>> warped = warp(image, tform)
-    Use a callable (slow):
-    >>> def shift_down(xy):
-    ...     xy[:, 1] -= 10
-    ...     return xy
-    >>> warped = warp(image, shift_down)
+
     Use a transformation matrix to warp an image (fast):
+
     >>> matrix = np.array([[1, 0, 0], [0, 1, -10], [0, 0, 1]])
     >>> warped = warp(image, matrix)
-    >>> from skimage.transform import ProjectiveTransform
-    >>> warped = warp(image, ProjectiveTransform(matrix=matrix))
-    You can also use the inverse of a geometric transformation (fast):
-    >>> warped = warp(image, tform.inverse)
-    For N-D images you can pass a coordinate array, that specifies the
-    coordinates in the input image for every element in the output image. E.g.
-    if you want to rescale a 3-D cube, you can do:
-    >>> cube_shape = np.array([30, 30, 30])
-    >>> cube = np.random.rand(*cube_shape)
-    Setup the coordinate array, that defines the scaling:
-    >>> scale = 0.1
-    >>> output_shape = (scale * cube_shape).astype(int)
-    >>> coords0, coords1, coords2 = np.mgrid[:output_shape[0],
-    ...                    :output_shape[1], :output_shape[2]]
-    >>> coords = np.array([coords0, coords1, coords2])
-    Assume that the cube contains spatial data, where the first array element
-    center is at coordinate (0.5, 0.5, 0.5) in real space, i.e. we have to
-    account for this extra offset when scaling the image:
-    >>> coords = (coords + 0.5) / scale - 0.5
-    >>> warped = warp(cube, coords)
+
+    Use a geometric transform to warp an image (fast):
+    >>> from skipp.transform import AffineTransform
+    >>> tform = AffineTransform(translation=(0, -10))
+    >>> warped = warp(image, tform)
     """
     cdef int ippStatusIndex = 0  # OK
     cdef void * cyimage
     cdef void * cydestination
     cdef double * cy_coeffs
-    #cdef double * cy_inverse_map_matrix  # ndarray: ``(3, 3)`` homogeneous transformation matrix
 
-    #cdef cnp.ndarray coeffs =  np.zeros((2, 3), dtype = np.double, order='C')
-    # ~~~~ currently
-    #cy_coeffs = <double*> cnp.PyArray_DATA(coeffs)
     if isinstance(inverse_map, AffineTransform):
         cy_coeffs = <double * > cnp.PyArray_DATA(inverse_map.params[:2])
     elif isinstance(inverse_map, np.ndarray):
@@ -311,13 +287,17 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
         numChannels = 3
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
-
+    # TODO:
+    # change modes names as is in `scikit-image`
+    # match them with `numpy.pad`
+    # {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}
+    # update __get_IppBorderType
     cdef IppiBorderType ippBorderType = __get_IppBorderType(mode)
     if(ippBorderType == UndefValue):
         raise ValueError("Boundary mode not supported")
 
     # TODO
-    # more safete initialization
+    # more safe initialization
     img_width = image.shape[1]
     img_height = image.shape[0]
 
@@ -358,11 +338,13 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
 cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
              cval=0, clip=True, preserve_range=False):
     """Rotate image by a certain angle around its center.
-    # TODO
+
+    The function has `skimage.transform.rotate` like signature,
+    see: https://scikit-image.org/
     Parameters
     ----------
     image : ndarray
-        Input image.
+        Input 2D image.
     angle : float
         Rotation angle in degrees in counter-clockwise direction.
     resize : bool, optional
@@ -374,64 +356,59 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
         its center, i.e. ``center=(cols / 2 - 0.5, rows / 2 - 0.5)``.  Please
         note that this parameter is (cols, rows), contrary to normal skimage
         ordering.
-        # TODO
-        in scikit-ipp:
-            img_width/2 -0.5
-            img_height/2 0.5
     Returns
     -------
     rotated : ndarray
-        Rotated version of the input.
+        Rotated version of the 2D input image.
     Other parameters
     ----------------
     order : int, optional
         The order of the spline interpolation, default is 1. The order has to be
         in the range 0-5:
          - 0: Nearest-neighbor
-         - 1: Bi-linear (default)
-         - 2: Bi-quadratic
-         - 3: Bi-cubic
-         - 4: Bi-quartic
-         - 5: Bi-quintic
-    mode : {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}, optional
+         - 1: linear (default)
+         - 2: Bi-quadratic [not supported]
+         - 3: cubic
+         - 4: Bi-quartic [not supported]
+         - 5: Bi-quintic [not supported]
+    mode : {'nearest', 'constant', 'transp'}, optional
         Points outside the boundaries of the input are filled according
-        to the given mode.  Modes match the behaviour of `numpy.pad`.
+        to the given mode.
     cval : float, optional
         Used in conjunction with mode 'constant', the value outside
         the image boundaries.
     clip : bool, optional
         Whether to clip the output to the range of values of the input image.
-        This is enabled by default, since higher order interpolation may
-        produce values outside the given input range.
     preserve_range : bool, optional
-        Whether to keep the original range of values. Otherwise, the input
-        image is converted according to the conventions of `img_as_float`.
-        Also see
-        https://scikit-image.org/docs/dev/user_guide/data_types.html
+        Whether to keep the original range of values.
     Notes
-    -----
-    Modes 'reflect' and 'symmetric' are similar, but differ in whether the edge
-    pixels are duplicated during the reflection.  As an example, if an array
-    has values [0, 1, 2] and was padded to the right by four values using
-    symmetric, the result would be [0, 1, 2, 2, 1, 0, 0], while for reflect it
-    would be [0, 1, 2, 1, 0, 1, 2].
-    # TODO
-    # Notes
-    # * `preserve_range` disabled. Call ``skimage.img_as_float32`` before using
-    #   skipp.tranform.rotate. This func doesn't convert provided image to float
-    #   types and `preserve_range` feature is not implemented
-    # * supported borders
-    # * supported interpolations
-    # * supported data types
-    # * supported dimentions
-    # * disabled params
-    # * Bi-cubic
-    # Examples
-    # * examples with image_as_float (for `preserve_range`)
+    --------
+    This function uses `skipp.transform.warp` on the backend, and
+    `skipp.transform.warp` in turn uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiWarpAffineLinear_<mod>,  ippiWarpAffineNearest_<mod>
+    and ippiWarpAffineCubic_<mod> on the backend, that performs
+    warp affine transformation of an image using the linear,
+    nearest neighbor or cubic interpolation method, see: `WarpAffineLinear`,
+    `WarpAffineCubic`, `WarpAffineNearest` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
+    - Currently `rotate` function supports `image` of the following types
+      for one, three and four channel images:
+        `uint8`, `uint16`, `int16`, `float32`, `float64`
+    - Currently modes don't match the behaviour of `numpy.pad`.
+    - Currently `clip`, `preserve_range` are not processed.
+    - ``scikit-image`` uses Catmull-Rom spline (0.0, 0.5). In `scikit-ipp` the same
+      method was implemented. [1]
+    References
+    ----------
+    .. [1] Don P. Mitchell, Arun N. Netravali. Reconstruction Filters in Computer Graphics.
+           Computer Graphics, Volume 22, Number 4, AT&T Bell Laboratories, Murray Hill,
+           New Jersey, August 1988.
+
     Examples
     --------
     >>> from skimage import data
-    >>> from skimage.transform import rotate
+    >>> from skipp.transform import rotate
     >>> image = data.camera()
     >>> rotate(image, 2).shape
     (512, 512)
@@ -505,7 +482,7 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
         output_shape = None
     # TODO
     # enable `map_args`
-    #~~~~~~ currently `coeffs` instead of `inverse_map_matrix`
+    # currently `coeffs` instead of `inverse_map_matrix`
     return warp(image, inverse_map=coeffs, map_args={}, output_shape=output_shape, order=order,
                 mode=mode, cval=cval, clip=clip, preserve_range=preserve_range)
 
@@ -514,23 +491,22 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
              preserve_range=False, anti_aliasing=True, anti_aliasing_sigma=None):
 
     """Resize image to match a certain size.
-    # TODO docstrings
-    # update for scikit-ipp
-    Performs interpolation to up-size or down-size N-dimensional images. Note
+
+    Performs interpolation to up-size or down-size 2D images. Note
     that anti-aliasing should be enabled when down-sizing images to avoid
-    aliasing artifacts. For down-sampling with an integer factor also see
-    `skimage.transform.downscale_local_mean`.
+    aliasing artifacts.
+
+    The function has `skimage.transform.resize` like signature,
+    see: https://scikit-image.org/
 
     Parameters
     ----------
     image : ndarray
         Input image.
-    output_shape : tuple or ndarray
-        Size of the generated output image `(rows, cols[, ...][, dim])`. If
-        `dim` is not provided, the number of channels is preserved. In case the
-        number of input channels does not equal the number of output channels a
-        n-dimensional interpolation is applied.
-
+    output_shape : tuple (rows, cols), optional
+        Shape of the output image generated. By default the shape of the input
+        image is preserved.  Note that, even for multi-band images, only rows
+        and columns need to be specified.
     Returns
     -------
     resized : ndarray
@@ -539,8 +515,14 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
     Other parameters
     ----------------
     order : int, optional
-        The order of the spline interpolation, default is 1. The order has to
-        be in the range 0-5. See `skimage.transform.warp` for detail.
+        The order of the spline interpolation, default is 1. The order has to be
+        in the range 0-5:
+         - 0: Nearest-neighbor
+         - 1: linear (default)
+         - 2: Bi-quadratic [not supported]
+         - 3: cubic
+         - 4: Bi-quartic [not supported]
+         - 5: Bi-quintic [not supported]
     mode : {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}, optional
         Points outside the boundaries of the input are filled according
         to the given mode.  Modes match the behaviour of `numpy.pad`.
@@ -549,11 +531,7 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
         the image boundaries.
     clip : bool, optional
         Whether to clip the output to the range of values of the input image.
-        This is enabled by default, since higher order interpolation may
-        produce values outside the given input range.
     preserve_range : bool, optional
-        Whether to keep the original range of values. Otherwise, the input
-        image is converted according to the conventions of `img_as_float`.
         Also see https://scikit-image.org/docs/dev/user_guide/data_types.html
     anti_aliasing : bool, optional
         Whether to apply a Gaussian filter to smooth the image prior to
@@ -561,36 +539,32 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
         avoid aliasing artifacts.
     anti_aliasing_sigma : {float, tuple of floats}, optional
         Standard deviation for Gaussian filtering to avoid aliasing artifacts.
-        By default, this value is chosen as (s - 1) / 2 where s is the
-        down-scaling factor, where s > 1. For the up-size case, s < 1, no
-        anti-aliasing is performed prior to rescaling.
 
     Notes
-    -----
-    Modes 'reflect' and 'symmetric' are similar, but differ in whether the edge
-    pixels are duplicated during the reflection.  As an example, if an array
-    has values [0, 1, 2] and was padded to the right by four values using
-    symmetric, the result would be [0, 1, 2, 2, 1, 0, 0], while for reflect it
-    would be [0, 1, 2, 1, 0, 1, 2].
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs on the backend: ippiResizeNearest_<mod>, ippiResizeLinear_<mod>,
+    ippiResizeCubic_<mod>, that changes an image size using linear, nearest neighbor or
+    cubic interpolation method, and ippiResizeAntialiasing_<mod>,
+    that changes an image size using using the linear, Lanczos and cubic interpolation
+    method with antialiasing, see: `ResizeNearest`,
+    `ResizeLinear`, `ResizeCubic`, `ResizeAntialiasing` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
 
-    # TODO
-    # Notes
-    # * `preserve_range` disabled. Call ``skimage.img_as_float32`` before using
-    #   skipp.tranform.resize. This func doesn't convert provided image to float
-    #   types and `preserve_range` feature is not implemented
-    # * supported borders
-    # * supported interpolations
-    # * supported data types
-    # * supported dimentions
-    # * disabled params
-    # * Bi-cubic
-    # Examples
-    # * examples with image_as_float (for `preserve_range`)
-
+    - Currently `resize` function supports `image` of the following types
+      for one, three and four channel images:
+        `uint8`, `uint16`, `int16`, `float32`.
+    - Currently modes don't match the behaviour of `numpy.pad`.
+    - Currently `clip`, `preserve_range` and `anti_aliasing_sigma` are not
+      processed.
+    - if `antialiasing` is `True`, supported interpolation methods are `linear`
+       and `cubic`.
+      if `antialiasing` is `False`, supported interpolation methods are `nearest`,
+      `linear` and `cubic`.
     Examples
     --------
     >>> from skimage import data
-    >>> from skimage.transform import resize
+    >>> from skipp.transform import resize
     >>> image = data.camera()
     >>> resize(image, (100, 100)).shape
     (100, 100)
@@ -633,6 +607,11 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
 
+    # TODO:
+    # change modes names as is in `scikit-image`
+    # match them with `numpy.pad`
+    # {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}
+    # update __get_IppBorderType
     cdef IppiBorderType ippBorderType = __get_IppBorderType(mode)
     if(ippBorderType == UndefValue):
         raise ValueError("Boundary mode not supported")

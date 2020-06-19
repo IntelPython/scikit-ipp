@@ -75,6 +75,66 @@ def _mask_filter_result(result, mask):
 
 cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
                multichannel=None, preserve_range=False, truncate=4.0):
+    """ Gaussian filter.
+    The function has `skimage.filters.gaussian` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : array-like
+        Input image (grayscale or color) to filter.
+    sigma : scalar, optional
+        Standard deviation for Gaussian kernel.
+    output : array, optional
+        The ``output`` parameter passes an array in which to store the
+        filter output.
+    mode : {'reflect', 'constant', 'nearest', 'mirror'}, optional
+        The ``mode`` parameter determines how the array borders are
+        handled, where ``cval`` is the value when mode is equal to
+        'constant'. Default is 'nearest'.
+    cval : scalar, optional
+        Value to fill past edges of input if ``mode`` is 'constant'. Default
+        is 0.0
+    multichannel : bool, optional (default: None)
+    preserve_range : bool, optional
+    truncate : float, optional
+        Truncate the filter at this many standard deviations.
+    Returns
+    -------
+    filtered_image : ndarray
+        the filtered image array
+    Notes
+    -----
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterGaussianBorder_<mod> on the backend,
+    that performs Gaussian filtering of an image with user-defined borders,
+    see: `FilterGaussianBorder` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
+    - The `image` should be an array of numpy.float32 dtype.
+    - Currently `output`, `multichannel` and `preserve_range` are not processed.
+
+    Examples
+    --------
+    >>> a = np.zeros((3, 3), dtype=np.float32)
+    >>> a[1, 1] = 1
+    >>> a
+    array([[0., 0., 0.],
+           [0., 1., 0.],
+           [0., 0., 0.]])
+    >>> gaussian(a, sigma=0.4)  # mild smoothing
+    array([[0.00163118, 0.03712554, 0.00163118],
+           [0.03712554, 0.844973  , 0.03712554],
+           [0.00163118, 0.03712554, 0.00163118]], dtype=float32)
+    >>> gaussian(a, sigma=1)  # more smoothing
+    array([[0.05858153, 0.09658462, 0.05858153],
+           [0.09658462, 0.15924111, 0.09658462],
+           [0.05858153, 0.09658462, 0.05858153]], dtype=float32)
+    >>> # Several modes are possible for handling boundaries
+    >>> gaussian(a, sigma=1, mode='nearest')
+    array([[0.05858153, 0.09658462, 0.05858153],
+           [0.09658462, 0.15924111, 0.09658462],
+           [0.05858153, 0.09658462, 0.05858153]], dtype=float32)
+    """
     # TODO
     # add warnings for multichannel
 
@@ -83,11 +143,13 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
 
     # TODO
     # get input require
-    # TODO module with numpy.require to provid type that satisfies requirements.
+
+    # TODO
+    # module with numpy.require to provid type that satisfies requirements.
+
     # TODO
     # add to Notes
     # * enabled preserve_range, output
-    # * use scikit-image's img_as_float32 before for non-float images before
 
     cdef int ippStatusIndex = 0  # OK
 
@@ -162,20 +224,66 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     __get_ipp_error(ippStatusIndex)
     return output
 
+
 cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
              shift_y=False, mode='nearest', cval=0.0, behavior='ipp'):
-    """
-    # TODO
-    # add documentation
-    Note: scikit-image's median filter requiers the `image`, that must be a 2-dimensional array
-    scikit-ipp could processing also multichannel image
-    scikit-ipp uses only recantagle shape masks with ones
-    * if mask size is egen ipp raises RuntimeError: ippStsMaskSizeErr: Invalid mask size
-    * behavior disabled default is `ipp`
+    """ Median filter.
+    Return local median of an image.
+    The function has `skimage.filters.median` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : array-like
+        Input image.
+    selem : ndarray, optional
+        If ``behavior=='ipp'``, ``selem`` is a 2-D array of 1's and 0's.
+    out : ndarray, (same dtype as image), optional
+        If None, a new array is allocated.
+    mode : {'constant', 'nearest'}, optional
+        The mode parameter determines how the array borders are handled, where
+        ``cval`` is the value when mode is equal to 'constant'.
+        Default is 'nearest'.
+    cval : scalar, optional
+        Value to fill past edges of input if mode is 'constant'. Default is 0.0
+    behavior : {'ipp'}, optional
+    Returns
+    -------
+    out : 2-D array (same dtype as input image)
+        Output image.
+    Notes
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterMedianBorder_<mod> on the backend,
+    that performs median filtering of an image with user-defined borders,
+    see: `FilterMedianBorder` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
+    - The `image` should be a numpy array with uint8, uint16, int16 or float32
+      dtype.
+    - Currently `out` and `behavior` are not processed.
+      The `behavior` disabled due to only one option existence, default is `ipp`
+      The `mask`, `shift_x` and `shift_y` are not processed - will be deprecated
+      since `scikit-image` v0.17.
+    - `skimage.filters.median` requiers the `image`, that should be a 2-dimensional
+      array. `skipp.filters.median` can also processing also multichannel (3-channel)
+      images.
+    - `scikit-ipp` supports only recantagle shape `selem` with ones.
+      Indicates an error if `selem` shape has a field with a zero, negative
+      or even value.
+    Examples
+    --------
+    >>> from skimage import data
+    >>> import numpy as np
+    >>> from skipp.filters import median
+    >>> img = data.camera()
+    >>> mask = np.ones((5,5), dtype=np.uint8, order='C')
+    >>> med = median(img, mask)
     """
     # TODO
     # get input require
-    # TODO module with numpy.require to provide type that satisfies requirements.
+
+    # TODO
+    # module with numpy.require to provide type that satisfies requirements.
 
     # TODO
     # add documentation
@@ -238,23 +346,50 @@ cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
 
 
 cpdef laplace(image, ksize=3, mask=None):
-    """
-    # TODO
-    # add documentation
+    """Find the edges of an image using the Laplace operator.
+    The function has `skimage.filters.laplace` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : ndarray
+        Image to process.
+    ksize : int, optional
+        Define the size of the discrete Laplacian operator such that it
+        will have a size of (ksize,) * image.ndim.
+    mask : ndarray, optional
+        An optional mask to limit the application to a certain area.
+        Note that pixels surrounding masked regions are also masked to
+        prevent masked regions from affecting the result.
+    Returns
+    -------
+    output : ndarray
+        The Laplace edge map.
     Notes
-    -----
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterBorder_<mod> on the backend,
+    that filters an image using a rectangular filter with coeffs:
+                            0 -1  0
+            Laplace (3x3)  -1  4 -1
+                            0 -1  0
+    for implementing laplace filtering as is in `scikit-image`,
+    see: `FilterBorder` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
 
+    Currently converting integer images into float32 is not supported.
+    The `image` should be an array of numpy.float32 dtype.
+    Examples
+    --------
+    >>> from skimage import data
+    >>> import numpy as np
+    >>> from skipp.filters import laplace
+    >>> img = data.camera().astype(np.float32)
+    >>> lap = laplace(img)
     """
-    # TODO
-    # investigate ksize
-
     # TODO
     # add _get_output
 
-    # currently converting int images into float not supported
-    # That is why funcs is waiting converted by img_as_float32 images
-    # for further processing
-    # if image dtype is not numpy.float32, ValueError will be raised
+    # TODO
     # call before img_as_float32 if it is needed
 
     cdef int ippStatusIndex = 0  # OK
@@ -284,7 +419,6 @@ cpdef laplace(image, ksize=3, mask=None):
     else:
         # TODO
         raise ValueError("currently not supported")
-        # output = np.empty_like(image, dtype=image.float64, order='C')
 
     img_width = image.shape[1]
     img_height = image.shape[0]
@@ -301,10 +435,10 @@ cpdef laplace(image, ksize=3, mask=None):
                                    ippBorderValue)
     __get_ipp_error(ippStatusIndex)
     # TODO
-    # implemented maskfilter IPP
+    # implement by using Intel(R) IPP
     return _mask_filter_result(output, mask)
 
-# >>> edge filter module
+
 cpdef __edge(image, mask=None, edgeKernel=own_filterSobel):
     """Find the edge magnitude using the Sobel transform.
     # TODO
@@ -321,8 +455,6 @@ cpdef __edge(image, mask=None, edgeKernel=own_filterSobel):
     cdef int img_height
     cdef int numChannels
 
-    # ~~~~ remove this func
-    # check_nD(image, 2)
     if(image.ndim == 2):
         numChannels = 1
     else:
@@ -337,7 +469,6 @@ cpdef __edge(image, mask=None, edgeKernel=own_filterSobel):
     else:
         # TODO
         raise ValueError("currently not supported")
-        # output = np.empty_like(image, dtype=image.float64, order='C')
 
     cyimage = <void*> cnp.PyArray_DATA(image)
     cydestination = <void*> cnp.PyArray_DATA(output)
@@ -370,9 +501,50 @@ cpdef __edge(image, mask=None, edgeKernel=own_filterSobel):
 
 
 cpdef sobel(image, mask=None):
-    """Find the edge magnitude using the Sobel transform.
-    # TODO
-    # add documentation
+    """Find edges in an image using the Sobel filter.
+    The function has `skimage.filters.sobel` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : 2-D array
+        Image to process.
+    mask : 2-D array, optional
+        An optional mask to limit the application to a certain area.
+        Note that pixels surrounding masked regions are also masked to
+        prevent masked regions from affecting the result.
+    Returns
+    -------
+    output : 2-D array of float32
+        The Sobel edge map.
+    Notes
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterSobel_<mod> on the backend,
+    see: `FilterSobel` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
+    - Currently converting integer images into float32 is not supported.
+    - The `image` should be an array of numpy.float32 dtype.
+
+    - `skimage.filters.sobel` is a wrapper on ``scipy.ndimage``
+      `convolve` func. `convolve` uses `reflect` border mode.
+      `reflect` border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+      type. ippiFilterSobel_<mode> doesn't supports this border type.
+
+    Take the square root of the sum of the squares of the horizontal and
+    vertical Sobels to get a magnitude that's somewhat insensitive to
+    direction.
+    The 3x3 convolution kernel used in the horizontal and vertical Sobels is
+    an approximation of the gradient of the image (with some slight blurring
+    since 9 pixels are used to compute the gradient at a given pixel). As an
+    approximation of the gradient, the Sobel operator is not completely
+    rotation-invariant.
+    Examples
+    --------
+    >>> from skimage import data
+    >>> from skipp.filters import sobel
+    >>> camera = data.camera().astype(np.float32)
+    >>> edges = sobel(camera)
     """
     # TODO
     # add _get_output
@@ -382,12 +554,44 @@ cpdef sobel(image, mask=None):
 
 cpdef sobel_h(image, mask=None):
     """Find the horizontal edges of an image using the Sobel transform.
-    # TODO
-    # add documentation
+    The function has `skimage.filters.sobel_h` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : 2-D array
+        Image to process.
+    mask : 2-D array, optional
+        An optional mask to limit the application to a certain area.
+        Note that pixels surrounding masked regions are also masked to
+        prevent masked regions from affecting the result.
+    Returns
+    -------
+    output : 2-D array
+        The Sobel edge map.
+    Notes
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterSobelHorizBorder_<mod> on the backend,
+    see: `FilterSobelHorizBorder` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
     We use the following kernel::
       1   2   1
       0   0   0
      -1  -2  -1
+
+    - Currently converting integer images into float32 is not supported.
+    - The `image` should be an array of numpy.float32 dtype.
+    - `skimage.filters.sobel_h` is a wrapper on `scipy.ndimage`
+      `convolve` func. `convolve` uses `reflect` border mode.
+      `reflect` border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+      type. ippiFilterSobelHorizBorder_<mode> doesn't supports this border type.
+    Examples
+    --------
+    >>> from skimage import data
+    >>> from skipp.filters import sobel_h
+    >>> camera = data.camera().astype(np.float32)
+    >>> edges = sobel_h(camera)
     """
     # TODO
     # add _get_output
@@ -397,13 +601,45 @@ cpdef sobel_h(image, mask=None):
 
 cpdef sobel_v(image, mask=None):
     """Find the vertical edges of an image using the Sobel transform.
-    # TODO
-    # add documentation
-    -----
+    The function has `skimage.filters.sobel_v` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : 2-D array
+        Image to process.
+    mask : 2-D array, optional
+        An optional mask to limit the application to a certain area.
+        Note that pixels surrounding masked regions are also masked to
+        prevent masked regions from affecting the result.
+    Returns
+    -------
+    output : 2-D array
+        The Sobel edge map.
+    Notes
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterSobelVertBorder_<mod> on the backend,
+    see: `FilterSobelVertBorder` on
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
     We use the following kernel::
       1   0  -1
       2   0  -2
       1   0  -1
+
+    Currently converting integer images into float32 is not supported.
+    The `image` should be an array of numpy.float32 dtype.
+
+    `skimage.filters.sobel_v` is a wrapper on `scipy.ndimage`
+    `convolve` func. `convolve` uses `reflect` border mode.
+    `reflect` border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+    type. ippiFilterSobelVertBorder_<mode> doesn't supports this border type.
+    Examples
+    --------
+    >>> from skimage import data
+    >>> from skipp.filters import sobel_v
+    >>> camera = data.camera().astype(np.float32)
+    >>> edges = sobel_v(camera)
     """
     # TODO
     # add _get_output
@@ -413,8 +649,47 @@ cpdef sobel_v(image, mask=None):
 
 cpdef prewitt(image, mask=None):
     """Find the edge magnitude using the Prewitt transform.
-    # TODO
-    # add documentation
+    The function has `skimage.filters.prewitt` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : 2-D array
+        Image to process.
+    mask : 2-D array, optional
+        An optional mask to limit the application to a certain area.
+        Note that pixels surrounding masked regions are also masked to
+        prevent masked regions from affecting the result.
+    Returns
+    -------
+    output : 2-D array
+        The Prewitt edge map.
+    Notes
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterPrewittVertBorder_<mod> and
+    ippiFilterPrewittHorizBorder_<mod> on the backend
+    see: `FilterPrewittHorizBorder`, `FilterPrewittVertBorder`
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
+    Currently converting integer images into float32 is not supported.
+    The `image` should be an array of numpy.float32 dtype.
+
+    `skimage.filters.prewitt` is a wrapper on `scipy.ndimage`
+    `convolve` func. `convolve` uses `reflect` border mode.
+    `reflect` border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+    type. ippiFilterPrewittVertBorder_<mode> and  ippiFilterPrewittHorizBorder_<mode>
+    don't support this border type.
+
+    Return the square root of the sum of squares of the horizontal
+    and vertical Prewitt transforms. The edge magnitude depends slightly
+    on edge directions, since the approximation of the gradient operator by
+    the Prewitt operator is not completely rotation invariant.
+    Examples
+    --------
+    >>> from skimage import data
+    >>> from skipp.filters import prewitt
+    >>> camera = data.camera().astype(np.float32)
+    >>> edges = prewitt(camera)
     """
     # TODO
     # add _get_output
@@ -424,12 +699,45 @@ cpdef prewitt(image, mask=None):
 
 cpdef prewitt_h(image, mask=None):
     """Find the horizontal edges of an image using the Prewitt transform.
-    # TODO
-    # add documentation
+    The function has `skimage.filters.prewitt_h` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : 2-D array
+        Image to process.
+    mask : 2-D array, optional
+        An optional mask to limit the application to a certain area.
+        Note that pixels surrounding masked regions are also masked to
+        prevent masked regions from affecting the result.
+    Returns
+    -------
+    output : 2-D array
+        The Prewitt edge map.
+    Notes
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterPrewittHorizBorder_<mod> on the backend
+    see: `FilterPrewittHorizBorder`
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
     We use the following kernel::
       1   1   1
       0   0   0
      -1  -1  -1
+
+    Currently converting integer images into float32 is not supported.
+    The `image` should be an array of numpy.float32 dtype.
+
+    `skimage.filters.prewitt_h` is a wrapper on `scipy.ndimage`
+    `convolve` func. `convolve` uses `reflect` border mode.
+    `reflect` border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+    type. ippiFilterPrewittHorizBorder_<mode> doesn't support this border type.
+    Examples
+    --------
+    >>> from skimage import data
+    >>> from skipp.filters import prewitt_h
+    >>> camera = data.camera().astype(np.float32)
+    >>> edges = prewitt_h(camera)
     """
     # TODO
     # add _get_output
@@ -439,13 +747,45 @@ cpdef prewitt_h(image, mask=None):
 
 cpdef prewitt_v(image, mask=None):
     """Find the vertical edges of an image using the Prewitt transform.
-    # TODO
-    # add documentation
-    -----
+    The function has `skimage.filters.prewitt_v` like signature,
+    see: https://scikit-image.org/
+    Parameters
+    ----------
+    image : 2-D array
+        Image to process.
+    mask : 2-D array, optional
+        An optional mask to limit the application to a certain area.
+        Note that pixels surrounding masked regions are also masked to
+        prevent masked regions from affecting the result.
+    Returns
+    -------
+    output : 2-D array
+        The Prewitt edge map.
+    Notes
+    --------
+    This function uses Intel(R) Integrated Performance Primitives
+    (Intel(R) IPP) funcs: ippiFilterPrewittVertBorder_<mod> on the backend
+    see: `FilterPrewittVertBorder`
+    https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
+
     We use the following kernel::
       1   0  -1
       1   0  -1
       1   0  -1
+
+    Currently converting integer images into float32 is not supported.
+    The `image` should be an array of numpy.float32 dtype.
+
+    `skimage.filters.prewitt_v` is a wrapper on `scipy.ndimage`
+    `convolve` func. `convolve` uses `reflect` border mode.
+    `reflect` border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+    type. ippiFilterPrewittVertBorder_<mode> doesn't support this border type.
+    Examples
+    --------
+    >>> from skimage import data
+    >>> from skipp.filters import prewitt_v
+    >>> camera = data.camera().astype(np.float32)
+    >>> edges = prewitt_v(camera)
     """
     # TODO
     # add _get_output
