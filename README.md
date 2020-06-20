@@ -3,29 +3,10 @@
 
 `scikit-ipp` is a standalone package, provided scikit-image-like API to some of Intel® IPP functions.
 
-- [Documentation]()
+- [Documentation](https://github.intel.com/pages/SAT/scikit-ipp/)
 - [Source Code](https://github.intel.com/SAT/scikit-ipp)
 - [About Intel® IPP](https://software.intel.com/en-us/intel-ipp)
 
-### Modules:
-* __Filters:__
-  + Gaussian
-  + Sobel (sobel, sobel_h, sobel_v, sobel_c)
-  + Prewitt (prewitt, prewitt_h, prewitt_v)
-  + Laplace
-  + Median
-* __Morpholgy:__
-  + Erosion
-  + Dilation
-* __Transform:__
-  + Rotate
-  + Resize
-  + Warp
-  + AffineTranform:
-    - shear
-    - rotation
-    - scale
-    - translation
 
 # Getting started
 `scikit-ipp` is easily built from source with the majority of the necessary prerequisites available on conda.  The instructions below detail how to gather the prerequisites, setting one's build environment, and finally building and installing the completed package.  `scikit-ipp` can be built for two major platforms (Windows, Linux).
