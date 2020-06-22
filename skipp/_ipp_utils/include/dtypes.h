@@ -28,9 +28,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 //                                  
 //    Data types conversion module.
-//    Most of the Intel IPP function support only small scope of data types. This module
-//    was created in order to support all the functionality of `scikit-image`, which
-//    processes on all types of numpy array.          
+//    Most of the Intel(R) Integrated Performance Primitives (Intel(R) IPP) functions
+//    support only small scope of data types. This module was created in order to support
+//    all the functionality of `scikit-image`, which processes on all types of numpy
+//    array.          
 //                                                                                       
 //    Note: this modules was implemented for data types conversion. this implementation is
 //          deprecated. Currently it is unused. It will be re-implemented. 

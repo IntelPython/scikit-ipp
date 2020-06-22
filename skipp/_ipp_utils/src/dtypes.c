@@ -28,9 +28,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 //                                  
 //    Data types conversion module.
-//    Most of the Intel IPP function support only small scope of data types. This module
-//    was created in order to support all the functionality of `scikit-image`, which
-//    processes on all types of numpy array.          
+//    Most of the Intel(R) Integrated Performance Primitives (Intel(R) IPP) functions
+//    support only small scope of data types. This module was created in order to support
+//    all the functionality of `scikit-image`, which processes on all types of numpy
+//    array.          
 //                                                                                       
 //    Note: this modules was implemented for data types conversion. this implementation is
 //          deprecated. Currently it is unused. It will be re-implemented. 
@@ -113,16 +114,17 @@ get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes) {
 
     IppDataTypeMask output_mask = IppDataTypeMaskArray[output_index];
 
-    int result = output_mask & ipp_func_support_dtypes; // if result is not 0 then ipp func supports output dtype
+    int result = output_mask & ipp_func_support_dtypes; // if result is not 0 then Intel(R) IPP 
+                                                        // func supports output dtype
 
-    if (result == 0) // if result is 0 then ipp func doesn't support output dtype
+    if (result == 0) // if result is 0 then Intel(R) IPP func doesn't support output dtype
     {
         IppDataTypeConversionRecomendationMask output_conv_recom_dtypes
             = IppDataTypeConversionRecomendationMaskArray[output_index];
         int output_conv_recom_dtypes_for_ipp_support = ipp_func_support_dtypes & output_conv_recom_dtypes;
         if ((output_conv_recom_dtypes_for_ipp_support > 0)
             && (output_conv_recom_dtypes_for_ipp_support < 0x400))  // 0x400 --> 10000000000
-        { // case when converting into recomended dtypes, that ipp func supports
+        { // case when converting into recomended dtypes, that Intel(R) IPP func supports
             int mask_checker = 0x200;  // 1000000000
             while (mask_checker > 0) {
                 result = mask_checker & output_conv_recom_dtypes_for_ipp_support;
@@ -133,7 +135,7 @@ get_ipp_src_dst_index(int output_index, int ipp_func_support_dtypes) {
             }
         }
         else if (output_conv_recom_dtypes_for_ipp_support == 0)
-        {  // case when converting into only ipp func supported dtypes
+        {  // case when converting into only Intel(R) IPP func supported dtypes
             int mask_checker = 0x1;   // 0000000001
             while (mask_checker < 513) {
                 result = mask_checker & ipp_func_support_dtypes;
