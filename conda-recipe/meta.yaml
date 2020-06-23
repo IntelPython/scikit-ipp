@@ -39,9 +39,9 @@ test:
     commands:
       - pytest -vv
     source_files:
-      - skipp/filters/tests/
+      - skipp/filters/tests/tests/
       - skipp/morphology/tests/
-      - skipp/transform/tests/
+      - skipp/transform/tests/tests/
 
 about:
      license: BSD-3-Clause

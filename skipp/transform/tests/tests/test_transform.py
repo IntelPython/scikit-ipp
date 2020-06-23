@@ -27,9 +27,7 @@
 
 import pytest
 import numpy as np
-from numpy.testing import (assert_array_almost_equal, assert_allclose,
-                           assert_array_equal, assert_allclose, assert_almost_equal)
-from skimage._shared.testing import (assert_equal,TestCase, parametrize, raises)
+from numpy.testing import (assert_allclose, assert_equal, assert_almost_equal)
 
 from skipp.transform import AffineTransform
 from skipp.transform import resize
@@ -162,7 +160,7 @@ def test_resize2d_anti_aliasing(image_dtype, order):
                          np.int64, np.float64])
 def test_resize_not_supported_dtype(image_dtype):
     x = np.zeros((5, 5), dtype=image_dtype)
-    with raises(RuntimeError):
+    with pytest.raises(RuntimeError):
         # output_shape too short
         resize(x, (10, 10), order=0, anti_aliasing=False,
                mode='nearest')
@@ -171,7 +169,7 @@ def test_resize_not_supported_dtype(image_dtype):
 @pytest.mark.parametrize("image_shape", [(10,10,10), (10,)])
 def test_resize_not_supported_ndim(image_shape):
     x = np.zeros(image_shape, dtype=np.float32)
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         # output_shape too short
         resize(x, (10, 10), order=0, anti_aliasing=False,
                mode='nearest')
