@@ -146,8 +146,6 @@ cpdef dilation(image, selem=None, out=None, shift_x=False, shift_y=False):
     # will be romoved
     cdef float ippBorderValue = float(0)
 
-    # TODO
-    # add case when selem is shape
     if selem is None:
         if image.ndim == 1:
             selem = np.ones((3, 1), dtype=np.uint8, order='C')
@@ -302,8 +300,6 @@ cpdef erosion(image, selem=None, out=None, shift_x=False, shift_y=False):
     # will be romoved
     cdef float ippBorderValue = float(0)
 
-    # TODO
-    # add case when selem is shape
     if selem is None:
         if image.ndim == 1:
             selem = np.ones((3, 1), dtype=np.uint8, order='C')
