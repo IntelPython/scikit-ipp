@@ -72,7 +72,6 @@ class AffineTransform(object):
     ----------
     params : (3, 3) array
         Homogeneous transformation matrix.
-
     """
 
     _coeffs = range(6)
@@ -159,6 +158,7 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
         transformation matrix.
         See example section for usage.
     map_args : dict, optional
+        Keyword arguments passed to `inverse_map`.
     output_shape : tuple (rows, cols), optional
         Shape of the output image generated. By default the shape of the input
         image is preserved.  Note that, even for multi-band images, only rows
@@ -183,10 +183,12 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
         produce values outside the given input range.
     preserve_range : bool, optional
         Whether to keep the original range of values.
+
     Returns
     -------
     warped : ndarray
         The warped input image, same type as `image`.
+
     Notes
     --------
     This function uses Intel(R) Integrated Performance Primitives
@@ -204,6 +206,7 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     - Currently `map_args`, `clip`, `preserve_range` are not processed.
     - ``scikit-image`` uses Catmull-Rom spline (0.0, 0.5). In `scikit-ipp` the same
       method was implemented. [1]
+
     References
     ----------
     .. [1] Don P. Mitchell, Arun N. Netravali. Reconstruction Filters in Computer Graphics.
@@ -215,16 +218,12 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     >>> from skipp.transform import warp
     >>> from skimage import data
     >>> image = data.camera()
-
-    The following image warps are all equal but differ substantially in
-    execution time. The image is shifted to the bottom.
-
-    Use a transformation matrix to warp an image (fast):
-
+    >>> # The following image warps are all equal but differ substantially in
+    >>> # execution time. The image is shifted to the bottom.
+    >>> # Use a transformation matrix to warp an image (fast):
     >>> matrix = np.array([[1, 0, 0], [0, 1, -10], [0, 0, 1]])
     >>> warped = warp(image, matrix)
-
-    Use a geometric transform to warp an image (fast):
+    >>> # Use a geometric transform to warp an image (fast):
     >>> from skipp.transform import AffineTransform
     >>> tform = AffineTransform(translation=(0, -10))
     >>> warped = warp(image, tform)
@@ -341,6 +340,7 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
 
     The function has `skimage.transform.rotate` like signature,
     see: https://scikit-image.org/
+
     Parameters
     ----------
     image : ndarray
@@ -356,10 +356,12 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
         its center, i.e. ``center=(cols / 2 - 0.5, rows / 2 - 0.5)``.  Please
         note that this parameter is (cols, rows), contrary to normal skimage
         ordering.
+
     Returns
     -------
     rotated : ndarray
         Rotated version of the 2D input image.
+
     Other parameters
     ----------------
     order : int, optional
@@ -381,6 +383,7 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
         Whether to clip the output to the range of values of the input image.
     preserve_range : bool, optional
         Whether to keep the original range of values.
+
     Notes
     --------
     This function uses `skipp.transform.warp` on the backend, and
@@ -399,6 +402,7 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
     - Currently `clip`, `preserve_range` are not processed.
     - ``scikit-image`` uses Catmull-Rom spline (0.0, 0.5). In `scikit-ipp` the same
       method was implemented. [1]
+
     References
     ----------
     .. [1] Don P. Mitchell, Arun N. Netravali. Reconstruction Filters in Computer Graphics.
@@ -489,7 +493,6 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
 
 cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
              preserve_range=False, anti_aliasing=True, anti_aliasing_sigma=None):
-
     """Resize image to match a certain size.
 
     Performs interpolation to up-size or down-size 2D images. Note
@@ -507,6 +510,7 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
         Shape of the output image generated. By default the shape of the input
         image is preserved.  Note that, even for multi-band images, only rows
         and columns need to be specified.
+
     Returns
     -------
     resized : ndarray
@@ -558,9 +562,10 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
     - Currently `clip`, `preserve_range` and `anti_aliasing_sigma` are not
       processed.
     - if `antialiasing` is `True`, supported interpolation methods are `linear`
-       and `cubic`.
-      if `antialiasing` is `False`, supported interpolation methods are `nearest`,
+      and `cubic`.
+    - if `antialiasing` is `False`, supported interpolation methods are `nearest`,
       `linear` and `cubic`.
+
     Examples
     --------
     >>> from skimage import data
@@ -568,7 +573,6 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
     >>> image = data.camera()
     >>> resize(image, (100, 100)).shape
     (100, 100)
-
     """
     cdef int ippStatusIndex = 0  # OK
     cdef void * cyimage

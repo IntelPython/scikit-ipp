@@ -65,6 +65,7 @@ cpdef dilation(image, selem=None, out=None, shift_x=False, shift_y=False):
     shift_x, shift_y : bool, optional
         shift structuring element about center point. This only affects
         eccentric structuring elements (i.e. selem with even numbered sides).
+
     Returns
     -------
     dilated : array, same shape and type as `image`
@@ -80,15 +81,15 @@ cpdef dilation(image, selem=None, out=None, shift_x=False, shift_y=False):
     - The `selem` should be only `uint8` dtype.
     - The `image` and `out` should be the same data type
     - Currently `dilation` function supports `image` of the following types:
-        one channel image: `uint8`, `uint16`, `int16`, `float32`
-        three channel image: `uint8`, `float32`
-        four channel image: `uint8`, `float32`
+      - one channel image: `uint8`, `uint16`, `int16`, `float32`
+      - three channel image: `uint8`, `float32`
+      - four channel image: `uint8`, `float32`
     - Currently `out`, `shift_x`, `shift_y` are not processed.
     - If `selem` is None:
-        `scikit-ipp` creates directly ndarray with shape (3, 3) like a
-        `skimage.morphology.selem.diamond(radius=1)` for
-        2D grayscale images and ndarray with shape (3, 3, 3) like a
-        (`skimage.morphology.selem.diamond(radius=1) for each channel).
+      `scikit-ipp` creates directly ndarray with shape (3, 3) like a
+      `skimage.morphology.selem.diamond(radius=1)` for
+      2D grayscale images and ndarray with shape (3, 3, 3) like a
+      (`skimage.morphology.selem.diamond(radius=1) for each channel).
 
     Examples
     --------
@@ -237,15 +238,15 @@ cpdef erosion(image, selem=None, out=None, shift_x=False, shift_y=False):
     - The `selem` should be only `uint8` dtype.
     - The `image` and `out` should be the same data type
     - Currently `dilation` function supports `image` of the following types:
-        one channel image: `uint8`, `uint16`, `int16`, `float32`
-        three channel image: `uint8`, `float32`
-        four channel image: `uint8`, `float32`
+      - one channel image: `uint8`, `uint16`, `int16`, `float32`
+      - three channel image: `uint8`, `float32`
+      - four channel image: `uint8`, `float32`
     - Currently `out`, `shift_x`, `shift_y` are not processed.
     - If `selem` is None:
-       `scikit-ipp` creates directly ndarray with shape (3, 3) like a
-       `skimage.morphology.selem.diamond(radius=1)` for
-       2D grayscale images and ndarray with shape (3, 3, 3) like a
-       (`skimage.morphology.selem.diamond(radius=1) for each channel).
+      `scikit-ipp` creates directly ndarray with shape (3, 3) like a
+      `skimage.morphology.selem.diamond(radius=1)` for
+      2D grayscale images and ndarray with shape (3, 3, 3) like a
+      (`skimage.morphology.selem.diamond(radius=1) for each channel).
 
     Examples
     --------
