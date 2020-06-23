@@ -44,12 +44,15 @@ conda install -c intel numpy ipp
 ```
 # Building documentation for scikit-ipp
 ## Prerequisites for creating documentation
-* sphinx
+* sphinx >= 3.0
+* sphinx_rtd_theme >= 0.4
+* sphinx-gallery >= 0.3.1
+* matplotlib > = 3.0.1
 
 ## Building documentation
 1. Install scikit-ipp into your python environment
-2. ```cd docs && make html```
-3. The documentation will be in ```docs/_build/html```
+2. ```cd doc && make html```
+3. The documentation will be in ```doc/_build/html```
 
 # Examples
 Introductory examples for `scikit-ipp` [link](examples/scikit-ipp_examples.ipynb)
