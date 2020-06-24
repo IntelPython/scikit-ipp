@@ -40,13 +40,30 @@ with io.open('skipp/_version.py', 'rt', encoding='utf8') as f:
 
 VERSION = version
 
-CLASSIFIERS = ""
+CLASSIFIERS = """\
+Development Status :: 0 - Alpha
+Intended Audience :: Science/Research
+Intended Audience :: Developers
+License :: OSI Approved
+Programming Language :: C
+Programming Language :: Python
+Programming Language :: Python :: 3.6
+Programming Language :: Python :: 3.7
+Programming Language :: Python :: 3.8
+Programming Language :: Python :: Implementation :: CPython
+Topic :: Software Development
+Topic :: Scientific/Engineering
+Operating System :: Microsoft :: Windows
+Operating System :: POSIX
+Operating System :: Unix
+Operating System :: MacOS
+"""
 
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
 
-    config = Configuration(None , parent_package, top_path)
+    config = Configuration(None, parent_package, top_path)
     config.set_options(ignore_setup_xxx_py=True,
                        assume_default_configuration=True,
                        delegate_options_to_subpackages=True,
@@ -70,6 +87,22 @@ def setup_package():
 
     metadata = dict(
         name='skipp',
+        maintainer="Intel Corp.",
+        maintainer_email="scripting@intel.com",
+        long_description="""
+            scikit-ipp is a image processing library,
+            provided scikit-image-like API to some of
+            Intel(R) Integrated Performance Primitives (Intel(R) IPP)
+            functions
+        """,
+        description="Image processing library powered by Intel(R) IPP",
+        url="http://github.com/IntelPython/scikit-ipp",
+        author="Intel Corporation",
+        download_url="http://github.com/IntelPython/scikit-ipp",
+        license='BSD',
+        classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
+        platforms=["Windows", "Linux", "Mac OS-X"],
+        python_requires='>=3.6',
         install_requires=['numpy'],
         packages=find_packages(),
         configuration=configuration
