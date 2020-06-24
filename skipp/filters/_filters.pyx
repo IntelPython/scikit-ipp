@@ -88,7 +88,7 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     output : array, optional
         The ``output`` parameter passes an array in which to store the
         filter output.
-    mode : {'reflect', 'constant', 'nearest', 'mirror'}, optional
+    mode : {'constant', 'nearest', 'mirror'}, optional
         The ``mode`` parameter determines how the array borders are
         handled, where ``cval`` is the value when mode is equal to
         'constant'. Default is 'nearest'.
