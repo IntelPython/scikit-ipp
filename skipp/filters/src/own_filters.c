@@ -258,8 +258,10 @@ own_FilterLaplace(
     IppStatus status = ippStsNoErr;
     int kernel_width = 3;
     int kernel_height = 3;
+
     Ipp32f own_kernel_laplace[] = own_Laplace_KERNEL_3x3;
     IppDataType ippKernelDataType = ipp32f;
+
     IppRoundMode roundMode = ippRndNear;
 
     status = own_FilterBorder(ippDataType,

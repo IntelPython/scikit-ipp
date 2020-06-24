@@ -28,18 +28,7 @@
 import pytest
 import numpy as np
 from numpy.testing import assert_allclose
-from skipp.filters import laplace as laplace
-
-
-@pytest.fixture
-def image():
-    return np.array([[1, 2, 3, 2, 1],
-                     [1, 1, 2, 2, 3],
-                     [3, 2, 1, 2, 1],
-                     [3, 2, 1, 1, 1],
-                     [1, 2, 1, 2, 3]],
-                    dtype=np.uint8)
-
+from skipp.filters import laplace
 
 def test_laplace_zeros():
     """Laplace on a square image."""
@@ -59,7 +48,7 @@ def test_laplace_zeros():
     assert_allclose(result, check_result)
 
 # TODO
-@pytest.mark.skip(reason="deveoloping _mask_filter_result in progress")
+@pytest.mark.skip(reason="deveoloping _mask_filter_result")
 def test_laplace_mask():
     """Laplace on a masked array should be zero."""
     # Create a synthetic 2D image
@@ -68,3 +57,12 @@ def test_laplace_mask():
     # Define the mask
     result = laplace(image, ksize=3, mask=np.zeros((9, 9), dtype=bool))
     assert (np.all(result == 0))
+
+
+@pytest.mark.parametrize(
+    "dtype", [np.uint8, np.uint16, np.int16, np.float32]
+)
+def test_laplace_preserve_dtype(dtype):
+    image = np.arange(25, dtype=dtype).reshape(5, 5)
+    filtered = laplace(image)
+    assert filtered.dtype == dtype

@@ -372,7 +372,7 @@ cpdef laplace(image, ksize=3, mask=None):
     Returns
     -------
     output : ndarray
-        The Laplace edge map.
+        The Laplace edge map. Same dtype as `image`
 
     Notes
     --------
@@ -388,7 +388,8 @@ cpdef laplace(image, ksize=3, mask=None):
     https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
 
     - Currently converting integer images into float32 is not supported.
-    - The `image` should be an array of numpy.float32 dtype.
+    - The `image` should be a numpy array with uint8, uint16, int16 or float32
+      dtype.
 
     Examples
     --------
@@ -426,11 +427,7 @@ cpdef laplace(image, ksize=3, mask=None):
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
 
-    if(ipp_src_datatype == ipp32f):
-        output = np.empty_like(image, dtype=image.dtype, order='C')
-    else:
-        # TODO
-        raise ValueError("currently not supported")
+    output = np.empty_like(image, dtype=image.dtype, order='C')
 
     img_width = image.shape[1]
     img_height = image.shape[0]
