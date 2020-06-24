@@ -29,21 +29,22 @@ import pytest
 import numpy as np
 from skipp.filters import median
 
-@pytest.fixture
-def image():
-    return np.array([[1, 2, 3, 2, 1],
-                     [1, 1, 2, 2, 3],
-                     [3, 2, 1, 2, 1],
-                     [3, 2, 1, 1, 1],
-                     [1, 2, 1, 2, 3]],
-                    dtype=np.uint8)
+from numpy.testing import (assert_allclose, assert_equal, assert_array_equal)
 
-# TODO
-# for all dtypes
+
 @pytest.mark.parametrize(
     "dtype", [np.uint8, np.uint16, np.int16, np.float32]
 )
-def test_median_preserve_dtype(image, dtype):
-    median_image = median(image.astype(dtype), selem = np.ones((3, 3),
-                          dtype=np.bool_), behavior='ipp')
+def test_median_preserve_dtype(dtype):
+    image = np.arange(25, dtype=dtype).reshape(5, 5)
+    selem = np.ones((3, 3), dtype=np.bool_)
+    median_image = median(image, selem=selem, behavior='ipp')
     assert median_image.dtype == dtype
+
+
+def test_median_default():
+    image = np.arange(25, dtype=np.uint8).reshape(5, 5)
+    selem = np.ones((3, 3))
+    expected_result = median(image, selem=selem)
+    filtered_default = median(image)
+    assert_array_equal(expected_result, filtered_default)

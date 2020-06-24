@@ -275,7 +275,7 @@ cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
       array. `skipp.filters.median` can also processing also multichannel (3-channel)
       images.
     - `scikit-ipp` supports only recantagle shape `selem` with ones.
-      Indicates an error if `selem` shape has a field with a zero, negative
+    - Indicates an error if `selem` shape has a field with a zero, negative
       or even value.
 
     Examples
@@ -301,8 +301,8 @@ cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
     cdef void * cydestination
     cdef IppDataType ipp_src_datatype
     cdef IppiBorderType ippBorderType
-    cdef int selem_width
-    cdef int selem_height
+    cdef int selem_width = 3
+    cdef int selem_height = 3
     cdef int img_width
     cdef int img_height
     cdef float ippBorderValue = float(cval)
@@ -327,10 +327,9 @@ cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
     # add _get_output
     out = np.empty_like(image, dtype=image.dtype, order='C')
 
-    # TODO
-    # case when selem is shape or None
-    selem_width = selem.shape[1]
-    selem_height = selem.shape[0]
+    if selem is not None:
+        selem_width = selem.shape[1]
+        selem_height = selem.shape[0]
 
     img_width = image.shape[1]
     img_height = image.shape[0]
