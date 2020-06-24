@@ -113,7 +113,8 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
     see: `FilterGaussianBorder` on
     https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
 
-    - The `image` should be an array of numpy.float32 dtype.
+    - The `image` should be a numpy array with uint8, uint16, int16 or float32
+      dtype.
     - Currently `output`, `multichannel` and `preserve_range` are not processed.
 
     Examples
