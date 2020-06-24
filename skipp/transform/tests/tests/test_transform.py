@@ -126,7 +126,7 @@ def test_rotate_order_error(order):
 
 # TODO
 # add other ``order`` options
-# Intel IPP antialiasing resize function doesnot support Nearest interpolation method
+# Intel IPP antialiasing resize function doesnot support `edge` interpolation method
 # TODO
 # add order 3 to tests and float32 type
 @pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16, np.int16])
@@ -136,21 +136,21 @@ def test_resize2d_without_anti_aliasing(image_dtype, order):
     x = np.zeros((5, 5), dtype=image_dtype)
     x[1, 1] = 1
     resized = resize(x, (10, 10), order=order, anti_aliasing=False,
-                     mode='nearest')
+                     mode='edge')
     ref = np.zeros((10, 10), dtype=image_dtype)
     ref[2:4, 2:4] = 1
     assert_allclose(resized, ref, rtol=1e-06)
 
 # TODO
 # add other ``order`` options
-# Intel IPP antialiasing resize function doesnot support Nearest interpolation method
+# Intel IPP antialiasing resize function doesnot support `edge` interpolation method
 @pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16, np.int16])
 @pytest.mark.parametrize("order", [1])
 def test_resize2d_anti_aliasing(image_dtype, order):
     x = np.zeros((5, 5), dtype=image_dtype)
     x[1, 1] = 1
     resized = resize(x, (10, 10), order=order, anti_aliasing=True,
-                                           mode='nearest')
+                     mode='edge')
     ref = np.zeros((10, 10), dtype=image_dtype)
     ref[2:4, 2:4] = 1
     assert_allclose(resized, ref, rtol=1e-06)
@@ -163,7 +163,7 @@ def test_resize_not_supported_dtype(image_dtype):
     with pytest.raises(RuntimeError):
         # output_shape too short
         resize(x, (10, 10), order=0, anti_aliasing=False,
-               mode='nearest')
+               mode='edge')
 
 
 @pytest.mark.parametrize("image_shape", [(10,10,10), (10,)])
@@ -172,4 +172,4 @@ def test_resize_not_supported_ndim(image_shape):
     with pytest.raises(ValueError):
         # output_shape too short
         resize(x, (10, 10), order=0, anti_aliasing=False,
-               mode='nearest')
+               mode='edge')

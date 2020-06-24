@@ -171,7 +171,7 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
          - 3: cubic
          - 4: Bi-quartic [not supported]
          - 5: Bi-quintic [not supported]
-    mode : {'constant', 'nearest', 'transp'}, optional
+    mode : {'constant', 'edge', 'transp'}, optional
         Points outside the boundaries of the input are filled according
         to the given mode.
     cval : float, optional
@@ -286,12 +286,10 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
         numChannels = 3
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
-    # TODO:
-    # change modes names as is in `scikit-image`
-    # match them with `numpy.pad`
+
+    # matchs with `numpy.pad`
     # {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}
-    # update __get_IppBorderType
-    cdef IppiBorderType ippBorderType = __get_IppBorderType(mode)
+    cdef IppiBorderType ippBorderType = __get_numpy_pad_IppBorderType(mode)
     if(ippBorderType == UndefValue):
         raise ValueError("Boundary mode not supported")
 
@@ -373,7 +371,7 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
          - 3: cubic
          - 4: Bi-quartic [not supported]
          - 5: Bi-quintic [not supported]
-    mode : {'nearest', 'constant', 'transp'}, optional
+    mode : {'edge', 'constant', 'transp'}, optional
         Points outside the boundaries of the input are filled according
         to the given mode.
     cval : float, optional
@@ -491,7 +489,7 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
                 mode=mode, cval=cval, clip=clip, preserve_range=preserve_range)
 
 
-cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
+cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
              preserve_range=False, anti_aliasing=True, anti_aliasing_sigma=None):
     """Resize image to match a certain size.
 
@@ -527,7 +525,7 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
          - 3: cubic
          - 4: Bi-quartic [not supported]
          - 5: Bi-quintic [not supported]
-    mode : {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}, optional
+    mode : {'constant', 'edge', 'transp'}, optional
         Points outside the boundaries of the input are filled according
         to the given mode.  Modes match the behaviour of `numpy.pad`.
     cval : float, optional
@@ -565,6 +563,10 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
       and `cubic`.
     - if `antialiasing` is `False`, supported interpolation methods are `nearest`,
       `linear` and `cubic`.
+    - if `antialiasing` is `True`, supported boundary `mode` are `edge` and
+      `constant`.
+    - if `antialiasing` is `False`, supported boundary `mode` is `edge`.
+
 
     Examples
     --------
@@ -611,12 +613,9 @@ cpdef resize(image, output_shape, order=1, mode='reflect', cval=0, clip=True,
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
 
-    # TODO:
-    # change modes names as is in `scikit-image`
-    # match them with `numpy.pad`
+    # matchs with `numpy.pad`
     # {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}
-    # update __get_IppBorderType
-    cdef IppiBorderType ippBorderType = __get_IppBorderType(mode)
+    cdef IppiBorderType ippBorderType = __get_numpy_pad_IppBorderType(mode)
     if(ippBorderType == UndefValue):
         raise ValueError("Boundary mode not supported")
 
