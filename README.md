@@ -9,7 +9,7 @@
 
 
 # Getting started
-`scikit-ipp` is easily built from source with the majority of the necessary prerequisites available on conda.  The instructions below detail how to gather the prerequisites, setting one's build environment, and finally building and installing the completed package.  `scikit-ipp` can be built for two major platforms (Windows, Linux).
+`scikit-ipp` is easily built from source with the majority of the necessary prerequisites available on conda.  The instructions below detail how to gather the prerequisites, setting one's build environment, and finally building and installing the completed package.  `scikit-ipp` can be built for all three major platforms (Windows, Linux, macOS).
 
 The build-process (using setup.py) happens in 2 stages:
 1. Running cython on C and Cython sources

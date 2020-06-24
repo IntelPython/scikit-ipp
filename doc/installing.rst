@@ -33,7 +33,7 @@ Installing the built scikit-ipp conda package
 
 To actually use your `scikit-ipp`, dependent packages need to be installed. To ensure, do
 
-Linux or Windows:
+Windows, Linux and OsX:
 
 .. code:: console
 
