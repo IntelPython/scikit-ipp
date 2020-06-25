@@ -563,8 +563,7 @@ cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
       and `cubic`.
     - if `antialiasing` is `False`, supported interpolation methods are `nearest`,
       `linear` and `cubic`.
-    - if `antialiasing` is `True`, supported boundary `mode` are `edge` and
-      `constant`.
+    - if `antialiasing` is `True`, supported boundary `mode` is `edge`.
     - if `antialiasing` is `False`, supported boundary `mode` is `edge`.
 
 
