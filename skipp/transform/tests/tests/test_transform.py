@@ -118,58 +118,37 @@ def test_rotate_resize_90():
                  resize=True)
     assert x90.shape == (230, 470)
 
-@pytest.mark.parametrize("order", [2, 4, 5, -1, ''])
-def test_rotate_order_error(order):
-    with pytest.raises(ValueError):
-        rotate(np.zeros((5, 5), dtype=np.float32), angle=20,
-               order=order)
 
-# TODO
-# add other ``order`` options
-# Intel IPP antialiasing resize function doesnot support `edge` interpolation method
-# TODO
-# add order 3 to tests and float32 type
-@pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16, np.int16])
-#@pytest.mark.parametrize("anti_aliasing", [False])
-@pytest.mark.parametrize("order", [0, 1])
-def test_resize2d_without_anti_aliasing(image_dtype, order):
-    x = np.zeros((5, 5), dtype=image_dtype)
-    x[1, 1] = 1
-    resized = resize(x, (10, 10), order=order, anti_aliasing=False,
-                     mode='edge')
-    ref = np.zeros((10, 10), dtype=image_dtype)
-    ref[2:4, 2:4] = 1
-    assert_allclose(resized, ref, rtol=1e-06)
-
-# TODO
-# add other ``order`` options
-# Intel IPP antialiasing resize function doesnot support `edge` interpolation method
-@pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16, np.int16])
-@pytest.mark.parametrize("order", [1])
-def test_resize2d_anti_aliasing(image_dtype, order):
-    x = np.zeros((5, 5), dtype=image_dtype)
-    x[1, 1] = 1
-    resized = resize(x, (10, 10), order=order, anti_aliasing=True,
-                     mode='edge')
-    ref = np.zeros((10, 10), dtype=image_dtype)
-    ref[2:4, 2:4] = 1
-    assert_allclose(resized, ref, rtol=1e-06)
+@pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16,
+                                         np.int16, np.float32])
+@pytest.mark.parametrize("order", [1, 3])
+def test_resize_with_antialiasing(image_dtype, order):
+    image = np.zeros((5, 5), dtype=image_dtype)
+    expected_shape = np.zeros((10, 10), dtype=image_dtype).shape
+    resized = resize(image, (10, 10), order=order,
+                     anti_aliasing=True)
+    assert resized.dtype == image.dtype
+    assert resized.shape == expected_shape
 
 
-@pytest.mark.parametrize("image_dtype", [np.uint32,  np.int32, np.uint64,
-                         np.int64, np.float64])
-def test_resize_not_supported_dtype(image_dtype):
-    x = np.zeros((5, 5), dtype=image_dtype)
-    with pytest.raises(RuntimeError):
-        # output_shape too short
-        resize(x, (10, 10), order=0, anti_aliasing=False,
-               mode='edge')
+@pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16,
+                                         np.int16, np.float32])
+@pytest.mark.parametrize("order", [0, 1, 3])
+def test_resize_without_antialiasing(image_dtype, order):
+    image = np.zeros((5, 5), dtype=image_dtype)
+    expected_shape = np.zeros((10, 10), dtype=image_dtype).shape
+    resized = resize(image, (10, 10), order=order,
+                     anti_aliasing=False)
+    assert resized.dtype == image.dtype
+    assert resized.shape == expected_shape
 
 
-@pytest.mark.parametrize("image_shape", [(10,10,10), (10,)])
-def test_resize_not_supported_ndim(image_shape):
-    x = np.zeros(image_shape, dtype=np.float32)
-    with pytest.raises(ValueError):
-        # output_shape too short
-        resize(x, (10, 10), order=0, anti_aliasing=False,
-               mode='edge')
+@pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16,
+                                         np.int16, np.float32])
+def test_resize2d(image_dtype):
+     x = np.zeros((5, 5), dtype=image_dtype)
+     x[1, 1] = 1
+     resized = resize(x, (10, 10), order=0, anti_aliasing=False)
+     ref = np.zeros((10, 10), dtype=image_dtype)
+     ref[2:4, 2:4] = 1
+     assert_allclose(resized, ref, rtol=1e-06)

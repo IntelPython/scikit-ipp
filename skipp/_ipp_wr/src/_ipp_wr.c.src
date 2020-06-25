@@ -1022,7 +1022,6 @@ ippiResize(IppDataType ippDataType,
     {
         status = ippiResizeCubic(ippDataType, pSrc, srcStep, pDst, dstStep,
             dstOffset, dstSize, numChannels, border, pBorderValue, pSpec, pBuffer);
-        status = ippStsErr;
         break;
     }
     default:
