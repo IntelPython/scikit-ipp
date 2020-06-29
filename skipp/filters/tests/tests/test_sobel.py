@@ -27,7 +27,7 @@
 
 import pytest
 import numpy as np
-from numpy.testing import (assert_array_almost_equal, assert_allclose)
+from numpy.testing import assert_allclose
 from skipp.filters import (sobel, sobel_h, sobel_v)
 
 
@@ -37,11 +37,13 @@ def test_sobel_zeros():
     assert(np.all(result == 0))
 
 
-@pytest.mark.skip(reason="deveoloping _mask_filter_result in progress")
+@pytest.mark.skip(reason='non-default values for '\
+                         'mask param are not supported')
 def test_sobel_mask():
     """Sobel on a masked array should be zero."""
-    result = sobel(np.random.uniform(size=(10, 10)),
-                   np.zeros((10, 10), dtype=bool))
+    image = np.random.uniform(size=(10, 10)).astype(np.float32)
+    mask = np.zeros((10, 10), dtype=bool)
+    result = sobel(image=image, mask=mask)
     assert(np.all(result == 0))
 
 
@@ -72,11 +74,13 @@ def test_sobel_h_zeros():
     assert(np.all(result == 0))
 
 
-@pytest.mark.skip(reason="deveoloping _mask_filter_result in progress")
+@pytest.mark.skip(reason='non-default values for '\
+                         'mask param are not supported')
 def test_sobel_h_mask():
     """Horizontal Sobel on a masked array should be zero."""
-    result = sobel_h(np.random.uniform(size=(10, 10)),
-                           np.zeros((10, 10), dtype=bool))
+    image = np.random.uniform(size=(10, 10)).astype(np.float32)
+    mask = np.zeros((10, 10), dtype=bool)
+    result = sobel_h(image=image, mask=mask)
     assert_allclose(result, 0)
 
 
@@ -105,11 +109,13 @@ def test_sobel_v_zeros():
     assert_allclose(result, 0)
 
 
-@pytest.mark.skip(reason="deveoloping _mask_filter_result in progress")
+@pytest.mark.skip(reason='non-default values for '\
+                         'mask param are not supported')
 def test_sobel_v_mask():
     """Vertical Sobel on a masked array should be zero."""
-    result = sobel_v(np.random.uniform(size=(10, 10)),
-                           np.zeros((10, 10), dtype=bool))
+    image = np.random.uniform(size=(10, 10)).astype(np.float32)
+    mask = np.zeros((10, 10), dtype=bool)
+    result = sobel_v(image=image, mask=mask)
     assert_allclose(result, 0)
 
 
