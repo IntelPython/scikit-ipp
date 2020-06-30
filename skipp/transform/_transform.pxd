@@ -43,17 +43,6 @@ cdef extern from "own_warp.h":
                        IppiBorderType ippBorderType,
                        double ippBorderValue)
 
-    IppStatus own_RotateCoeffs(double angle,
-                                double xCenter,
-                                double yCenter,
-                                double * coeffs)
-
-    IppStatus own_GetAffineDstSize(int img_width,
-                                   int img_height,
-                                   int * dst_width,
-                                   int * dst_height,
-                                   double * coeffs)
-
 
 cdef extern from "own_resize.h":
     IppStatus own_Resize(IppDataType ippDataType,

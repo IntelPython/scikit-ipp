@@ -36,10 +36,56 @@ from skipp.transform import warp
 
 # Used acronyms
 # Intel(R) Integrated Performance Primitives (Intel(R) IPP)
- 
-@pytest.mark.skip(reason="skip: adding invers method")
+
+def test_invalid_input():
+    with pytest.raises(ValueError):
+        AffineTransform(np.zeros((2, 3)))
+    with pytest.raises(ValueError):
+        AffineTransform(matrix=np.zeros((2, 3)), scale=1)
+
+
+@pytest.mark.skip(reason="__repr__ in progress")
+def test_affine_init():
+    # init with implicit parameters
+    scale = (0.1, 0.13)
+    rotation = 1
+    shear = 0.1
+    translation = (1, 1)
+    tform = AffineTransform(scale=scale, rotation=rotation, shear=shear,
+                            translation=translation)
+    assert_almost_equal(tform.scale, scale)
+    assert_almost_equal(tform.rotation, rotation)
+    assert_almost_equal(tform.shear, shear)
+    assert_almost_equal(tform.translation, translation)
+
+    # init with transformation matrix
+    tform2 = AffineTransform(tform.params)
+    assert_almost_equal(tform2.scale, scale)
+    assert_almost_equal(tform2.rotation, rotation)
+    assert_almost_equal(tform2.shear, shear)
+    assert_almost_equal(tform2.translation, translation)
+
+
+def test_AffineTransform_inverse():
+    # TODO
+    # add check orthogonal matrix
+    expected = np.array([[ 0.        ,  0.        ],
+                         [ 4.46998332, -2.24036808],
+                         [ 2.67768885, -5.81635474],
+                         [-1.79229446, -3.57598665]])
+
+    transf = AffineTransform(rotation=90)
+    rows = 6; cols = 5
+    corners = np.array([[0, 0],
+                        [0, rows - 1],
+                        [cols - 1, rows - 1],
+                        [cols - 1, 0]])
+    results = transf.inverse(corners)
+    assert_allclose(results, expected)
+
+
 def test_warp_tform():
-    x = np.zeros((5, 5), dtype=np.double)
+    x = np.zeros((5, 5), dtype=np.uint8)
     x[2, 2] = 1
     theta = - np.pi / 2
     tform = AffineTransform(scale=(1, 1), rotation=theta,
@@ -48,35 +94,28 @@ def test_warp_tform():
     x90 = warp(x, tform, order=1)
     assert_almost_equal(x90, np.rot90(x))
 
-    #x90 = skipp.transform.warp(x, tform.inverse, order=1)
-    #assert_almost_equal(x90, np.rot90(x))
 
-
-@pytest.mark.skip(reason="needs resize implementation")
 def test_warp_matrix():
-    x = np.zeros((5, 5), dtype=np.double)
+    x = np.zeros((5, 5), dtype=np.uint8)
     x[2, 2] = 1
-    refx = np.zeros((5, 5), dtype=np.double)
+    refx = np.zeros((5, 5), dtype=np.uint8)
     refx[1, 1] = 1
 
     matrix = np.array([[1, 0, 1], [0, 1, 1], [0, 0, 1]])
 
-    # _warp_fast
     outx = warp(x, matrix, order=1)
-    assert_allclose(outx, refx)
-    # check for ndimage.map_coordinates
-    #outx = warp(x, matrix, order=5)
+    assert_almost_equal(outx, refx)
 
 
 def test_rotate():
-    x = np.zeros((5, 5), dtype=np.double)
+    x = np.zeros((5, 5), dtype=np.uint8)
     x[1, 1] = 1
     x90 = rotate(x, angle=90)
     assert_allclose(x90, np.rot90(x), rtol=1e-06)
 
 
 def test_rotate_resize():
-    x = np.zeros((10, 10), dtype=np.double)
+    x = np.zeros((10, 10), dtype=np.uint8)
 
     x45 = rotate(x, 45, resize=False)
     assert x45.shape == (10, 10)
@@ -97,7 +136,6 @@ def test_rotate_center():
     assert_allclose(x0, x, rtol=1e-06)
 
 
-@pytest.mark.skip(reason="needs resize implementation")
 def test_rotate_resize_center():
     x = np.zeros((10, 10), dtype=np.double)
     x[0, 0] = 1
@@ -112,7 +150,6 @@ def test_rotate_resize_center():
     assert_equal(x45, ref_x45)
 
 
-@pytest.mark.skip(reason="needs resize implementation")
 def test_rotate_resize_90():
     x90 = rotate(np.zeros((470, 230), dtype=np.double), 90,
                  resize=True)

@@ -40,6 +40,9 @@ cnp.import_array()
 class AffineTransform(object):
     """2D affine transformation.
 
+    The same interface as is for `skimage.transform.AffineTransform`,
+    see: https://scikit-image.org/
+
     Has the following form::
 
         X = a0*x + a1*y + a2 =
@@ -98,13 +101,10 @@ class AffineTransform(object):
             if translation is None:
                 translation = (0, 0)
 
-            sx, sy = scale
-            sx = 1/sx
-            sy = 1/sy
-            #shear = -shear
-            rotation = -rotation
-            tx, ty = translation
-            translation = (-tx, -ty)
+            if np.isscalar(scale):
+                sx = sy = scale
+            else:
+                sx, sy = scale
 
             self.params = np.array([
                 [sx * math.cos(rotation), -sy * math.sin(rotation + shear), 0],
@@ -115,6 +115,60 @@ class AffineTransform(object):
         else:
             # default to an identity transform
             self.params = np.eye(3)
+
+    def __add__(self, other):
+        """Combine this transformation with another.
+        """
+        if type(self) == type(other):
+            tform = self.__class__
+            return tform(other.params @ self.params)
+        else:
+            raise TypeError("Cannot combine transformations of differing "
+                            "types.")
+
+    def __repr__(self):
+        pass
+
+    def __str__(self):
+        pass
+
+    def _inv_matrix(self):
+        inv = np.linalg.inv(self.params)
+        return inv
+
+    def _apply_mat(self, coords, matrix):
+        coords = np.array(coords, copy=False, ndmin=2)
+
+        x, y = np.transpose(coords)
+        src = np.vstack((x, y, np.ones_like(x)))
+        src = np.transpose(src)
+        matrix = np.transpose(matrix)
+        dst = src @ matrix
+
+        # below, we will divide by the last dimension of the homogeneous
+        # coordinate matrix. In order to avoid division by zero,
+        # we replace exact zeros in this column with a very small number.
+        dst[dst[:, 2] == 0, 2] = np.finfo(float).eps
+        # rescale to homogeneous coordinates
+        dst[:, :2] /= dst[:, 2:3]
+
+        return dst[:, :2]
+
+
+    def inverse(self, coords):
+        """Apply inverse transformation.
+        Parameters
+        ----------
+        coords : (N, 2) array
+            Destination coordinates.
+        Returns
+        -------
+        coords : (N, 2) array
+            Source coordinates.
+        """
+        inverted_matrix = self._inv_matrix()
+        return self._apply_mat(coords, inverted_matrix)
+
 
     def scale(self):
         sx = math.sqrt(self.params[0, 0] ** 2 + self.params[1, 0] ** 2)
@@ -270,7 +324,7 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     # check after
     cdef double ippBorderValue = cval
     
-    cdef IppiWarpDirection direction = ippWarpForward
+    cdef IppiWarpDirection direction = ippWarpBackward
 
     ipp_src_datatype = __get_ipp_data_type(image)
     if(ipp_src_datatype == ippUndef):
@@ -287,7 +341,7 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     else:
         raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
 
-    # matchs with `numpy.pad`
+    # matches with `numpy.pad`
     # {'constant', 'edge', 'symmetric', 'reflect', 'wrap'}
     cdef IppiBorderType ippBorderType = __get_numpy_pad_IppBorderType(mode)
     if(ippBorderType == UndefValue):
@@ -298,7 +352,9 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     img_width = image.shape[1]
     img_height = image.shape[0]
 
-    if output_shape:
+    # TODO
+    # more safe check of output_shape integers
+    if output_shape is not None:
         dst_width = output_shape[1]
         dst_height = output_shape[0]
         if numChannels == 1:
@@ -400,6 +456,8 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
     - Currently `clip`, `preserve_range` are not processed.
     - ``scikit-image`` uses Catmull-Rom spline (0.0, 0.5). In `scikit-ipp` the same
       method was implemented. [1]
+    - Modificated version of `skimage.transform.rotate` (v0.17). `scikit-ipp` uses
+      `skipp.transform.AffineTransform` instead of `skimage.transform.SimilarityTransform` 
 
     References
     ----------
@@ -419,73 +477,44 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
     >>> rotate(image, 90, resize=True).shape
     (512, 512)
     """
-    cdef int ippStatusIndex = 0  # OK
-
-    cdef int img_width
-    cdef int img_height
-
-    cdef int dst_width
-    cdef int dst_height
-
-    cdef double cy_xCenter
-    cdef double cy_yCenter
-
-    cdef int numChannels
-    cdef double cy_angle = angle
-
-    cdef double * cy_coeffs
-    cdef double * cy_inverse_map_matrix # ndarray: ``(3, 3)`` homogeneous transformation matrix
-
-    cdef cnp.ndarray coeffs =  np.zeros((2, 3),dtype = np.double, order='C')
-    cy_coeffs = <double*> cnp.PyArray_DATA(coeffs)
-
-    cdef cnp.ndarray inverse_map_matrix =  np.zeros((3, 3), dtype = np.double, order='C')
-    cy_inverse_map_matrix = <double*> cnp.PyArray_DATA(inverse_map_matrix)
-
-    if(image.ndim == 2):
-        numChannels = 1
-    elif(image.ndim == 3) & (image.shape[-1] == 3):
-        numChannels = 3
-    else:
-        raise ValueError("Expected 2D array with 1 or 3 channels, got %iD." % image.ndim)
-
-    # TODO
-    # more safety initialization
-    img_width = image.shape[1]
-    img_height = image.shape[0]
+    rows, cols = image.shape[0], image.shape[1]
 
     if center is None:
-        cy_xCenter = img_width/2.0 - 0.5
-        cy_yCenter = img_height/2.0 - 0.5
+        center = np.array((cols, rows)) / 2. - 0.5
     else:
-        cy_xCenter = center[0]
-        cy_yCenter = center[1]
+        center = np.asarray(center)
+    tform1 = AffineTransform(translation=center)
+    tform2 = AffineTransform(rotation=np.deg2rad(angle))
+    tform3 = AffineTransform(translation=-center)
+    tform = tform3 + tform2 + tform1
 
-    # TODO
-    # correct coeffs, if `resize` is `True`
-    # TODO
-    # move ippi_RotateCoeffs, by using `warp` function's `map_args` param 
-    ippStatusIndex = transform.own_RotateCoeffs(cy_angle, cy_xCenter,
-                                                 cy_yCenter, cy_coeffs)
-    __get_ipp_error(ippStatusIndex)
-
-    ippStatusIndex = transform.own_GetAffineDstSize(img_width, img_height, &dst_width,
-                                                     &dst_height, cy_coeffs)
-    __get_ipp_error(ippStatusIndex)
-
-    # TODO
-    # add _get_output// check output dtype
+    output_shape = None
     if resize:
-        if numChannels ==1:
-            output_shape = (dst_height, dst_width)
-        else:
-            output_shape = (dst_height, dst_width, numChannels)
-    else:
-        output_shape = None
-    # TODO
-    # enable `map_args`
-    # currently `coeffs` instead of `inverse_map_matrix`
-    return warp(image, inverse_map=coeffs, map_args={}, output_shape=output_shape, order=order,
+        # determine shape of output image
+        corners = np.array([
+            [0, 0],
+            [0, rows - 1],
+            [cols - 1, rows - 1],
+            [cols - 1, 0]
+        ])
+        corners = tform.inverse(corners)
+        minc = corners[:, 0].min()
+        minr = corners[:, 1].min()
+        maxc = corners[:, 0].max()
+        maxr = corners[:, 1].max()
+        out_rows = maxr - minr + 1
+        out_cols = maxc - minc + 1
+        output_shape = np.around((out_rows, out_cols))
+
+        # fit output image in new shape
+        translation = (minc, minr)
+        tform4 = AffineTransform(translation=translation)
+        tform = tform4 + tform
+
+    # Make sure the transform is exactly affine, to ensure fast warping.
+    tform.params[2] = (0, 0, 1)
+
+    return warp(image, tform, output_shape=output_shape, order=order,
                 mode=mode, cval=cval, clip=clip, preserve_range=preserve_range)
 
 
