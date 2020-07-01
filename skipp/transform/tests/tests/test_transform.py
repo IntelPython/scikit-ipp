@@ -170,11 +170,22 @@ def test_resize_with_antialiasing(image_dtype, order):
 
 @pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16,
                                          np.int16, np.float32])
-@pytest.mark.parametrize("order", [0, 1, 3])
+@pytest.mark.parametrize("order", [0, 1, 3, 6])
 def test_resize_without_antialiasing(image_dtype, order):
-    image = np.zeros((5, 5), dtype=image_dtype)
+    image = np.zeros((10, 10), dtype=image_dtype)
+    expected_shape = np.zeros((20, 20), dtype=image_dtype).shape
+    resized = resize(image, (20, 20), order=order,
+                     anti_aliasing=False)
+    assert resized.dtype == image.dtype
+    assert resized.shape == expected_shape
+
+
+@pytest.mark.parametrize("image_dtype", [np.uint8,  np.uint16,
+                                         np.int16, np.float32])
+def test_resize_super(image_dtype):
+    image = np.zeros((20, 20), dtype=image_dtype)
     expected_shape = np.zeros((10, 10), dtype=image_dtype).shape
-    resized = resize(image, (10, 10), order=order,
+    resized = resize(image, (10, 10), order=7,
                      anti_aliasing=False)
     assert resized.dtype == image.dtype
     assert resized.shape == expected_shape

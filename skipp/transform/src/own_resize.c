@@ -58,6 +58,7 @@ own_Resize(
     int dst_height,
     int numChannels,
     Ipp32u antialiasing,
+    Ipp32u numLobes,
     IppiInterpolationType interpolation,
     IppiBorderType ippBorderType,
     double ippBorderValue)
@@ -72,6 +73,8 @@ own_Resize(
 
     Ipp32f valueB = 0.0;                                 // for ippCubic interpolation
     Ipp32f valueC = 0.5;                                 // for ippCubic interpolation
+
+    // Ipp32u numLobes                                   // for ippLanczos interpolation
 
     Ipp64f pBorderValue[4];
 
@@ -132,7 +135,8 @@ own_Resize(
         // ippiResizeNearestInit
         // ippiResizeLinearInit
         // ippiResizeCubicInit
-
+        // ippiResizeLanczosInit
+        // ippiResizeSuperInit
         switch (interpolation)
         {
         case ippNearest:
@@ -149,6 +153,17 @@ own_Resize(
         {
             status = ippiResizeCubicInit(ippDataType, srcSize, dstSize, valueB,
                 valueC, pSpec, pInit);
+            break;
+        }
+        case ippLanczos:
+        {
+            status = ippiResizeLanczosInit(ippDataType, srcSize, dstSize, numLobes,
+                pSpec, pInit);
+            break;
+        }
+        case ippSuper:
+        {
+            status = ippiResizeSuperInit(ippDataType, srcSize, dstSize, pSpec);
             break;
         }
         default:

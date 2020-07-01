@@ -59,6 +59,7 @@ own_Resize(
     int dst_height,
     int numChannels,
     Ipp32u antialiasing,
+    Ipp32u numLobes,
     IppiInterpolationType interpolation,
     IppiBorderType ippBorderType,
     double ippBorderValue);

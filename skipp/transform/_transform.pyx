@@ -519,7 +519,8 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
 
 
 cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
-             preserve_range=False, anti_aliasing=True, anti_aliasing_sigma=None):
+             preserve_range=False, anti_aliasing=True, anti_aliasing_sigma=None,
+             num_lobes=3):
     """Resize image to match a certain size.
 
     Performs interpolation to up-size or down-size 2D images. Note
@@ -546,14 +547,16 @@ cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
     Other parameters
     ----------------
     order : int, optional
-        The order of the spline interpolation, default is 1. The order has to be
-        in the range 0-5:
+        The order of the spline interpolation, default is 1. The order has to
+        be in the range 0-7:
          - 0: Nearest-neighbor
-         - 1: linear (default)
+         - 1: Linear (default)
          - 2: Bi-quadratic [not supported]
-         - 3: cubic
+         - 3: Cubic
          - 4: Bi-quartic [not supported]
          - 5: Bi-quintic [not supported]
+         - 6: Lanczos
+         - 7: Super
     mode : {'constant', 'edge', 'transp'}, optional
         Points outside the boundaries of the input are filled according
         to the given mode.  Modes match the behaviour of `numpy.pad`.
@@ -570,16 +573,23 @@ cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
         avoid aliasing artifacts.
     anti_aliasing_sigma : {float, tuple of floats}, optional
         Standard deviation for Gaussian filtering to avoid aliasing artifacts.
+    num_lobes : int, optional
+        Used in conjunction with order 6 (Lanczos). The parameter for
+        specifying Lanczos (2 or 3) filters. Options:
+         - 2: 2-lobed Lanczos 4x4
+         - 3: 3-lobed Lanczos 6x6
 
     Notes
     --------
     This function uses Intel(R) Integrated Performance Primitives
-    (Intel(R) IPP) funcs on the backend: ippiResizeNearest_<mod>, ippiResizeLinear_<mod>,
-    ippiResizeCubic_<mod>, that changes an image size using linear, nearest neighbor or
-    cubic interpolation method, and ippiResizeAntialiasing_<mod>,
-    that changes an image size using using the linear, Lanczos and cubic interpolation
-    method with antialiasing, see: `ResizeNearest`,
-    `ResizeLinear`, `ResizeCubic`, `ResizeAntialiasing` on
+    (Intel(R) IPP) funcs on the backend: ippiResizeNearest_<mod>,
+    ippiResizeLinear_<mod>, ippiResizeCubic_<mod>, ippiResizeLanczos_<mod>,
+    ippiResizeSuper_<mod> that changes an image size using nearest neighbor,
+    linear, cubic, Lanczos or super interpolation method, and
+    ippiResizeAntialiasing_<mod>, that changes an image size using using the
+    linear and cubic interpolation
+    method with antialiasing, see: `ResizeNearest`, `ResizeLinear`,
+    `ResizeCubic`, `ResizeLanczos`, `ResizeSuper`,`ResizeAntialiasing` on
     https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
 
     - Currently `resize` function supports `image` of the following types
@@ -588,13 +598,23 @@ cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
     - Currently modes don't match the behaviour of `numpy.pad`.
     - Currently `clip`, `preserve_range` and `anti_aliasing_sigma` are not
       processed.
-    - if `antialiasing` is `True`, supported interpolation methods are `linear`
-      and `cubic`.
-    - if `antialiasing` is `False`, supported interpolation methods are `nearest`,
+    - if `antialiasing` is `True`, supported interpolation methods are
       `linear` and `cubic`.
+    - if `antialiasing` is `False`, supported interpolation methods are
+      `nearest`, `linear`, `cubic`, `Lanczos` and `super`.
     - if `antialiasing` is `True`, supported boundary `mode` is `edge`.
     - if `antialiasing` is `False`, supported boundary `mode` is `edge`.
-
+    - The Lanczos interpolation (order=6) have the following filter sizes:
+      2-lobed Lanczos 4x4, 3-lobed Lanczos 6x6.
+    - Indicates an error (RuntimeError: ippStsSizeErr: Incorrect value for
+      data size) in the following cases:
+      - If the source image size is less than the filter size of the chosen
+        interpolation method (except ippSuper).
+      - If one of the specified dimensions of the source image is less than
+        the corresponding dimension of the destination image (for ippSuper
+        method only).
+      - If the width or height of the source or destination image is
+        negative.
 
     Examples
     --------
@@ -621,6 +641,10 @@ cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
     cdef IppiInterpolationType interpolation
 
     cdef Ipp32u antialiasing
+
+    # TODO
+    # more safe initialization
+    cdef Ipp32u numLobes = num_lobes # for Lanczos interpolation
 
     # TODO
     # check after
@@ -679,6 +703,7 @@ cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
                                           dst_height,
                                           numChannels,
                                           antialiasing,
+                                          numLobes,
                                           interpolation,
                                           ippBorderType,
                                           ippBorderValue)

@@ -984,8 +984,8 @@ ippiResizeAntialiasing(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-//    Adapter for ippiResizeNearest, ippiResizeLinear and ippiResizeCubic
-//    functions.
+//    Adapter for ippiResizeNearest, ippiResizeLinear, ippiResizeCubic,
+//    ippiResizeLanczos and ippiResizeSuper functions.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 IppStatus
@@ -1022,6 +1022,18 @@ ippiResize(IppDataType ippDataType,
     {
         status = ippiResizeCubic(ippDataType, pSrc, srcStep, pDst, dstStep,
             dstOffset, dstSize, numChannels, border, pBorderValue, pSpec, pBuffer);
+        break;
+    }
+    case ippLanczos:
+    {
+        status = ippiResizeLanczos(ippDataType, pSrc, srcStep, pDst, dstStep,
+            dstOffset, dstSize, numChannels, border, pBorderValue, pSpec, pBuffer);
+        break;
+    }
+    case ippSuper:
+    {
+        status = ippiResizeSuper(ippDataType, pSrc, srcStep, pDst, dstStep,
+            dstOffset, dstSize, numChannels, pSpec, pBuffer);
         break;
     }
     default:
@@ -1240,6 +1252,125 @@ ippiResizeCubic(IppDataType ippDataType,
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
+//    Adapter for ippiResizeLanczos_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeLanczos(
+    IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,               // TODO
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer)
+{
+    // adapter for: ippiResizeLanczos_<mod>,
+    // where <mode> is ...
+    IppStatus status = ippStsNoErr;
+
+    /**begin repeat
+     *
+     * #_numChannels = 1, 3, 4#
+     * #Cond_stat = if, else if, else if#
+     */
+    @Cond_stat@ (numChannels == @_numChannels@)
+    {
+        switch (ippDataType)
+        {
+            /**begin repeat1
+             *
+             * #ipp_type = 8u, 16u, 16s, 32f#
+             */
+            case ipp@ipp_type@:
+            {
+                status = ippiResizeLanczos_@ipp_type@_C@_numChannels@R(pSrc, srcStep,
+                    pDst, dstStep, dstOffset, dstSize, border, 0, pSpec, pBuffer);
+            break;
+            }
+            /**end repeat1**/
+            default:
+            {
+                status = ippStsDataTypeErr;
+            }
+        }
+    }
+    /**end repeat**/
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeSuperInit_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+
+IppStatus
+ippiResizeSuper(
+    IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer)
+{
+    // adapter for: ippiResizeNearest_<mod>,
+    // where <mode> is ...
+    IppStatus status = ippStsNoErr;
+
+    /**begin repeat
+     *
+     * #_numChannels = 1, 3, 4#
+     * #Cond_stat = if, else if, else if#
+     */
+    @Cond_stat@ (numChannels == @_numChannels@)
+    {
+        switch (ippDataType)
+        {
+            /**begin repeat1
+             *
+             * #ipp_type = 8u, 16u, 16s, 32f#
+             */
+            case ipp@ipp_type@:
+            {
+                status = ippiResizeSuper_@ipp_type@_C@_numChannels@R(pSrc, srcStep,
+                    pDst, dstStep, dstOffset, dstSize, pSpec, pBuffer);
+            break;
+            }
+            /**end repeat1**/
+            default:
+            {
+                status = ippStsDataTypeErr;
+            }
+        }
+    }
+    /**end repeat**/
+    else
+    {
+        status = ippStsErr;
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
 //    Adapter for ippiResizeNearestInit_<mode> functions, where <mode>
 //    is: 8u, 16u, 16s or 32f.
 //
@@ -1322,6 +1453,44 @@ ippiResizeLinearInit(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
+//    Adapter for ippiResizeLanczosInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeLanczosInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    Ipp32u numLobes,
+    IppiResizeSpec_32f* pSpec,
+    Ipp8u* pInitBuf)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeLanczosInit_@ipp_type@(srcSize, dstSize, numLobes,
+            pSpec, pInitBuf);
+        break;
+    }
+    /**end repeat**/
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
 //    Adapter for ippiResizeCubicInit_<mode> functions, where <mode>
 //    is: 8u, 16u, 16s or 32f.
 //
@@ -1348,6 +1517,42 @@ ippiResizeCubicInit(
     {
         status = ippiResizeCubicInit_@ipp_type@(srcSize, dstSize, valueB, valueC,
             pSpec, pInitBuf);
+        break;
+    }
+    /**end repeat**/
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeSuperInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeSuperInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    IppiResizeSpec_32f* pSpec)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeSuperInit_@ipp_type@(srcSize, dstSize, pSpec);
         break;
     }
     /**end repeat**/

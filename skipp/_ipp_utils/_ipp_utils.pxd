@@ -179,16 +179,18 @@ cdef inline __get_numpy_pad_IppBorderType(str mode):
 
 
 cdef inline __get_IppiInterpolationType(order):
-    """ Convert a given `order` number to the Intel (R) IPP
+    """ Convert a given `order` number to the Intel(R) IPP
     IppiInterpolationType enum value.
-    The order of interpolation in `scikit-image`.
-    The order has to be in the range 0-5:
+    The order of interpolation as is in `scikit-image` (0-5).
+    The order has to be in the range 0-7:
         0: Nearest-neighbor    -->   ippNearest
         1: Bi-linear (default) -->   ippLinear
         2: Bi-quadratic        -->   TODO
         3: Bi-cubic            -->   ippCubic
         4: Bi-quartic          -->   TODO
         5: Bi-quintic          -->   TODO
+        6: Lanczos             -->   ippLanczos
+        7: Super               -->   ippSuper
     """
     cdef ippi.IppiInterpolationType interpolation
     # 0: Nearest-neighbor    -->   ippNearest
@@ -197,9 +199,15 @@ cdef inline __get_IppiInterpolationType(order):
     # 1: Bi-linear (default) -->   ippLinear
     elif order == 1:
         interpolation = ippi.ippLinear
-    # 1: Bi-cubic (default) -->   ippCubic
+    # 1: Bi-cubic            -->   ippCubic
     elif order == 3:
         interpolation = ippi.ippCubic
+    # 6: Lanczos             -->   ippLanczos
+    elif order == 6:
+        interpolation = ippi.ippLanczos
+    # 7: Super               -->   ippSuper
+    elif order == 7:
+        interpolation = ippi.ippSuper
     # Undef order
     else:
         return UndefValue
@@ -212,4 +220,3 @@ cdef inline PyObject * __get_ipp_error(int ippStatusIndex) except *:
     if ippStatusIndex != int(0):
         status_string = ippi.ippGetStatusString(ippStatusIndex)
         PyErr_SetString(RuntimeError, status_string)
-# <<< utils module

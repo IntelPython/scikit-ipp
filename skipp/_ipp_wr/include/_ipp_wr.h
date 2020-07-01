@@ -466,6 +466,48 @@ ippiResizeCubic(IppDataType ippDataType,
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
+//    Adapter for ippiResizeLanczos_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeLanczos(
+    IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    IppiBorderType border,
+    void * pBorderValue,               // TODO
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeSuper_<mode> functions, where <mode> is
+//    8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
+//    16sC4R or 32fC4R.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeSuper(
+    IppDataType ippDataType,
+    void * pSrc,
+    Ipp32s srcStep,
+    void * pDst,
+    Ipp32s dstStep,
+    IppiPoint dstOffset,
+    IppiSize dstSize,
+    int numChannels,
+    const IppiResizeSpec_32f* pSpec,
+    Ipp8u* pBuffer);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
 //    Adapter for ippiResizeNearestInit_<mode> functions, where <mode>
 //    is: 8u, 16u, 16s or 32f.
 //
@@ -492,6 +534,21 @@ ippiResizeLinearInit(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
+//    Adapter for ippiResizeLanczosInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeLanczosInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    Ipp32u numLobes,
+    IppiResizeSpec_32f* pSpec,
+    Ipp8u* pInitBuf);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
 //    Adapter for ippiResizeCubicInit_<mode> functions, where <mode>
 //    is: 8u, 16u, 16s or 32f.
 //
@@ -505,4 +562,17 @@ ippiResizeCubicInit(
     Ipp32f valueC,
     IppiResizeSpec_32f* pSpec,
     Ipp8u* pInitBuf);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeSuperInit_<mode> functions, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeSuperInit(
+    IppDataType ippDataType,
+    IppiSize srcSize,
+    IppiSize dstSize,
+    IppiResizeSpec_32f* pSpec);
 #endif  // _IPP_WR_H
