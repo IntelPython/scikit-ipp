@@ -2,8 +2,8 @@ Release notes
 =============
 
 
-Version 1.0.1 (2021.1b8)
-------------------------
+Version 1.1.0
+-------------
 
 API changes
 ^^^^^^^^^^^
@@ -296,8 +296,8 @@ extend `skipp.transform.resize` interpolation methods support [Lanczos and Super
   + update parameterized `test_resize_without_antialiasing` test suit for checking `transform.resize` with `Lanczos` interpolation method
 
 
-Version 1.0.0 (2021.1b7)
-------------------------
+Version 1.0.0
+-------------
 
 
 New Features
