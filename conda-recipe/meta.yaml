@@ -29,8 +29,6 @@ test:
       - numpy
       - pytest
       - pytest-benchmark
-      - scikit-image
-      - scipy
     imports:
       - skipp
       - skipp.filters
