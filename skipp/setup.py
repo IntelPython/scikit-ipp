@@ -66,10 +66,10 @@ def configuration(parent_package='', top_path=None):
 
     config = Configuration('skipp', parent_package, top_path)
 
-    ipp_root = os.environ['IPPROOT']
+    lib_root = os.environ['LIBROOT']
 
-    ipp_include_dir = [join(ipp_root, 'include')]
-    ipp_library_dirs = [join(ipp_root, 'lib')]
+    include_dir = [join(lib_root, 'include')]
+    library_dirs = [join(lib_root, 'lib')]
     ipp_libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
 
     _ipp_utils_dir = ['_ipp_utils']
@@ -101,7 +101,7 @@ def configuration(parent_package='', top_path=None):
                                  'Cython is required to build the initial .c file.')
 
     include_dirs = [get_numpy_include(), get_python_include()]
-    include_dirs.extend(ipp_include_dir)
+    include_dirs.extend(include_dir)
     include_dirs.extend(extension_includes)
 
     for extension_name in extension_names:
@@ -111,8 +111,10 @@ def configuration(parent_package='', top_path=None):
                     [extension_cy_src[extension_name]],
             language="c",
             libraries=ipp_libraries,
+            extra_compile_args=['-fopenmp'],
+            extra_link_args=['-fopenmp'],
             include_dirs=include_dirs,
-            library_dirs=ipp_library_dirs)
+            library_dirs=library_dirs)
     if have_cython:
         config.ext_modules = cythonize(config.ext_modules)
     return config

@@ -35,6 +35,7 @@
 #define WARP_H
 #include <stddef.h>
 #include "ipp.h"
+#include <omp.h>
 #include "_ipp_wr.h"
 #include "utils.h"
 

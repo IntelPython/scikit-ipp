@@ -253,13 +253,21 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
     `WarpAffineCubic`, `WarpAffineNearest` on
     https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
 
-    - Currently `rotate` function supports `image` of the following types
+    - `transform.warp` function gets an upper bound on the number of threads
+      that could be used, and takes it for improving performance of warping
+      by using OpenMP with parallelization. It divides the processing of the
+      destination (output) image into tiles in the number of available
+      threads, for processing each tile separately on each thread. The number
+      of tiles corresponds to the number of available threads. If it is
+      possible it uses multiple threads for procesing all tiles
+      simultaneously.
+    - Currently `warp` function supports `image` of the following types
       for one, three and four channel images:
         `uint8`, `uint16`, `int16`, `float32`, `float64`
     - Currently modes don't match the behaviour of `numpy.pad`.
     - Currently `map_args`, `clip`, `preserve_range` are not processed.
-    - ``scikit-image`` uses Catmull-Rom spline (0.0, 0.5). In `scikit-ipp` the same
-      method was implemented. [1]
+    - ``scikit-image`` uses Catmull-Rom spline (0.0, 0.5). In `scikit-ipp`
+      the same method was implemented. [1]
 
     References
     ----------

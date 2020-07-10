@@ -21,6 +21,8 @@ requirements:
       - setuptools
     run:
       - ipp
+      - intel-openmp # [not osx]
+      - llvm-openmp # [osx]
       - numpy >=1.13.3
       - python
 

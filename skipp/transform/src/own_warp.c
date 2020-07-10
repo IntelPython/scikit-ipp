@@ -32,6 +32,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 #include "own_warp.h"
+#include "omp.h"
 
 #define EXIT_FUNC exitLine:             /* Label for Exit */
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine
@@ -147,10 +148,31 @@ own_Warp(
     int srcStep, dstStep;                                // Steps, in bytes, through the
                                                          // source/destination images
 
-    IppiPoint dstOffset = { 0, 0 };                      // Offset of the destination
-                                                         // image ROI with respect to
-                                                         // the destination image origin
     int specSize = 0, initSize = 0, bufSize = 0;         // Work buffer size
+
+    int numThreads, slice, tail;
+    int bufSize1, bufSize2;
+    IppiSize dstTileSize, dstLastTileSize;
+
+    int number_of_threads;
+
+#ifdef MAX_NUM_THREADS
+    number_of_threads = MAX_NUM_THREADS;
+#else
+    number_of_threads = omp_get_max_threads();
+#endif
+
+    IppStatus * pStatus = NULL;
+
+    // checking supported dtypes
+    if (!(ippDataType==ipp8u ||
+          ippDataType==ipp16u ||
+          ippDataType==ipp16s ||
+          ippDataType==ipp32f))
+    {
+        status = ippStsDataTypeErr;
+        check_sts(status);
+    }
 
     int sizeof_src;
 
@@ -160,27 +182,18 @@ own_Warp(
     srcStep = numChannels * img_width * sizeof_src;
     dstStep = numChannels * dst_width * sizeof_src;;
 
-    if (numChannels == 1) {
-        pBorderValue[0] = (Ipp64f)ippBorderValue;
-    }
-    else if (numChannels == 3)
+    pBorderValue[0] = (Ipp64f)ippBorderValue;
+    pBorderValue[1] = (Ipp64f)ippBorderValue;
+    pBorderValue[2] = (Ipp64f)ippBorderValue;
+    pBorderValue[3] = (Ipp64f)ippBorderValue;
+
+    pStatus = (IppStatus*)ippsMalloc_8u(sizeof(IppStatus) * number_of_threads);
+    if (pStatus == NULL)
     {
-        pBorderValue[0] = (Ipp64f)ippBorderValue;
-        pBorderValue[1] = (Ipp64f)ippBorderValue;
-        pBorderValue[2] = (Ipp64f)ippBorderValue;
-    }
-    else if (numChannels == 4)
-    {
-        pBorderValue[0] = (Ipp64f)ippBorderValue;
-        pBorderValue[1] = (Ipp64f)ippBorderValue;
-        pBorderValue[2] = (Ipp64f)ippBorderValue;
-        pBorderValue[3] = (Ipp64f)ippBorderValue;
-    }
-    else
-    {
-        status = ippStsErr;
+        status = ippStsMemAllocErr;
         check_sts(status);
     }
+
     // Spec and init buffer sizes
     status = ippiWarpAffineGetSize(srcSize, dstSize, ippDataType,
                                   (double(*)[3])coeffs,  interpolation, direction,
@@ -232,21 +245,77 @@ own_Warp(
     }
     }
     check_sts(status);
-    // Get work buffer size
-    status = ippiWarpGetBufferSize(pSpec, dstSize, &bufSize);
+
+    // General transform function
+    // Parallelized only by Y-direction here
+omp_set_num_threads(number_of_threads);
+#pragma omp parallel
+    {
+#pragma omp master
+        {
+            numThreads = omp_get_num_threads();
+            // ippSetNumThreads(numThreads);
+            slice = dstSize.height / numThreads;
+            tail = dstSize.height % numThreads;
+
+            dstTileSize.width = dstSize.width;
+            dstTileSize.height = slice;
+            dstLastTileSize.width = dstSize.width;
+            dstLastTileSize.height = slice + tail;
+
+            ippiWarpGetBufferSize(pSpec, dstTileSize, &bufSize1);
+            ippiWarpGetBufferSize(pSpec, dstLastTileSize, &bufSize2);
+            pBuffer = ippsMalloc_8u(bufSize1 * (numThreads - 1) + bufSize2);
+            if (pBuffer == NULL)
+            {
+                status = ippStsMemAllocErr;
+            }
+        }
+#pragma omp barrier
+        {
+            if (pBuffer)
+            {
+                // ippSetNumThreads(1);
+                Ipp32u  i;
+                void * pDstT = NULL;
+                Ipp8u * pOneBuf = NULL;
+                i = omp_get_thread_num();
+                IppiPoint srcOffset = { 0, 0 };
+                IppiPoint dstOffset = { 0, 0 };
+                IppiSize  srcSizeT = srcSize;
+                IppiSize  dstSizeT = dstTileSize;
+                
+                dstSizeT.height = slice;
+                dstOffset.y += i * slice;
+
+                if (i == numThreads - 1) dstSizeT = dstLastTileSize;
+
+                pDstT = (void*)((Ipp8u*)pDst + dstOffset.y * (Ipp32s)dstStep);
+
+                if(status == ippStsNoErr)
+                {
+                    pOneBuf = pBuffer + i * bufSize1;
+                    pStatus[i] = _ippiWarpAffine_interpolation(ippDataType, interpolation,
+                        numChannels, pSrc, srcStep, pDstT, dstStep, dstOffset, dstSizeT,
+                        pSpec, pOneBuf);
+                }
+            }
+        }
+    }
+    // checking status for pBuffer allocation
+    // and ippDataType checking in switch case
+    // for getting pDstT
     check_sts(status);
 
-    pBuffer = ippsMalloc_8u(bufSize);
-    if (pBuffer == NULL)
+    // Checking status for tiles
+    for (Ipp32u i = 0; i < numThreads; ++i)
     {
-        check_sts(status = ippStsMemAllocErr);
-    };
-    status = _ippiWarpAffine_interpolation(ippDataType, interpolation, numChannels,
-        pSrc, srcStep, pDst, dstStep, dstOffset, dstSize, pSpec, pBuffer);
-    check_sts(status);
+        check_sts(pStatus[i]);
+    }
 EXIT_FUNC
     ippsFree(pInitBuf);
-    ippsFree(pBuffer);
     ippsFree(pSpec);
+    ippsFree(pBuffer);
+    ippFree(pStatus);
     return status;
 }
