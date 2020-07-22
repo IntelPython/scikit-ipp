@@ -26,10 +26,16 @@
 # ******************************************************************************
 
 import os
+import platform
 
 from os.path import join, split, dirname, abspath
 from numpy import get_include as get_numpy_include
 from distutils.sysconfig import get_python_inc as get_python_include
+
+
+IS_WIN = platform.system() == 'Windows'
+IS_LIN = platform.system() == 'Linux'
+IS_MAC = platform.system() == 'Darwin'
 
 
 def configuration(parent_package='', top_path=None):
@@ -75,6 +81,13 @@ def configuration(parent_package='', top_path=None):
     _ipp_utils_dir = ['_ipp_utils']
     _ipp_wr_dir = ['_ipp_wr']
 
+    if IS_LIN or IS_MAC:
+        extra_compile_args=['-fopenmp']
+        extra_link_args=['-fopenmp']
+    elif IS_WIN:
+        extra_compile_args=['-openmp']
+        extra_link_args=['-openmp']
+
     extension_names = []  # extension names and their dir names are the same
     extension_cy_src = {}
 
@@ -111,8 +124,8 @@ def configuration(parent_package='', top_path=None):
                     [extension_cy_src[extension_name]],
             language="c",
             libraries=ipp_libraries,
-            extra_compile_args=['-fopenmp'],
-            extra_link_args=['-fopenmp'],
+            extra_compile_args=extra_compile_args,
+            extra_link_args=extra_link_args,
             include_dirs=include_dirs,
             library_dirs=library_dirs)
     if have_cython:
