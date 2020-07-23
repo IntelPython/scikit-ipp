@@ -193,6 +193,7 @@ own_Warp(
         status = ippStsMemAllocErr;
         check_sts(status);
     }
+    for (int i = 0; i < number_of_threads; ++i) pStatus[i] = ippStsNoErr;
 
     // Spec and init buffer sizes
     status = ippiWarpAffineGetSize(srcSize, dstSize, ippDataType,
