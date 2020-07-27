@@ -127,10 +127,14 @@ class AffineTransform(object):
                             "types.")
 
     def __repr__(self):
-        pass
+        classname = self.__class__.__name__
+        classstr = classname
+        return '<{} at {}>'.format(classstr, hex(id(self)))
 
     def __str__(self):
-        pass
+        classname = self.__class__.__name__
+        classstr = classname
+        return '<{}>'.format(classstr)
 
     def _inv_matrix(self):
         inv = np.linalg.inv(self.params)
