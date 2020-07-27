@@ -600,6 +600,14 @@ cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
     `ResizeCubic`, `ResizeLanczos`, `ResizeSuper`,`ResizeAntialiasing` on
     https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/
 
+    - `transform.resize` function gets an upper bound on the number of threads
+      that could be used, and takes it for improving performance of warping
+      by using OpenMP with parallelization. It divides the processing of the
+      destination (output) image into tiles in the number of available
+      threads, for processing each tile separately on each thread. The number
+      of tiles corresponds to the number of available threads. If it is
+      possible it uses multiple threads for procesing all tiles
+      simultaneously.
     - Currently `resize` function supports `image` of the following types
       for one, three and four channel images:
         `uint8`, `uint16`, `int16`, `float32`.

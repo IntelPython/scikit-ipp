@@ -358,6 +358,37 @@ ippiResizeGetBufferSize(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
+//    Adapter for ippiResizeGetSrcRoi_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetSrcRoi(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiPoint dstRoiOffset,
+    IppiSize dstRoiSize,
+    IppiPoint* srcRoiOffset,
+    IppiSize* srcRoiSize);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeGetBorderSize_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetBorderSize(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiBorderSize* borderSize);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
 //    Adapter for ippiResizeNearest, ippiResizeLinear and ippiResizeCubic
 //    functions.
 //

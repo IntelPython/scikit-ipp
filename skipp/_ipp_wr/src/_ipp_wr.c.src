@@ -926,6 +926,103 @@ ippiResizeGetBufferSize(
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
+//    Adapter for ippiResizeGetSrcRoi_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetSrcRoi(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiPoint dstRoiOffset,
+    IppiSize dstRoiSize,
+    IppiPoint* srcRoiOffset,
+    IppiSize* srcRoiSize)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeGetSrcRoi_@ipp_type@(pSpec, dstRoiOffset,
+            dstRoiSize, srcRoiOffset, srcRoiSize);
+        break;
+    }
+    /**end repeat**/
+    /*
+    // TODO
+    pSpec is not 32f
+    case ipp64f:
+    {
+        status = ippiResizeGetSrcRoi_64f(pSpec, dstRoiOffset,dstRoiSize,
+                srcRoiOffset, srcRoiSize);
+        break;
+    }
+    */
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeGetBorderSize_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetBorderSize(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiBorderSize* borderSize)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeGetBorderSize_@ipp_type@(pSpec, &borderSize);
+        break;
+    }
+    /**end repeat**/
+    /*
+    // TODO
+    pSpec is not 32f
+    case ipp64f:
+    {
+        status = ippiResizeGetBorderSize_64f(pSpec, &borderSize);
+        break;
+    }
+    */
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
 //    Adapter for ippiResizeAntialiasing_<mode> function, where <mode>
 //    is: 8uC1R, 16uC1R, 16sC1R, 32fC1R, 8uC3R, 16uC3R, 16sC3R or 32fC3R, 8uC4R, 16uC4R,
 //    16sC4R or 32fC4R, 
