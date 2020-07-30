@@ -475,7 +475,6 @@ own_FilterEdge(
         Ipp32f value = (Ipp32f)-3.0;
         status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
         break;
-        break;
     }
     case own_filterPrewittHoriz:
     {
