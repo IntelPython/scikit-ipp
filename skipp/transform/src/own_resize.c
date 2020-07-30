@@ -132,14 +132,6 @@ own_Resize(
     pBorderValue[2] = (Ipp64f)ippBorderValue;
     pBorderValue[3] = (Ipp64f)ippBorderValue;
 
-    pStatus = (IppStatus*)ippsMalloc_8u(sizeof(IppStatus) * max_num_threads);
-    if (pStatus == NULL)
-    {
-        status = ippStsMemAllocErr;
-        check_sts(status);
-    }
-    for (int i = 0; i < max_num_threads; ++i) pStatus[i] = ippStsNoErr;
-
     // Calculation of work buffer size
     status = ippiResizeGetSize(ippDataType, srcSize, dstSize, interpolation,
         antialiasing, &specSize, &initSize);
