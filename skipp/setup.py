@@ -44,7 +44,6 @@ def configuration(parent_package='', top_path=None):
     def _get_sources_and_includes(dirs_list):
         """
         Returns list of source files and list of includes
-
         Parameters
         ----------
         dirs_list : list:
@@ -76,7 +75,7 @@ def configuration(parent_package='', top_path=None):
 
     include_dir = [join(lib_root, 'include')]
     library_dirs = [join(lib_root, 'lib')]
-    ipp_libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
+    libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
 
     _ipp_utils_dir = ['_ipp_utils']
     _ipp_wr_dir = ['_ipp_wr']
@@ -87,6 +86,9 @@ def configuration(parent_package='', top_path=None):
     elif IS_WIN:
         extra_compile_args=['-openmp']
         extra_link_args=['-openmp']
+
+    if IS_MAC:
+       libraries.append("iomp5")
 
     extension_names = []  # extension names and their dir names are the same
     extension_cy_src = {}
@@ -123,7 +125,7 @@ def configuration(parent_package='', top_path=None):
             sources=extension_sources +
                     [extension_cy_src[extension_name]],
             language="c",
-            libraries=ipp_libraries,
+            libraries=libraries,
             extra_compile_args=extra_compile_args,
             extra_link_args=extra_link_args,
             include_dirs=include_dirs,
