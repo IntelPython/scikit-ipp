@@ -1,0 +1,1338 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>scikit-ipp API &mdash; scikit-ipp Beta07 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Installation" href="installing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="contents.html" class="icon icon-home"> scikit-ipp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">About scikit-ipp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">scikit-ipp API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#skipp-filters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.filters</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gaussian">gaussian</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#median">median</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#laplace">laplace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sobel">sobel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sobel-h">sobel_h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sobel-v">sobel_v</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prewitt">prewitt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prewitt-h">prewitt_h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prewitt-v">prewitt_v</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#skipp-morphology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.morphology</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#erosion">erosion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dilation">dilation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#skipp-transform"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.transform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#class-affinetransform">class AffineTransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#warp">warp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resize">resize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rotate">rotate</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="contents.html">scikit-ipp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="contents.html">Docs</a> &raquo;</li>
+        
+      <li>scikit-ipp API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="scikit-ipp-api">
+<h1><a class="toc-backref" href="#id11">scikit-ipp API</a><a class="headerlink" href="#scikit-ipp-api" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="supported-functions">
+<p class="topic-title">Supported functions</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#scikit-ipp-api" id="id11">scikit-ipp API</a></p>
+<ul>
+<li><p><a class="reference internal" href="#skipp-filters" id="id12"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.filters</span></code></a></p>
+<ul>
+<li><p><a class="reference internal" href="#gaussian" id="id13">gaussian</a></p></li>
+<li><p><a class="reference internal" href="#median" id="id14">median</a></p></li>
+<li><p><a class="reference internal" href="#laplace" id="id15">laplace</a></p></li>
+<li><p><a class="reference internal" href="#sobel" id="id16">sobel</a></p></li>
+<li><p><a class="reference internal" href="#sobel-h" id="id17">sobel_h</a></p></li>
+<li><p><a class="reference internal" href="#sobel-v" id="id18">sobel_v</a></p></li>
+<li><p><a class="reference internal" href="#prewitt" id="id19">prewitt</a></p></li>
+<li><p><a class="reference internal" href="#prewitt-h" id="id20">prewitt_h</a></p></li>
+<li><p><a class="reference internal" href="#prewitt-v" id="id21">prewitt_v</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#skipp-morphology" id="id22"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.morphology</span></code></a></p>
+<ul>
+<li><p><a class="reference internal" href="#erosion" id="id23">erosion</a></p></li>
+<li><p><a class="reference internal" href="#dilation" id="id24">dilation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#skipp-transform" id="id25"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.transform</span></code></a></p>
+<ul>
+<li><p><a class="reference internal" href="#class-affinetransform" id="id26">class AffineTransform</a></p></li>
+<li><p><a class="reference internal" href="#warp" id="id27">warp</a></p></li>
+<li><p><a class="reference internal" href="#resize" id="id28">resize</a></p></li>
+<li><p><a class="reference internal" href="#rotate" id="id29">rotate</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="skipp-filters">
+<h2><a class="toc-backref" href="#id12"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.filters</span></code></a><a class="headerlink" href="#skipp-filters" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="gaussian">
+<h3><a class="toc-backref" href="#id13">gaussian</a><a class="headerlink" href="#gaussian" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">gaussian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">cval</span></em>, <em class="sig-param"><span class="n">multichannel</span></em>, <em class="sig-param"><span class="n">preserve_range</span></em>, <em class="sig-param"><span class="n">truncate</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Gaussian filter.
+The function has <cite>skimage.filters.gaussian</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>array-like</em>) – Input image (grayscale or color) to filter.</p></li>
+<li><p><strong>sigma</strong> (<em>scalar</em><em>, </em><em>optional</em>) – Standard deviation for Gaussian kernel.</p></li>
+<li><p><strong>output</strong> (<em>array</em><em>, </em><em>optional</em>) – The <code class="docutils literal notranslate"><span class="pre">output</span></code> parameter passes an array in which to store the
+filter output.</p></li>
+<li><p><strong>mode</strong> (<em>{'constant'</em><em>, </em><em>'nearest'</em><em>, </em><em>'mirror'}</em><em>, </em><em>optional</em>) – The <code class="docutils literal notranslate"><span class="pre">mode</span></code> parameter determines how the array borders are
+handled, where <code class="docutils literal notranslate"><span class="pre">cval</span></code> is the value when mode is equal to
+‘constant’. Default is ‘nearest’.</p></li>
+<li><p><strong>cval</strong> (<em>scalar</em><em>, </em><em>optional</em>) – Value to fill past edges of input if <code class="docutils literal notranslate"><span class="pre">mode</span></code> is ‘constant’. Default
+is 0.0</p></li>
+<li><p><strong>multichannel</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – </p></li>
+<li><p><strong>preserve_range</strong> (<em>bool</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>truncate</strong> (<em>float</em><em>, </em><em>optional</em>) – Truncate the filter at this many standard deviations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>filtered_image</strong> – the filtered image array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterGaussianBorder_&lt;mod&gt; on the backend,
+that performs Gaussian filtering of an image with user-defined borders,
+see: <cite>FilterGaussianBorder</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul class="simple">
+<li><p>The <cite>image</cite> should be a numpy array with uint8, uint16, int16 or float32
+dtype.</p></li>
+<li><p>Currently <cite>output</cite>, <cite>multichannel</cite> and <cite>preserve_range</cite> are not processed.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([[0., 0., 0.],</span>
+<span class="go">       [0., 1., 0.],</span>
+<span class="go">       [0., 0., 0.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gaussian</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>  <span class="c1"># mild smoothing</span>
+<span class="go">array([[0.00163118, 0.03712554, 0.00163118],</span>
+<span class="go">       [0.03712554, 0.844973  , 0.03712554],</span>
+<span class="go">       [0.00163118, 0.03712554, 0.00163118]], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gaussian</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># more smoothing</span>
+<span class="go">array([[0.05858153, 0.09658462, 0.05858153],</span>
+<span class="go">       [0.09658462, 0.15924111, 0.09658462],</span>
+<span class="go">       [0.05858153, 0.09658462, 0.05858153]], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Several modes are possible for handling boundaries</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gaussian</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+<span class="go">array([[0.05858153, 0.09658462, 0.05858153],</span>
+<span class="go">       [0.09658462, 0.15924111, 0.09658462],</span>
+<span class="go">       [0.05858153, 0.09658462, 0.05858153]], dtype=float32)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="median">
+<h3><a class="toc-backref" href="#id14">median</a><a class="headerlink" href="#median" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">median</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">selem</span></em>, <em class="sig-param"><span class="n">out</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">shift_x</span></em>, <em class="sig-param"><span class="n">shift_y</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">cval</span></em>, <em class="sig-param"><span class="n">behavior</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Median filter.</p>
+<p>Return local median of an image.
+The function has <cite>skimage.filters.median</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>array-like</em>) – Input image.</p></li>
+<li><p><strong>selem</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">behavior=='ipp'</span></code>, <code class="docutils literal notranslate"><span class="pre">selem</span></code> is a 2-D array of 1’s and 0’s.</p></li>
+<li><p><strong>out</strong> (<em>ndarray</em><em>, </em><em>(</em><em>same dtype as image</em><em>)</em><em>, </em><em>optional</em>) – If None, a new array is allocated.</p></li>
+<li><p><strong>mode</strong> (<em>{'constant'</em><em>, </em><em>'nearest'}</em><em>, </em><em>optional</em>) – The mode parameter determines how the array borders are handled, where
+<code class="docutils literal notranslate"><span class="pre">cval</span></code> is the value when mode is equal to ‘constant’.
+Default is ‘nearest’.</p></li>
+<li><p><strong>cval</strong> (<em>scalar</em><em>, </em><em>optional</em>) – Value to fill past edges of input if mode is ‘constant’. Default is 0.0</p></li>
+<li><p><strong>behavior</strong> (<em>{'ipp'}</em><em>, </em><em>optional</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Output image.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2-D array (same dtype as input image)</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterMedianBorder_&lt;mod&gt; on the backend,
+that performs median filtering of an image with user-defined borders,
+see: <cite>FilterMedianBorder</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul class="simple">
+<li><p>The <cite>image</cite> should be a numpy array with uint8, uint16, int16 or float32
+dtype.</p></li>
+<li><p>Currently <cite>out</cite> and <cite>behavior</cite> are not processed.
+The <cite>behavior</cite> disabled due to only one option existence, default is <cite>ipp</cite>
+The <cite>mask</cite>, <cite>shift_x</cite> and <cite>shift_y</cite> are not processed - will be deprecated
+since <cite>scikit-image</cite> v0.17.</p></li>
+<li><p><cite>skimage.filters.median</cite> requiers the <cite>image</cite>, that should be a 2-dimensional
+array. <cite>skipp.filters.median</cite> can also processing also multichannel (3-channel)
+images.</p></li>
+<li><p><cite>scikit-ipp</cite> supports only recantagle shape <cite>selem</cite> with ones.</p></li>
+<li><p>Indicates an error if <cite>selem</cite> shape has a field with a zero, negative
+or even value.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.filters</span> <span class="kn">import</span> <span class="n">median</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">med</span> <span class="o">=</span> <span class="n">median</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="laplace">
+<h3><a class="toc-backref" href="#id15">laplace</a><a class="headerlink" href="#laplace" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">laplace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">ksize</span></em>, <em class="sig-param"><span class="n">mask</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Find the edges of an image using the Laplace operator.
+The function has <cite>skimage.filters.laplace</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>ndarray</em>) – Image to process.</p></li>
+<li><p><strong>ksize</strong> (<em>int</em><em>, </em><em>optional</em>) – Define the size of the discrete Laplacian operator such that it
+will have a size of (ksize,) * image.ndim.</p></li>
+<li><p><strong>mask</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – An optional mask to limit the application to a certain area.
+Note that pixels surrounding masked regions are also masked to
+prevent masked regions from affecting the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – The Laplace edge map. Same dtype as <cite>image</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterBorder_&lt;mod&gt; on the backend,
+that filters an image using a rectangular filter with coeffs
+(Laplace (3x3)):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">|</span> <span class="mi">0</span>  <span class="o">-</span><span class="mi">1</span>   <span class="mi">0</span> <span class="o">|</span>
+<span class="o">|-</span><span class="mi">1</span>   <span class="mi">4</span>  <span class="o">-</span><span class="mi">1</span> <span class="o">|</span>
+<span class="o">|</span> <span class="mi">0</span>  <span class="o">-</span><span class="mi">1</span>   <span class="mi">0</span> <span class="o">|</span>
+</pre></div>
+</div>
+<p>for implementing laplace filtering as is in <cite>scikit-image</cite>,
+see: <cite>FilterBorder</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul class="simple">
+<li><p>Currently converting integer images into float32 is not supported.</p></li>
+<li><p>The <cite>image</cite> should be a numpy array with uint8, uint16, int16 or float32
+dtype.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.filters</span> <span class="kn">import</span> <span class="n">laplace</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lap</span> <span class="o">=</span> <span class="n">laplace</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="sobel">
+<h3><a class="toc-backref" href="#id16">sobel</a><a class="headerlink" href="#sobel" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">sobel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">mask</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Find edges in an image using the Sobel filter.
+The function has <cite>skimage.filters.sobel</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>2-D array</em>) – Image to process.</p></li>
+<li><p><strong>mask</strong> (<em>2-D array</em><em>, </em><em>optional</em>) – An optional mask to limit the application to a certain area.
+Note that pixels surrounding masked regions are also masked to
+prevent masked regions from affecting the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – The Sobel edge map.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2-D array of float32</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterSobel_&lt;mod&gt; on the backend,
+see: <cite>FilterSobel</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul class="simple">
+<li><p>Currently converting integer images into float32 is not supported.</p></li>
+<li><p>The <cite>image</cite> should be an array of numpy.float32 dtype.</p></li>
+<li><p><cite>skimage.filters.sobel</cite> is a wrapper on <code class="docutils literal notranslate"><span class="pre">scipy.ndimage</span></code>
+<cite>convolve</cite> func. <cite>convolve</cite> uses <cite>reflect</cite> border mode.
+<cite>reflect</cite> border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+type. ippiFilterSobel_&lt;mode&gt; doesn’t supports this border type.</p></li>
+</ul>
+<p>Take the square root of the sum of the squares of the horizontal and
+vertical Sobels to get a magnitude that’s somewhat insensitive to
+direction.
+The 3x3 convolution kernel used in the horizontal and vertical Sobels is
+an approximation of the gradient of the image (with some slight blurring
+since 9 pixels are used to compute the gradient at a given pixel). As an
+approximation of the gradient, the Sobel operator is not completely
+rotation-invariant.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.filters</span> <span class="kn">import</span> <span class="n">sobel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edges</span> <span class="o">=</span> <span class="n">sobel</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="sobel-h">
+<h3><a class="toc-backref" href="#id17">sobel_h</a><a class="headerlink" href="#sobel-h" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">sobel_h</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">mask</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Find the horizontal edges of an image using the Sobel transform.
+The function has <cite>skimage.filters.sobel_h</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>2-D array</em>) – Image to process.</p></li>
+<li><p><strong>mask</strong> (<em>2-D array</em><em>, </em><em>optional</em>) – An optional mask to limit the application to a certain area.
+Note that pixels surrounding masked regions are also masked to
+prevent masked regions from affecting the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – The Sobel edge map.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2-D array</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterSobelHorizBorder_&lt;mod&gt; on the backend,
+see: <cite>FilterSobelHorizBorder</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<dl>
+<dt>We use the following kernel::</dt><dd><div class="line-block">
+<div class="line">1   2   1 |</div>
+<div class="line">0   0   0 |</div>
+</div>
+<p><a href="#id1"><span class="problematic" id="id2">|</span></a>-1  -2  -1 |</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>Currently converting integer images into float32 is not supported.</p></li>
+<li><p>The <cite>image</cite> should be an array of numpy.float32 dtype.</p></li>
+<li><p><cite>skimage.filters.sobel_h</cite> is a wrapper on <cite>scipy.ndimage</cite>
+<cite>convolve</cite> func. <cite>convolve</cite> uses <cite>reflect</cite> border mode.
+<cite>reflect</cite> border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+type. ippiFilterSobelHorizBorder_&lt;mode&gt; doesn’t supports this border type.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.filters</span> <span class="kn">import</span> <span class="n">sobel_h</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edges</span> <span class="o">=</span> <span class="n">sobel_h</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="sobel-v">
+<h3><a class="toc-backref" href="#id18">sobel_v</a><a class="headerlink" href="#sobel-v" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">sobel_v</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">mask</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Find the vertical edges of an image using the Sobel transform.
+The function has <cite>skimage.filters.sobel_v</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>2-D array</em>) – Image to process.</p></li>
+<li><p><strong>mask</strong> (<em>2-D array</em><em>, </em><em>optional</em>) – An optional mask to limit the application to a certain area.
+Note that pixels surrounding masked regions are also masked to
+prevent masked regions from affecting the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – The Sobel edge map.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2-D array</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterSobelVertBorder_&lt;mod&gt; on the backend,
+see: <cite>FilterSobelVertBorder</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<dl>
+<dt>We use the following kernel::</dt><dd><div class="line-block">
+<div class="line">1   0  -1 |</div>
+<div class="line">2   0  -2 |</div>
+<div class="line">1   0  -1 |</div>
+</div>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>Currently converting integer images into float32 is not supported.</p></li>
+<li><p>The <cite>image</cite> should be an array of numpy.float32 dtype.</p></li>
+<li><p><cite>skimage.filters.sobel_v</cite> is a wrapper on <cite>scipy.ndimage</cite>
+<cite>convolve</cite> func. <cite>convolve</cite> uses <cite>reflect</cite> border mode.
+<cite>reflect</cite> border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+type. ippiFilterSobelVertBorder_&lt;mode&gt; doesn’t supports this border type.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.filters</span> <span class="kn">import</span> <span class="n">sobel_v</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edges</span> <span class="o">=</span> <span class="n">sobel_v</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="prewitt">
+<h3><a class="toc-backref" href="#id19">prewitt</a><a class="headerlink" href="#prewitt" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">prewitt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">mask</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Find the edge magnitude using the Prewitt transform.
+The function has <cite>skimage.filters.prewitt</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>2-D array</em>) – Image to process.</p></li>
+<li><p><strong>mask</strong> (<em>2-D array</em><em>, </em><em>optional</em>) – An optional mask to limit the application to a certain area.
+Note that pixels surrounding masked regions are also masked to
+prevent masked regions from affecting the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – The Prewitt edge map.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2-D array</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterPrewittVertBorder_&lt;mod&gt; and
+ippiFilterPrewittHorizBorder_&lt;mod&gt; on the backend
+see: <cite>FilterPrewittHorizBorder</cite>, <cite>FilterPrewittVertBorder</cite>
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<p>Return the square root of the sum of squares of the horizontal
+and vertical Prewitt transforms. The edge magnitude depends slightly
+on edge directions, since the approximation of the gradient operator by
+the Prewitt operator is not completely rotation invariant.</p>
+<ul class="simple">
+<li><p>Currently converting integer images into float32 is not supported.</p></li>
+<li><p>The <cite>image</cite> should be an array of numpy.float32 dtype.</p></li>
+<li><p><cite>skimage.filters.prewitt</cite> is a wrapper on <cite>scipy.ndimage</cite>
+<cite>convolve</cite> func. <cite>convolve</cite> uses <cite>reflect</cite> border mode.
+<cite>reflect</cite> border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+type. ippiFilterPrewittVertBorder_&lt;mode&gt; and  ippiFilterPrewittHorizBorder_&lt;mode&gt;
+don’t support this border type.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.filters</span> <span class="kn">import</span> <span class="n">prewitt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edges</span> <span class="o">=</span> <span class="n">prewitt</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="prewitt-h">
+<h3><a class="toc-backref" href="#id20">prewitt_h</a><a class="headerlink" href="#prewitt-h" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">prewitt_h</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">mask</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Find the horizontal edges of an image using the Prewitt transform.
+The function has <cite>skimage.filters.prewitt_h</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>2-D array</em>) – Image to process.</p></li>
+<li><p><strong>mask</strong> (<em>2-D array</em><em>, </em><em>optional</em>) – An optional mask to limit the application to a certain area.
+Note that pixels surrounding masked regions are also masked to
+prevent masked regions from affecting the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – The Prewitt edge map.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2-D array</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterPrewittHorizBorder_&lt;mod&gt; on the backend
+see: <cite>FilterPrewittHorizBorder</cite>
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<dl>
+<dt>We use the following kernel::</dt><dd><div class="line-block">
+<div class="line">1   1   1 |</div>
+<div class="line">0   0   0 |</div>
+</div>
+<p><a href="#id3"><span class="problematic" id="id4">|</span></a>-1  -1  -1 |</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>Currently converting integer images into float32 is not supported.</p></li>
+<li><p>The <cite>image</cite> should be an array of numpy.float32 dtype.</p></li>
+<li><p><cite>skimage.filters.prewitt_h</cite> is a wrapper on <cite>scipy.ndimage</cite>
+<cite>convolve</cite> func. <cite>convolve</cite> uses <cite>reflect</cite> border mode.
+<cite>reflect</cite> border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+type. ippiFilterPrewittHorizBorder_&lt;mode&gt; doesn’t support this border type.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.filters</span> <span class="kn">import</span> <span class="n">prewitt_h</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edges</span> <span class="o">=</span> <span class="n">prewitt_h</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="prewitt-v">
+<h3><a class="toc-backref" href="#id21">prewitt_v</a><a class="headerlink" href="#prewitt-v" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.filters.</code><code class="sig-name descname">prewitt_v</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">mask</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Find the vertical edges of an image using the Prewitt transform.
+The function has <cite>skimage.filters.prewitt_v</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>2-D array</em>) – Image to process.</p></li>
+<li><p><strong>mask</strong> (<em>2-D array</em><em>, </em><em>optional</em>) – An optional mask to limit the application to a certain area.
+Note that pixels surrounding masked regions are also masked to
+prevent masked regions from affecting the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> – The Prewitt edge map.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2-D array</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiFilterPrewittVertBorder_&lt;mod&gt; on the backend
+see: <cite>FilterPrewittVertBorder</cite>
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<dl>
+<dt>We use the following kernel::</dt><dd><div class="line-block">
+<div class="line">1   0  -1 |</div>
+<div class="line">1   0  -1 |</div>
+<div class="line">1   0  -1 |</div>
+</div>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>Currently converting integer images into float32 is not supported.</p></li>
+<li><p>The <cite>image</cite> should be an array of numpy.float32 dtype.</p></li>
+<li><p><cite>skimage.filters.prewitt_v</cite> is a wrapper on <cite>scipy.ndimage</cite>
+<cite>convolve</cite> func. <cite>convolve</cite> uses <cite>reflect</cite> border mode.
+<cite>reflect</cite> border mode is equivalent of Intel(R) IPP ippBorderMirrorR border
+type. ippiFilterPrewittVertBorder_&lt;mode&gt; doesn’t support this border type.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.filters</span> <span class="kn">import</span> <span class="n">prewitt_v</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edges</span> <span class="o">=</span> <span class="n">prewitt_v</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="skipp-morphology">
+<h2><a class="toc-backref" href="#id22"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.morphology</span></code></a><a class="headerlink" href="#skipp-morphology" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="erosion">
+<h3><a class="toc-backref" href="#id23">erosion</a><a class="headerlink" href="#erosion" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.morphology.</code><code class="sig-name descname">erosion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">selem</span></em>, <em class="sig-param"><span class="n">out</span></em>, <em class="sig-param"><span class="n">shift_x</span></em>, <em class="sig-param"><span class="n">shift_y</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Return greyscale morphological erosion of an image.</p>
+<p>Morphological erosion sets a pixel at (i,j) to the minimum over all pixels
+in the neighborhood centered at (i,j). Erosion shrinks bright regions and
+enlarges dark regions.</p>
+<p>The function has <cite>skimage.morphology.erosion</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>ndarray</em>) – Image array.</p></li>
+<li><p><strong>selem</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – The neighborhood expressed as an array of 1’s and 0’s.
+If None, use cross-shaped structuring element (connectivity=1).</p></li>
+<li><p><strong>out</strong> (<em>ndarrays</em><em>, </em><em>optional</em>) – The array to store the result of the morphology. If None is
+passed, a new array will be allocated.</p></li>
+<li><p><strong>shift_y</strong> (<em>shift_x</em><em>,</em>) – shift structuring element about center point. This only affects
+eccentric structuring elements (i.e. selem with even numbered sides).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>eroded</strong> – The result of the morphological erosion.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array, same shape and type as <cite>image</cite></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiErodeBorder_&lt;mod&gt; on the backend,
+that performs dilation of an image, see: <cite>ErodeBorder</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul class="simple">
+<li><p>The <cite>selem</cite> should be only <cite>uint8</cite> dtype.</p></li>
+<li><p>The <cite>image</cite> and <cite>out</cite> should be the same data type</p></li>
+<li><p>Currently <cite>dilation</cite> function supports <cite>image</cite> of the following types:
+- one channel image: <cite>uint8</cite>, <cite>uint16</cite>, <cite>int16</cite>, <cite>float32</cite>
+- three channel image: <cite>uint8</cite>, <cite>float32</cite>
+- four channel image: <cite>uint8</cite>, <cite>float32</cite></p></li>
+<li><p>Currently <cite>out</cite>, <cite>shift_x</cite>, <cite>shift_y</cite> are not processed.</p></li>
+<li><p>If <cite>selem</cite> is None:
+<cite>scikit-ipp</cite> creates directly ndarray with shape (3, 3) like a
+<cite>skimage.morphology.selem.diamond(radius=1)</cite> for
+2D grayscale images and ndarray with shape (3, 3, 3) like a
+(<a href="#id5"><span class="problematic" id="id6">`</span></a>skimage.morphology.selem.diamond(radius=1) for each channel).</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Erosion shrinks bright regions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage.morphology</span> <span class="kn">import</span> <span class="n">square</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.morphology</span> <span class="kn">import</span> <span class="n">erosion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bright_square</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                          <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                          <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                          <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                          <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">erosion</span><span class="p">(</span><span class="n">bright_square</span><span class="p">,</span> <span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">array([[0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 1, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0]], dtype=uint8)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="dilation">
+<h3><a class="toc-backref" href="#id24">dilation</a><a class="headerlink" href="#dilation" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.morphology.</code><code class="sig-name descname">dilation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">selem</span></em>, <em class="sig-param"><span class="n">out</span></em>, <em class="sig-param"><span class="n">shift_x</span></em>, <em class="sig-param"><span class="n">shift_y</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Return greyscale morphological dilation of an image.</p>
+<p>Morphological dilation sets a pixel at (i,j) to the maximum over all pixels
+in the neighborhood centered at (i,j). Dilation enlarges bright regions
+and shrinks dark regions.</p>
+<p>The function has <cite>skimage.morphology.dilation</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>ndarray</em>) – Image array.</p></li>
+<li><p><strong>selem</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – The neighborhood expressed as a 2-D array of 1’s and 0’s.
+If None, use cross-shaped structuring element (connectivity=1).</p></li>
+<li><p><strong>out</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – The array to store the result of the morphology. If None, is
+passed, a new array will be allocated.
+Should be the same type and shape as <cite>image</cite>.</p></li>
+<li><p><strong>shift_y</strong> (<em>shift_x</em><em>,</em>) – shift structuring element about center point. This only affects
+eccentric structuring elements (i.e. selem with even numbered sides).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dilated</strong> – The result of the morphological dilation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array, same shape and type as <cite>image</cite></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiDilateBorder_&lt;mod&gt; on the backend,
+that performs dilation of an image, see: <cite>DilateBorder</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul class="simple">
+<li><p>The <cite>selem</cite> should be only <cite>uint8</cite> dtype.</p></li>
+<li><p>The <cite>image</cite> and <cite>out</cite> should be the same data type</p></li>
+<li><p>Currently <cite>dilation</cite> function supports <cite>image</cite> of the following types:
+- one channel image: <cite>uint8</cite>, <cite>uint16</cite>, <cite>int16</cite>, <cite>float32</cite>
+- three channel image: <cite>uint8</cite>, <cite>float32</cite>
+- four channel image: <cite>uint8</cite>, <cite>float32</cite></p></li>
+<li><p>Currently <cite>out</cite>, <cite>shift_x</cite>, <cite>shift_y</cite> are not processed.</p></li>
+<li><p>If <cite>selem</cite> is None:
+<cite>scikit-ipp</cite> creates directly ndarray with shape (3, 3) like a
+<cite>skimage.morphology.selem.diamond(radius=1)</cite> for
+2D grayscale images and ndarray with shape (3, 3, 3) like a
+(<a href="#id7"><span class="problematic" id="id8">`</span></a>skimage.morphology.selem.diamond(radius=1) for each channel).</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Dilation enlarges bright regions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage.morphology</span> <span class="kn">import</span> <span class="n">square</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.morphology</span> <span class="kn">import</span> <span class="n">dilation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bright_pixel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dilation</span><span class="p">(</span><span class="n">bright_pixel</span><span class="p">,</span> <span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">array([[0, 0, 0, 0, 0],</span>
+<span class="go">       [0, 1, 1, 1, 0],</span>
+<span class="go">       [0, 1, 1, 1, 0],</span>
+<span class="go">       [0, 1, 1, 1, 0],</span>
+<span class="go">       [0, 0, 0, 0, 0]], dtype=uint8)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="skipp-transform">
+<h2><a class="toc-backref" href="#id25"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skipp.transform</span></code></a><a class="headerlink" href="#skipp-transform" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="class-affinetransform">
+<h3><a class="toc-backref" href="#id26">class AffineTransform</a><a class="headerlink" href="#class-affinetransform" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">skipp.transform.</code><code class="sig-name descname">AffineTransform</code></dt>
+<dd><p>2D affine transformation.</p>
+<p>The same interface as is for <cite>skimage.transform.AffineTransform</cite>,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<p>Has the following form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">a0</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">a1</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="n">a2</span> <span class="o">=</span>
+  <span class="o">=</span> <span class="n">sx</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span> <span class="o">-</span> <span class="n">sy</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">rotation</span> <span class="o">+</span> <span class="n">shear</span><span class="p">)</span> <span class="o">+</span> <span class="n">a2</span>
+
+<span class="n">Y</span> <span class="o">=</span> <span class="n">b0</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">b1</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">=</span>
+  <span class="o">=</span> <span class="n">sx</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span> <span class="o">+</span> <span class="n">sy</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">rotation</span> <span class="o">+</span> <span class="n">shear</span><span class="p">)</span> <span class="o">+</span> <span class="n">b2</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">sx</span></code> and <code class="docutils literal notranslate"><span class="pre">sy</span></code> are scale factors in the x and y directions,
+and the homogeneous transformation matrix is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">a0</span>  <span class="n">a1</span>  <span class="n">a2</span><span class="p">]</span>
+ <span class="p">[</span><span class="n">b0</span>  <span class="n">b1</span>  <span class="n">b2</span><span class="p">]</span>
+ <span class="p">[</span><span class="mi">0</span>   <span class="mi">0</span>    <span class="mi">1</span><span class="p">]]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> (<em>(</em><em>3</em><em>, </em><em>3</em><em>) </em><em>array</em><em>, </em><em>optional</em>) – Homogeneous transformation matrix.</p></li>
+<li><p><strong>scale</strong> (<em>(</em><em>sx</em><em>, </em><em>sy</em><em>) </em><em>as array</em><em>, </em><em>list</em><em> or </em><em>tuple</em><em>, </em><em>optional</em>) – Scale factors.</p></li>
+<li><p><strong>rotation</strong> (<em>float</em><em>, </em><em>optional</em>) – Rotation angle in counter-clockwise direction as radians.</p></li>
+<li><p><strong>shear</strong> (<em>float</em><em>, </em><em>optional</em>) – Shear angle in counter-clockwise direction as radians.</p></li>
+<li><p><strong>translation</strong> (<em>(</em><em>tx</em><em>, </em><em>ty</em><em>) </em><em>as array</em><em>, </em><em>list</em><em> or </em><em>tuple</em><em>, </em><em>optional</em>) – Translation parameters.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">params</code></dt>
+<dd><p>Homogeneous transformation matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(3, 3) array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt>
+<code class="sig-name descname">__add__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Combine this transformation with another.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt>
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coords</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Apply inverse transformation.
+:param coords: Destination coordinates.
+:type coords: (N, 2) array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>coords</strong> – Source coordinates.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(N, 2) array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="warp">
+<h3><a class="toc-backref" href="#id27">warp</a><a class="headerlink" href="#warp" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.transform.</code><code class="sig-name descname">warp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">inverse_map</span></em>, <em class="sig-param"><span class="n">map_args</span></em>, <em class="sig-param"><span class="n">output_shape</span></em>, <em class="sig-param"><span class="n">order</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">cval</span></em>, <em class="sig-param"><span class="n">clip</span></em>, <em class="sig-param"><span class="n">preserve_range</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Warp an image according to a given coordinate transformation.</p>
+<p>The function has <cite>skimage.transform.warp</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>ndarray</em>) – Input image.</p></li>
+<li><p><strong>inverse_map</strong> (<em>transformation object</em><em> or </em><em>ndarray</em>) – <p>Inverse coordinate map, which transforms coordinates in the output
+images into their corresponding coordinates in the input image.
+There are a number of different options to define this map, depending
+on the dimensionality of the input image. A 2-D image can have 2
+dimensions for gray-scale images, or 3 dimensions with color
+information.</p>
+<blockquote>
+<div><ul>
+<li><p>For 2-D images, you can directly pass a transformation object,
+e.g. <cite>skipp.transform.AffineTransform</cite>.</p></li>
+<li><p>For 2-D images, you can pass a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">3)</span></code> homogeneous
+transformation matrix, e.g. <cite>skipp.transform.AffineTransform.params</cite>.</p></li>
+</ul>
+</div></blockquote>
+<p>Note, that a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">3)</span></code> matrix is interpreted as a homogeneous
+transformation matrix.
+See example section for usage.</p>
+</p></li>
+<li><p><strong>map_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Keyword arguments passed to <cite>inverse_map</cite>.</p></li>
+<li><p><strong>output_shape</strong> (<em>tuple</em><em> (</em><em>rows</em><em>, </em><em>cols</em><em>)</em><em>, </em><em>optional</em>) – Shape of the output image generated. By default the shape of the input
+image is preserved.  Note that, even for multi-band images, only rows
+and columns need to be specified.</p></li>
+<li><p><strong>order</strong> (<em>int</em><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>The order of interpolation. The order has to be in the range 0-5:</dt><dd><ul>
+<li><p>0: Nearest-neighbor</p></li>
+<li><p>1: linear (default)</p></li>
+<li><p>2: Bi-quadratic [not supported]</p></li>
+<li><p>3: cubic</p></li>
+<li><p>4: Bi-quartic [not supported]</p></li>
+<li><p>5: Bi-quintic [not supported]</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>mode</strong> (<em>{'constant'</em><em>, </em><em>'edge'</em><em>, </em><em>'transp'}</em><em>, </em><em>optional</em>) – Points outside the boundaries of the input are filled according
+to the given mode.</p></li>
+<li><p><strong>cval</strong> (<em>float</em><em>, </em><em>optional</em>) – Used in conjunction with mode ‘constant’, the value outside
+the image boundaries.</p></li>
+<li><p><strong>clip</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to clip the output to the range of values of the input image.
+This is enabled by default, since higher order interpolation may
+produce values outside the given input range.</p></li>
+<li><p><strong>preserve_range</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to keep the original range of values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>warped</strong> – The warped input image, same type as <cite>image</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiWarpAffineLinear_&lt;mod&gt;,  ippiWarpAffineNearest_&lt;mod&gt;
+and ippiWarpAffineCubic_&lt;mod&gt; on the backend, that performs
+warp affine transformation of an image using the linear,
+nearest neighbor or cubic interpolation method, see: <cite>WarpAffineLinear</cite>,
+<cite>WarpAffineCubic</cite>, <cite>WarpAffineNearest</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul>
+<li><p>Currently <cite>rotate</cite> function supports <cite>image</cite> of the following types
+for one, three and four channel images:</p>
+<blockquote>
+<div><p><cite>uint8</cite>, <cite>uint16</cite>, <cite>int16</cite>, <cite>float32</cite>, <cite>float64</cite></p>
+</div></blockquote>
+</li>
+<li><p>Currently modes don’t match the behaviour of <cite>numpy.pad</cite>.</p></li>
+<li><p>Currently <cite>map_args</cite>, <cite>clip</cite>, <cite>preserve_range</cite> are not processed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scikit-image</span></code> uses Catmull-Rom spline (0.0, 0.5). In <cite>scikit-ipp</cite> the same
+method was implemented. [1]</p></li>
+</ul>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id9"><span class="brackets">1</span></dt>
+<dd><p>Don P. Mitchell, Arun N. Netravali. Reconstruction Filters in Computer Graphics.
+Computer Graphics, Volume 22, Number 4, AT&amp;T Bell Laboratories, Murray Hill,
+New Jersey, August 1988.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.transform</span> <span class="kn">import</span> <span class="n">warp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The following image warps are all equal but differ substantially in</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># execution time. The image is shifted to the bottom.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use a transformation matrix to warp an image (fast):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">warped</span> <span class="o">=</span> <span class="n">warp</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use a geometric transform to warp an image (fast):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.transform</span> <span class="kn">import</span> <span class="n">AffineTransform</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tform</span> <span class="o">=</span> <span class="n">AffineTransform</span><span class="p">(</span><span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">warped</span> <span class="o">=</span> <span class="n">warp</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">tform</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="resize">
+<h3><a class="toc-backref" href="#id28">resize</a><a class="headerlink" href="#resize" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.transform.</code><code class="sig-name descname">resize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">output_shape</span></em>, <em class="sig-param"><span class="n">order</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">cval</span></em>, <em class="sig-param"><span class="n">clip</span></em>, <em class="sig-param"><span class="n">preserve_range</span></em>, <em class="sig-param"><span class="n">anti_aliasing</span></em>, <em class="sig-param"><span class="n">anti_aliasing_sigma</span></em>, <em class="sig-param"><span class="n">num_lobes</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Resize image to match a certain size.</p>
+<p>Performs interpolation to up-size or down-size 2D images. Note
+that anti-aliasing should be enabled when down-sizing images to avoid
+aliasing artifacts.</p>
+<p>The function has <cite>skimage.transform.resize</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>ndarray</em>) – Input image.</p></li>
+<li><p><strong>output_shape</strong> (<em>tuple</em><em> (</em><em>rows</em><em>, </em><em>cols</em><em>)</em><em>, </em><em>optional</em>) – Shape of the output image generated. By default the shape of the input
+image is preserved.  Note that, even for multi-band images, only rows
+and columns need to be specified.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>resized</strong> – Resized version of the input.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><ul>
+<li><p><strong>order</strong> (<em>int, optional</em>) – The order of the spline interpolation, default is 1. The order has to
+be in the range 0-7:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>0: Nearest-neighbor</p></li>
+<li><p>1: Linear (default)</p></li>
+<li><p>2: Bi-quadratic [not supported]</p></li>
+<li><p>3: Cubic</p></li>
+<li><p>4: Bi-quartic [not supported]</p></li>
+<li><p>5: Bi-quintic [not supported]</p></li>
+<li><p>6: Lanczos</p></li>
+<li><p>7: Super</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>mode</strong> (<em>{‘constant’, ‘edge’, ‘transp’}, optional</em>) – Points outside the boundaries of the input are filled according
+to the given mode.  Modes match the behaviour of <cite>numpy.pad</cite>.</p></li>
+<li><p><strong>cval</strong> (<em>float, optional</em>) – Used in conjunction with mode ‘constant’, the value outside
+the image boundaries.</p></li>
+<li><p><strong>clip</strong> (<em>bool, optional</em>) – Whether to clip the output to the range of values of the input image.</p></li>
+<li><p><strong>preserve_range</strong> (<em>bool, optional</em>) – Also see <a class="reference external" href="https://scikit-image.org/docs/dev/user_guide/data_types.html">https://scikit-image.org/docs/dev/user_guide/data_types.html</a></p></li>
+<li><p><strong>anti_aliasing</strong> (<em>bool, optional</em>) – Whether to apply a Gaussian filter to smooth the image prior to
+down-scaling. It is crucial to filter when down-sampling the image to
+avoid aliasing artifacts.</p></li>
+<li><p><strong>anti_aliasing_sigma</strong> (<em>{float, tuple of floats}, optional</em>) – Standard deviation for Gaussian filtering to avoid aliasing artifacts.</p></li>
+<li><p><strong>num_lobes</strong> (<em>int, optional</em>) – Used in conjunction with order 6 (Lanczos). The parameter for
+specifying Lanczos (2 or 3) filters. Options:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>2: 2-lobed Lanczos 4x4</p></li>
+<li><p>3: 3-lobed Lanczos 6x6</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs on the backend: ippiResizeNearest_&lt;mod&gt;,
+ippiResizeLinear_&lt;mod&gt;, ippiResizeCubic_&lt;mod&gt;, ippiResizeLanczos_&lt;mod&gt;,
+ippiResizeSuper_&lt;mod&gt; that changes an image size using nearest neighbor,
+linear, cubic, Lanczos or super interpolation method, and
+ippiResizeAntialiasing_&lt;mod&gt;, that changes an image size using using the
+linear and cubic interpolation
+method with antialiasing, see: <cite>ResizeNearest</cite>, <cite>ResizeLinear</cite>,
+<cite>ResizeCubic</cite>, <cite>ResizeLanczos</cite>, <cite>ResizeSuper</cite>,`ResizeAntialiasing` on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul>
+<li><p>Currently <cite>resize</cite> function supports <cite>image</cite> of the following types
+for one, three and four channel images:</p>
+<blockquote>
+<div><p><cite>uint8</cite>, <cite>uint16</cite>, <cite>int16</cite>, <cite>float32</cite>.</p>
+</div></blockquote>
+</li>
+<li><p>Currently modes don’t match the behaviour of <cite>numpy.pad</cite>.</p></li>
+<li><p>Currently <cite>clip</cite>, <cite>preserve_range</cite> and <cite>anti_aliasing_sigma</cite> are not
+processed.</p></li>
+<li><p>if <cite>antialiasing</cite> is <cite>True</cite>, supported interpolation methods are
+<cite>linear</cite> and <cite>cubic</cite>.</p></li>
+<li><p>if <cite>antialiasing</cite> is <cite>False</cite>, supported interpolation methods are
+<cite>nearest</cite>, <cite>linear</cite>, <cite>cubic</cite>, <cite>Lanczos</cite> and <cite>super</cite>.</p></li>
+<li><p>if <cite>antialiasing</cite> is <cite>True</cite>, supported boundary <cite>mode</cite> is <cite>edge</cite>.</p></li>
+<li><p>if <cite>antialiasing</cite> is <cite>False</cite>, supported boundary <cite>mode</cite> is <cite>edge</cite>.</p></li>
+<li><p>The Lanczos interpolation (order=6) have the following filter sizes:
+2-lobed Lanczos 4x4, 3-lobed Lanczos 6x6.</p></li>
+<li><p>Indicates an error (RuntimeError: ippStsSizeErr: Incorrect value for
+data size) in the following cases:
+- If the source image size is less than the filter size of the chosen</p>
+<blockquote>
+<div><p>interpolation method (except ippSuper).</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If one of the specified dimensions of the source image is less than
+the corresponding dimension of the destination image (for ippSuper
+method only).</p></li>
+<li><p>If the width or height of the source or destination image is
+negative.</p></li>
+</ul>
+</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.transform</span> <span class="kn">import</span> <span class="n">resize</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(100, 100)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="rotate">
+<h3><a class="toc-backref" href="#id29">rotate</a><a class="headerlink" href="#rotate" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt>
+<code class="sig-prename descclassname">skipp.transform.</code><code class="sig-name descname">rotate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">angle</span></em>, <em class="sig-param"><span class="n">resize</span></em>, <em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">order</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">cval</span></em>, <em class="sig-param"><span class="n">clip</span></em>, <em class="sig-param"><span class="n">preserve_range</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Rotate image by a certain angle around its center.</p>
+<p>The function has <cite>skimage.transform.rotate</cite> like signature,
+see: <a class="reference external" href="https://scikit-image.org/">https://scikit-image.org/</a></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>ndarray</em>) – Input 2D image.</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – Rotation angle in degrees in counter-clockwise direction.</p></li>
+<li><p><strong>resize</strong> (<em>bool</em><em>, </em><em>optional</em>) – Determine whether the shape of the output image will be automatically
+calculated, so the complete rotated image exactly fits. Default is
+False.</p></li>
+<li><p><strong>center</strong> (<em>iterable of length 2</em>) – The rotation center. If <code class="docutils literal notranslate"><span class="pre">center=None</span></code>, the image is rotated around
+its center, i.e. <code class="docutils literal notranslate"><span class="pre">center=(cols</span> <span class="pre">/</span> <span class="pre">2</span> <span class="pre">-</span> <span class="pre">0.5,</span> <span class="pre">rows</span> <span class="pre">/</span> <span class="pre">2</span> <span class="pre">-</span> <span class="pre">0.5)</span></code>.  Please
+note that this parameter is (cols, rows), contrary to normal skimage
+ordering.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rotated</strong> – Rotated version of the 2D input image.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><ul>
+<li><p><strong>order</strong> (<em>int, optional</em>) – The order of the spline interpolation, default is 1. The order has to be
+in the range 0-5:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>0: Nearest-neighbor</p></li>
+<li><p>1: linear (default)</p></li>
+<li><p>2: Bi-quadratic [not supported]</p></li>
+<li><p>3: cubic</p></li>
+<li><p>4: Bi-quartic [not supported]</p></li>
+<li><p>5: Bi-quintic [not supported]</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>mode</strong> (<em>{‘edge’, ‘constant’, ‘transp’}, optional</em>) – Points outside the boundaries of the input are filled according
+to the given mode.</p></li>
+<li><p><strong>cval</strong> (<em>float, optional</em>) – Used in conjunction with mode ‘constant’, the value outside
+the image boundaries.</p></li>
+<li><p><strong>clip</strong> (<em>bool, optional</em>) – Whether to clip the output to the range of values of the input image.</p></li>
+<li><p><strong>preserve_range</strong> (<em>bool, optional</em>) – Whether to keep the original range of values.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function uses <cite>skipp.transform.warp</cite> on the backend, and
+<cite>skipp.transform.warp</cite> in turn uses Intel(R) Integrated Performance Primitives
+(Intel(R) IPP) funcs: ippiWarpAffineLinear_&lt;mod&gt;,  ippiWarpAffineNearest_&lt;mod&gt;
+and ippiWarpAffineCubic_&lt;mod&gt; on the backend, that performs
+warp affine transformation of an image using the linear,
+nearest neighbor or cubic interpolation method, see: <cite>WarpAffineLinear</cite>,
+<cite>WarpAffineCubic</cite>, <cite>WarpAffineNearest</cite> on
+<a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p>
+<ul>
+<li><p>Currently <cite>rotate</cite> function supports <cite>image</cite> of the following types
+for one, three and four channel images:</p>
+<blockquote>
+<div><p><cite>uint8</cite>, <cite>uint16</cite>, <cite>int16</cite>, <cite>float32</cite>, <cite>float64</cite></p>
+</div></blockquote>
+</li>
+<li><p>Currently modes don’t match the behaviour of <cite>numpy.pad</cite>.</p></li>
+<li><p>Currently <cite>clip</cite>, <cite>preserve_range</cite> are not processed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scikit-image</span></code> uses Catmull-Rom spline (0.0, 0.5). In <cite>scikit-ipp</cite> the same
+method was implemented. [1]</p></li>
+<li><p>Modificated version of <cite>skimage.transform.rotate</cite> (v0.17). <cite>scikit-ipp</cite> uses
+<cite>skipp.transform.AffineTransform</cite> instead of <cite>skimage.transform.SimilarityTransform</cite></p></li>
+</ul>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id10"><span class="brackets">1</span></dt>
+<dd><p>Don P. Mitchell, Arun N. Netravali. Reconstruction Filters in Computer Graphics.
+Computer Graphics, Volume 22, Number 4, AT&amp;T Bell Laboratories, Murray Hill,
+New Jersey, August 1988.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">skipp.transform</span> <span class="kn">import</span> <span class="n">rotate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">camera</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotate</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(512, 512)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotate</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">resize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(530, 530)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotate</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">resize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(512, 512)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installing.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Intel
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

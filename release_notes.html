@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Release notes &mdash; scikit-ipp Beta07 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="_static/gallery-dataframe.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How to contribute to scikit-ipp" href="contribute.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="contents.html" class="icon icon-home"> scikit-ipp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">About scikit-ipp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">scikit-ipp API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-1-0">Version 1.1.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-changes">API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-features">New features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#refactoring">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#commits-notes">Commits notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-0-0">Version 1.0.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">New Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="contents.html">scikit-ipp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="contents.html">Docs</a> &raquo;</li>
+        
+      <li>Release notes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/release_notes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="release-notes">
+<h1>Release notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-1-1-0">
+<h2>Version 1.1.0<a class="headerlink" href="#version-1-1-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="api-changes">
+<h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>extend <cite>skipp.filters.gaussian</cite> filter supported dtypes(uint8, uint16, int16), update docstring (#119)</p></li>
+<li><p>extend <cite>skipp.filters.laplace</cite> filter supported dtypes, more supported dtypes(uint8, uint16, int16) (#118)</p></li>
+<li><p>extend <cite>skipp.transform.resize</cite> interpolation methods support [Lanczos and Super] (#135)</p></li>
+<li><p>extend <cite>skipp.transform.resize</cite> function params, added <cite>num_lobes</cite> param, that is used in conjunction with <cite>order=6</cite> (Lanczos) (#135)</p></li>
+</ul>
+</div>
+<div class="section" id="bug-fixes">
+<h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><cite>skipp.filters.median</cite> filter bug with default mode of <cite>selem=None</cite> (#117)</p></li>
+<li><p><cite>skipp.transform.resize</cite> function bug with cubic interpolation and update test suits (#128)</p></li>
+<li><p><cite>skipp.transform.resize</cite> problems with resized image shape (#130)</p></li>
+<li><p><cite>skipp.transform.rotate</cite> problems related with resized images center (#130)</p></li>
+<li><p><cite>skipp.transfrom.warp</cite> bug for all provided non-default value of <cite>mode</cite> param (#130), (#123)</p></li>
+</ul>
+</div>
+<div class="section" id="new-features">
+<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>added/update docstrings for all methods and structures (#108) and pep8 align docstrings - numpy style (#110). Also (#122), (#126), (#130)</p></li>
+<li><p>update README.md (#111), (#109): new modules were added.</p></li>
+<li><p>created <cite>scikit-ipp</cite> documentation by using sphinx (#89)</p></li>
+<li><p>extend laplace filter supported dtypes (#118)</p></li>
+<li><p>package was checked for MacOS and was added MacOS support in documentation (#121)</p></li>
+<li><p>extended setup metadata (#120)</p></li>
+<li><p>update gaussian filter test suits (#131)</p></li>
+<li><p>re-implement edge filters tests (#132)</p></li>
+<li><p>added <cite>inverse</cite>, <cite>__add__</cite> methods to <cite>AffineTransform</cite> class (#130)</p></li>
+<li><p>re-implemented <cite>transform.rotate</cite> function (#130)</p></li>
+<li><p>extend <cite>skipp.transform.resize</cite> interpolation methods support [Lanczos and Super] (#135)</p></li>
+<li><p>update processing mode for <cite>transform</cite> funcs - make them as is in scikit-image (<cite>numpy.pad</cite>). Created <cite>__get_numpy_pad_IppBorderType</cite> for given boundary mode processing (#123)</p></li>
+</ul>
+</div>
+<div class="section" id="refactoring">
+<h3>Refactoring<a class="headerlink" href="#refactoring" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>fix legal names [dtypes.c/.h] (#112)</p></li>
+<li><p>separate similarity tests from scikit-ipp own functional/unit tests (#113)</p></li>
+<li><p>removed skimage dependence from skipp own tests and re-implemented test suits without skimage use (#113)</p></li>
+<li><p>removed outdated, unused src file <cite>own_morphology_tl.c</cite> (#133)</p></li>
+</ul>
+</div>
+<div class="section" id="commits-notes">
+<h3>Commits notes<a class="headerlink" href="#commits-notes" title="Permalink to this headline">¶</a></h3>
+<p>update README.md (#109)</p>
+<ul class="simple">
+<li><p>Getting started</p></li>
+<li><p>Prerequisites</p></li>
+<li><p>Building scikit-ipp using conda-build</p></li>
+<li><p>Building documentation for scikit-ipp</p></li>
+</ul>
+<p>update docstrings (#108)</p>
+<p>docstrings for:</p>
+<ul class="simple">
+<li><p>filters: gaussian, median, laplace, prewitt, prewitt_h, prewitt_v, sobel, sobel_v, sobel_h</p></li>
+<li><p>morphology: dilation, erosion</p></li>
+<li><p>transfrom: warp, rotate, resize, AffineTransform</p></li>
+</ul>
+<p>Docstrings for all methods were added/updated.</p>
+<p>update README.md (#111)</p>
+<ul class="simple">
+<li><p>added documentations web link</p></li>
+</ul>
+<p>fix legal names [dtypes.c/.h] (#112)</p>
+<p>refactor scikit-ipp own tests (#113)</p>
+<ul class="simple">
+<li><p>separate similarity tests from scikit-ipp own functional/unit tests</p></li>
+<li><p>removed skimage dependence from skipp own tests and re-implemented test suits without skimage use</p></li>
+</ul>
+<p>pep8 align docstrings - numpy style (#110)</p>
+<ul class="simple">
+<li><p>pep8 align docstrings morphology funcs - numpy style</p></li>
+<li><p>pep8 align docstrings filters funcs - numpy style</p></li>
+<li><p>pep8 align docstrings tranform funcs - numpy style</p></li>
+</ul>
+<p>scikit-ipp docs initial (#89)</p>
+<p>creating <cite>scikit-ipp</cite> documentation by using sphinx</p>
+<ul class="simple">
+<li><p>updated main README.md</p></li>
+<li><p>added configuration conf.py</p></li>
+<li><p>Added: Makefile, make.bat, release_notes.rst, index.rst, installing.rst, license.rst, contents.rst, contribute.rst, api.rst, examples.rst</p></li>
+<li><p>some misc. updates</p></li>
+</ul>
+<p>fix median filter (#117)</p>
+<ul class="simple">
+<li><p>fix <cite>median</cite> filter bug with default mode of selem=None</p></li>
+</ul>
+<p>extend laplace filter supported dtypes (#118)</p>
+<ul class="simple">
+<li><p>extended <cite>laplace</cite> filter supported dtypes: uint8, uint16, int16 and float32 [was only float32]</p></li>
+<li><p>added <cite>test_laplace_preserve_dtype</cite> test suit</p></li>
+<li><p>update <cite>laplace</cite> filter docstring</p></li>
+</ul>
+<p>update gaussian filter docstring (#119)</p>
+<ul class="simple">
+<li><p>update gaussian filter docstring - added supported dtypes, removed outdated notes</p></li>
+</ul>
+<p>added MacOS support in documentation (#121)</p>
+<ul class="simple">
+<li><p>added MacOS support in documentation</p></li>
+</ul>
+<p>update setup metadata (#120)</p>
+<ul class="simple">
+<li><p>update setup.py</p></li>
+<li><p>extended metadata</p></li>
+</ul>
+<p>update Gaussian filter docstrings (#122)</p>
+<ul class="simple">
+<li><p>correct supported modes list</p></li>
+</ul>
+<p>update processing boundary mode (#123)</p>
+<ul class="simple">
+<li><p>update processing mode for <cite>transform</cite> funcs - make them as is in scikit-image (<cite>numpy.pad</cite>)</p></li>
+<li><p>created <cite>__get_numpy_pad_IppBorderType</cite> for given boundary mode processing</p></li>
+<li><p>update docstrings for <cite>__get_IppBorderType</cite></p></li>
+<li><p>update docstrings for transform functions: update info about supported modes</p></li>
+<li><p>test suits <cite>test_transform</cite> were updated - all checks passed</p></li>
+</ul>
+<p>update resize func docstrings (#126)</p>
+<p>fixed <cite>skipp.transform.resize</cite> function with cubic interpolation and update test suits (#128)</p>
+<ul class="simple">
+<li><p>fix <cite>transfrom.resize</cite> function when interpolation method is cubic</p></li>
+<li><p>rewrite test suits for <cite>transform.resize</cite></p>
+<ul>
+<li><p>added <cite>test_resize2d</cite> test suit</p></li>
+<li><p>added parameterized <cite>test_resize_without_antialiasing</cite> and <cite>test_resize_with_antialiasing</cite> test suits</p></li>
+</ul>
+</li>
+</ul>
+<p>update gaussian filter test suits (#131)</p>
+<ul class="simple">
+<li><p>update and enabled <cite>test_gaussian_preserve_dtype</cite> test suit</p></li>
+<li><p>removed outdated test suit <cite>test_gaussian_preserve_output</cite></p></li>
+</ul>
+<p>re-implement edge filters tests (#132)</p>
+<ul class="simple">
+<li><p>re-implement <cite>test_sobel.py</cite> and <cite>test_prewitt.py</cite></p></li>
+</ul>
+<p>update transform module (#130)</p>
+<ul class="simple">
+<li><p>update <cite>AffineTransform</cite> class</p>
+<ul>
+<li><p>added <cite>inverse</cite> method</p></li>
+<li><p>added test suit <cite>test_AffineTransform_inverse</cite></p></li>
+<li><p>implemented <cite>__add__</cite> method for AffineTransform</p></li>
+<li><p>added <cite>test_invalid_input</cite> test suit</p></li>
+<li><p>added <cite>test_affine_init</cite> test suit</p></li>
+</ul>
+</li>
+<li><p>update <cite>transform.warp</cite> transform func</p></li>
+<li><p>added <cite>test_warp_matrix</cite> and <cite>test_warp_tform</cite> test suits</p></li>
+<li><p>enabled <cite>test_rotate</cite>, <cite>test_rotate_resize</cite>, <cite>test_rotate_center</cite>, <cite>test_rotate_resize_center</cite>, <cite>test_rotate_resize_90</cite> test suits</p></li>
+<li><p>re-implemented <cite>transform.rotate</cite> function</p></li>
+<li><p>update <cite>transform.rotate</cite> function docstrings</p></li>
+<li><p>removed unused <cite>own_RotateCoeffs</cite> and <cite>own_GetAffineDstSize</cite> from <cite>tranform.pxd</cite></p></li>
+</ul>
+<p>refactor: removed unused own_morphology_tl.c (#133)</p>
+<ul class="simple">
+<li><p>removed outdated, unused src file <cite>own_morphology_tl.c</cite></p></li>
+</ul>
+<p>extend <cite>skipp.transform.resize</cite> interpolation methods support [Lanczos and Super] (#135)</p>
+<ul class="simple">
+<li><p>added <cite>Lanczos</cite>, <cite>Super</cite> interpolation method to <cite>__get_IppiInterpolationType</cite> function</p></li>
+<li><p>update <cite>transform.resize</cite> function</p></li>
+<li><p>added <cite>ippiResizeLanczos</cite>, that is adapter for <cite>ippiResizeLanczos_&lt;mode&gt;</cite> funcs</p></li>
+<li><p>added <cite>ippiResizeLanczosInit</cite>, that is adapter for <cite>ippiResizeLanczosInit_&lt;mode&gt;</cite> funcs</p></li>
+<li><p>added <cite>ippiResizeSuper</cite>, that is adapter for <cite>ippiResizeSuper_&lt;mode&gt;</cite> funcs</p></li>
+<li><p>added <cite>ippiResizeSuperInit</cite>, that is adapter for <cite>ippiResizeSuperInit_&lt;mode&gt;</cite> funcs</p></li>
+<li><p>updated <cite>ippiResize</cite> function</p></li>
+<li><p>updated <cite>own_Resize</cite> function</p></li>
+<li><p>update <cite>transform.resize</cite> function:</p>
+<ul>
+<li><p>update docstrings for <cite>transform.resize</cite> function</p></li>
+<li><p>extended <cite>transform.resize function params, added `num_lobes</cite> param, that is used in conjunction with <cite>order=6</cite> (Lanczos)</p></li>
+</ul>
+</li>
+<li><p>added tests suits for check:</p>
+<ul>
+<li><p>added <cite>test_resize_super</cite> for checking <cite>transform.resize</cite> with <cite>super</cite> interpolation method</p></li>
+<li><p>update parameterized <cite>test_resize_without_antialiasing</cite> test suit for checking <cite>transform.resize</cite> with <cite>Lanczos</cite> interpolation method</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="version-1-0-0">
+<h2>Version 1.0.0<a class="headerlink" href="#version-1-0-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>New Features<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Gaussian filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.gaussian</cite></p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterGaussianBorder_&lt;mod&gt; on the backend, that performs Gaussian filtering of an image with user-defined borders, see: <cite>FilterGaussianBorder</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Median filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.median</cite></p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterMedianBorder_&lt;mod&gt; on the backend, that performs median filtering of an image with user-defined borders, see: <cite>FilterMedianBorder</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Laplace filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.laplace</cite>. Find the edges of an image using the Laplace operator.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterBorder_&lt;mod&gt; on the backend, that filters an image using a rectangular filter with coeffs (Laplace (3x3)) [[0 -1 0], [-1 4 -1], [0 -1 0]] for implementing laplace filtering as is in <cite>scikit-image</cite>, see: <cite>FilterBorder</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Sobel filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.sobel</cite>. Find edges in an image using the Sobel filter.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterSobel_&lt;mod&gt; on the backend, see: <cite>FilterSobel</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Horizontal Sobel filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.sobel_h</cite>. Find the horizontal edges of an image using the Sobel transform.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterSobelHorizBorder_&lt;mod&gt; on the backend, see: <cite>FilterSobelHorizBorder</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Vertical Sobel filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.sobel_v</cite>. Find the vertical edges of an image using the Sobel transform.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterSobelVertBorder_&lt;mod&gt; on the backend, see: <cite>FilterSobelVertBorder</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Prewitt filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.prewitt</cite>. Find the edge magnitude using the Prewitt transform.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterPrewittVertBorder_&lt;mod&gt; and ippiFilterPrewittHorizBorder_&lt;mod&gt; on the backend see: <cite>FilterPrewittHorizBorder</cite>, <cite>FilterPrewittVertBorder</cite> <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Horizontal Prewitt filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.prewitt_h</cite>. Find the horizontal edges of an image using the Prewitt transform.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterPrewittHorizBorder_&lt;mod&gt; on the backend see: <cite>FilterPrewittHorizBorder</cite> <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Vertical Prewitt filter</p>
+<ul class="simple">
+<li><p><cite>skipp.filters.prewitt_v</cite>. Find the vertical edges of an image using the Prewitt transform.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiFilterPrewittVertBorder_&lt;mod&gt; on the backend see: <cite>FilterPrewittVertBorder</cite> <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Morphological dilation</p>
+<ul class="simple">
+<li><p><cite>skipp.morphology.dilation</cite>. Morphological dilation sets a pixel at (i,j) to the maximum over all pixels in the neighborhood centered at (i,j). Dilation enlarges bright regions and shrinks dark regions.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiDilateBorder_&lt;mod&gt; on the backend, that performs dilation of an image, see: <cite>DilateBorder</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Morphological erosion</p>
+<ul class="simple">
+<li><p><cite>skipp.morphology.erosion</cite>. Return greyscale morphological erosion of an image. Morphological erosion sets a pixel at (i,j) to the minimum over all pixels in the neighborhood centered at (i,j). Erosion shrinks bright regions and enlarges dark regions.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiErodeBorder_&lt;mod&gt; on the backend, that performs dilation of an image, see: <cite>ErodeBorder</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>2D affine transformation object</p>
+<ul class="simple">
+<li><p><cite>skipp.transform.AffineTransform</cite> class. Contains homogeneous transformation matrix.</p></li>
+</ul>
+<p>Image warping</p>
+<ul class="simple">
+<li><p><cite>skipp.transform.warp</cite>. Warp an image according to a given coordinate transformation.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiWarpAffineLinear_&lt;mod&gt;,  ippiWarpAffineNearest_&lt;mod&gt; and ippiWarpAffineCubic_&lt;mod&gt; on the backend, that performs warp affine transformation of an image using the linear, nearest neighbor or cubic interpolation method, see: <cite>WarpAffineLinear</cite>, <cite>WarpAffineCubic</cite>, <cite>WarpAffineNearest</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Image rotation</p>
+<ul class="simple">
+<li><p><cite>skipp.transform.rotate</cite>. Rotate image by a certain angle around its center.</p></li>
+<li><p>This function uses <cite>skipp.transform.warp</cite> on the backend, and <cite>skipp.transform.warp</cite> in turn uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs: ippiWarpAffineLinear_&lt;mod&gt;,  ippiWarpAffineNearest_&lt;mod&gt; and ippiWarpAffineCubic_&lt;mod&gt; on the backend, that performs warp affine transformation of an image using the linear, nearest neighbor or cubic interpolation method, see: <cite>WarpAffineLinear</cite>, <cite>WarpAffineCubic</cite>, <cite>WarpAffineNearest</cite> on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+<p>Image resizing</p>
+<ul class="simple">
+<li><p><cite>skipp.transform.resize</cite>. Resize image to match a certain size.</p></li>
+<li><p>This function uses Intel(R) Integrated Performance Primitives (Intel(R) IPP) funcs on the backend: ippiResizeNearest_&lt;mod&gt;, ippiResizeLinear_&lt;mod&gt;, ippiResizeCubic_&lt;mod&gt;, ippiResizeLanczos_&lt;mod&gt;, ippiResizeSuper_&lt;mod&gt; that changes an image size using nearest neighbor, linear, cubic, Lanczos or super interpolation method, and ippiResizeAntialiasing_&lt;mod&gt;, that changes an image size using using the linear and cubic interpolation method with antialiasing, see: <cite>ResizeNearest</cite>, <cite>ResizeLinear</cite>, <cite>ResizeCubic</cite>, <cite>ResizeLanczos</cite>, <cite>ResizeSuper</cite>,`ResizeAntialiasing` on <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/">https://software.intel.com/content/www/us/en/develop/documentation/ipp-dev-reference/</a></p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contribute.html" class="btn btn-neutral float-right" title="How to contribute to scikit-ipp" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Intel
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
