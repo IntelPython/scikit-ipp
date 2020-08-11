@@ -36,6 +36,7 @@
 #define OWN_FILTERS_H
 #include <stddef.h>
 #include "ipp.h"
+#include <omp.h>
 #include "_ipp_wr.h"
 #include "utils.h"
 
@@ -204,6 +205,14 @@ own_FilterPrewitt(
     IppDataType ippSrcDataType,
     IppDataType ippDstDataType,
     void * pSrc,
+    void * pDst,
+    int img_width,
+    int img_height,
+    int numChannels);
+
+IppStatus
+own_mask_filter_result(
+    IppDataType ippSrcDataType,
     void * pDst,
     int img_width,
     int img_height,

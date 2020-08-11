@@ -585,3 +585,85 @@ EXIT_FUNC
     ippsFree(pBsrcDst);
     return status;
 }
+
+IppStatus
+own_mask_filter_result(
+    IppDataType ippDstDataType,
+    void * pDst,
+    int img_width,
+    int img_height,
+    int numChannels)
+{
+    IppStatus status = ippStsNoErr;
+
+    // checking supported dtypes
+    if (!(ippDstDataType==ipp8u ||
+          ippDstDataType==ipp16u ||
+          ippDstDataType==ipp16s ||
+          ippDstDataType==ipp32s ||
+          ippDstDataType==ipp32f))
+    {
+        status = ippStsDataTypeErr;
+        check_sts(status);
+    }
+
+    IppStatus pStatus[4];
+
+    int max_num_threads;
+    int sizeof_dst;
+    status = get_sizeof(ippDstDataType, &sizeof_dst);
+    check_sts(status);
+    int dstStep = numChannels * img_width * sizeof_dst;
+
+    double value = 0;
+    void * pTop = (void* )pDst;
+    void * pBottom = (void* )((Ipp8u* )pDst + dstStep * (img_height - 1));
+
+    void * pLeft = (void* )((Ipp8u* )pDst + dstStep);
+    void * pRight = (void* )((Ipp8u* )pLeft + numChannels * (img_width - 1) * sizeof_dst);
+
+    IppiSize horizRoiSize = {img_width, 1};
+    IppiSize verRoiSize = {1, (img_height - 1)};
+
+#ifdef MAX_NUM_THREADS
+    max_num_threads = MAX_NUM_THREADS;
+#else
+    max_num_threads = omp_get_max_threads();
+#endif
+
+    if (max_num_threads >= 4)
+    {
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            {
+                pStatus[0] = ippiSet_C1R(ippDstDataType, value, pTop, dstStep, horizRoiSize);
+            }
+            #pragma omp section
+            {
+                pStatus[1] = ippiSet_C1R(ippDstDataType, value, pBottom, dstStep, horizRoiSize);
+            }
+            #pragma omp section
+            {
+                pStatus[2] = ippiSet_C1R(ippDstDataType, value, pLeft, dstStep, verRoiSize);
+            }
+            #pragma omp section
+            {
+                pStatus[3] = ippiSet_C1R(ippDstDataType, value, pRight, dstStep, verRoiSize);
+            }
+        }
+    }
+    else
+    {
+        status = ippiSet_C1R(ippDstDataType, value, pTop, dstStep, horizRoiSize);
+        check_sts(status);
+        status = ippiSet_C1R(ippDstDataType, value, pBottom, dstStep, horizRoiSize);
+        check_sts(status);
+        status = ippiSet_C1R(ippDstDataType, value, pLeft, dstStep, verRoiSize);
+        check_sts(status);
+        status = ippiSet_C1R(ippDstDataType, value, pRight, dstStep, verRoiSize);
+        check_sts(status);
+    }
+EXIT_FUNC
+    return status;
+}
