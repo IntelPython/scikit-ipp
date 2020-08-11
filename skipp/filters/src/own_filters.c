@@ -316,6 +316,7 @@ own_FilterEdge(
     int numChannels)
 {
     IppStatus status = ippStsNoErr;
+    IppStatus * pStatus = NULL;
 
     Ipp8u * pBuffer = NULL;                         // Pointer to the work buffer
     int bufferSize;
@@ -325,6 +326,7 @@ own_FilterEdge(
     int dstStep;
     IppiSize roiSize = { img_width, img_height };   // Size of source and
                                                     // destination ROI in pixels
+    Ipp32f value;
     IppiMaskSize maskSize = ippMskSize3x3;
     IppNormType normType = ippNormL2;               // As is in skimage.filters.prewitt
 
@@ -345,6 +347,20 @@ own_FilterEdge(
     // currently Intel(R) IPP supports only 1C images for filtering by prewitt kernels
     srcStep = numChannels * img_width * sizeof_src;
     dstStep = numChannels * img_width * sizeof_dst;
+
+    int max_num_threads;
+    int numThreads, slice, tail;
+    IppiSize dstTileSize, dstLastTileSize;
+
+#ifdef MAX_NUM_THREADS
+    max_num_threads = MAX_NUM_THREADS;
+#else
+    max_num_threads = omp_get_max_threads();
+    if(roiSize.height / max_num_threads < 2)
+    {
+        max_num_threads = 1;
+    }
+#endif
 
     switch (edgeKernel)
     {
@@ -438,8 +454,7 @@ own_FilterEdge(
         // `convolve` func. `convolve` uses `reflect` border mode.
         // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type
         // ippiFilterSobelVertBorder_<mode> doesn't supports this border type
-        Ipp32f value = (Ipp32f)(-4.0);
-        status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
+        value = (Ipp32f)(-4.0);
         break;
     }
     case own_filterSobelHoriz:
@@ -449,8 +464,7 @@ own_FilterEdge(
         // `convolve` func. `convolve` uses `reflect` border mode.
         // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type
         // ippiFilterSobelHorizBorder_<mode> doesn't supports this border type
-        Ipp32f value = (Ipp32f)4.0;
-        status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
+        value = (Ipp32f)4.0;
         break;
     }
     case own_filterSobel:
@@ -460,9 +474,7 @@ own_FilterEdge(
         // `convolve` func. `convolve` uses `reflect` border mode.
         // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type
         // ippiFilterSobelBorder_<mode> doesn't supports this border type
-        Ipp32f sqrt2 = (Ipp32f)IPP_SQRT2;
-        Ipp32f value = (Ipp32f)(4.0 * sqrt2);
-        status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
+        value = (Ipp32f)(4.0 * (Ipp32f)IPP_SQRT2);
         break;
     }
     case own_filterPrewittVert:
@@ -472,8 +484,7 @@ own_FilterEdge(
         // `convolve` func. `convolve` uses `reflect` border mode.
         // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type  
         // ippiFilterPrewittVertBorder_<mode> doesn't supports this border type
-        Ipp32f value = (Ipp32f)-3.0;
-        status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
+        value = (Ipp32f)-3.0;
         break;
     }
     case own_filterPrewittHoriz:
@@ -483,8 +494,7 @@ own_FilterEdge(
         // `convolve` func. `convolve` uses `reflect` border mode.
         // `reflect` border mode is equivalent of Intel IPP ippBorderMirrorR border type
         // ippiFilterPrewittHorizBorder_<mode> doesn't supports this border type
-        Ipp32f value = (Ipp32f)3.0;
-        status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
+        value = (Ipp32f)3.0;
         break;
     }
     default:
@@ -492,8 +502,68 @@ own_FilterEdge(
         status = ippStsErr;
     }
     }
-    check_sts(status);
+    if (max_num_threads != 1)
+    {
+        // Parallelized only by Y-direction here
+    #pragma omp parallel num_threads(max_num_threads)
+        {
+    #pragma omp master
+            {
+                numThreads = omp_get_num_threads();
+
+                pStatus = (IppStatus*)ippsMalloc_8u(sizeof(IppStatus) * numThreads);
+                if (pStatus == NULL)
+                {
+                    status = ippStsMemAllocErr;
+                }
+                if(status == ippStsNoErr)
+                {
+                    for (int i = 0; i < numThreads; ++i) pStatus[i] = ippStsNoErr;
+
+                    slice = roiSize.height / numThreads;
+                    tail = roiSize.height % numThreads;
+
+                    dstTileSize.width = roiSize.width;
+                    dstTileSize.height = slice;
+                    dstLastTileSize.width = roiSize.width;
+                    dstLastTileSize.height = slice + tail;
+                }
+            }
+    #pragma omp barrier
+            {
+                if (status == ippStsNoErr)
+                {
+                    Ipp32u  i;
+                    void * pDstT = NULL;
+                    i = omp_get_thread_num();
+                    IppiPoint dstOffset = { 0, 0 };
+                    IppiSize  dstSizeT = dstTileSize;
+
+                    dstSizeT.height = slice;
+                    dstOffset.y += i * slice;
+
+                    if (i == numThreads - 1) dstSizeT = dstLastTileSize;
+
+                    pDstT = (void*)((Ipp8u*)pDst + dstOffset.y * (Ipp32s)dstStep);
+                    pStatus[i] = ippiDivC_32f_C1IR(value, pDstT, dstStep, dstSizeT);
+                }
+            }
+        }
+        check_sts(status);
+        // Checking status for slices and tile
+        for (Ipp32u i = 0; i < numThreads; ++i)
+        {
+            status = pStatus[i];
+            check_sts(status);
+        }
+    }
+    else
+    {
+        status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
+        check_sts(status);
+    }
 EXIT_FUNC
+    ippsFree(pStatus);
     ippsFree(pBuffer);
     return status;
 }
