@@ -80,13 +80,15 @@ def configuration(parent_package='', top_path=None):
     _ipp_utils_dir = ['_ipp_utils']
     _ipp_wr_dir = ['_ipp_wr']
 
-    if IS_LIN or IS_MAC:
+    if IS_LIN:
         extra_compile_args=['-fopenmp']
         extra_link_args=['-fopenmp']
     elif IS_WIN:
         extra_compile_args=['-openmp']
         extra_link_args=['-openmp']
-
+    elif IS_MAC:
+        extra_compile_args=['-fopenmp']
+        extra_link_args=['-fopenmp=libiomp5']
     if IS_MAC:
        libraries.append("iomp5")
 
