@@ -34,8 +34,10 @@
 #ifndef RESIZE_H
 #define RESIZE_H
 #include <stddef.h>
-#include "ipp.h"
-#include <omp.h>
+#include <ipp.h>
+#ifdef _OPENMP
+   #include <omp.h>
+#endif
 #include "utils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////

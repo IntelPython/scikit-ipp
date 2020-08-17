@@ -32,7 +32,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 #include "own_warp.h"
-#include "omp.h"
 
 #define EXIT_FUNC exitLine:             /* Label for Exit */
 #define check_sts(st) if((st) != ippStsNoErr) goto exitLine
@@ -87,6 +86,7 @@ own_Warp(
 
     int specSize = 0, initSize = 0, bufSize = 0;         // Work buffer size
 
+#ifdef _OPENMP
     int numThreads, slice, tail;
     int bufSize1, bufSize2;
     IppiSize dstTileSize, dstLastTileSize;
@@ -103,8 +103,8 @@ own_Warp(
         max_num_threads = 1;
     }
 #endif
-
     IppStatus * pStatus = NULL;
+#endif
 
     // checking supported dtypes
     if (!(ippDataType==ipp8u ||
@@ -181,6 +181,7 @@ own_Warp(
     }
     check_sts(status);
 
+#ifdef _OPENMP
     if (max_num_threads != 1)
     {
         // General transform function
@@ -259,6 +260,7 @@ own_Warp(
     }
     else
     {
+#endif
         status = ippiWarpGetBufferSize(pSpec, dstSize, &bufSize);
         check_sts(status);
         pBuffer = ippsMalloc_8u(bufSize);
@@ -269,12 +271,16 @@ own_Warp(
         }
         status = _ippiWarpAffine_interpolation(ippDataType, interpolation, numChannels,
             pSrc, srcStep, pDst, dstStep, dstOffset, dstSize, pSpec, pBuffer);
+#ifdef _OPENMP
     }
+#endif
 
 EXIT_FUNC
     ippsFree(pInitBuf);
     ippsFree(pSpec);
     ippsFree(pBuffer);
+#ifdef _OPENMP
     ippFree(pStatus);
+#endif
     return status;
 }

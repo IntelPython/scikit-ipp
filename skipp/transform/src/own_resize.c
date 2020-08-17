@@ -90,6 +90,7 @@ own_Resize(
                                                          // image origin
     int specSize = 0, initSize = 0, bufSize = 0;         // Work buffer size
 
+#ifdef _OPENMP
     IppiBorderSize borderSize = {0, 0, 0, 0};
     int numThreads, slice, tail;
     int bufSize1, bufSize2;
@@ -108,6 +109,7 @@ own_Resize(
 #endif
 
     IppStatus * pStatus = NULL;
+#endif
 
     // checking supported dtypes
     if (!(ippDataType==ipp8u ||
@@ -218,7 +220,7 @@ own_Resize(
         status = ippStsErr;
     }
     check_sts(status);
-
+#ifdef _OPENMP
     if (max_num_threads != 1)
     {
         status = ippiResizeGetBorderSize(ippDataType, pSpec, &borderSize);
@@ -317,6 +319,7 @@ own_Resize(
     }
     else
     {
+#endif
         status = ippiResizeGetBufferSize(ippDataType, pSpec, dstSize,
             numChannels, &bufSize);
         check_sts(status);
@@ -345,10 +348,14 @@ own_Resize(
             status = ippStsErr;
         }
         check_sts(status);
+#ifdef _OPENMP
     }
+#endif
 EXIT_FUNC
     ippsFree(pSpec);
     ippsFree(pBuffer);
+#ifdef _OPENMP
     ippFree(pStatus);
+#endif
     return status;
 }
