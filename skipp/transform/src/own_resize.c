@@ -91,6 +91,7 @@ own_Resize(
     int specSize = 0, initSize = 0, bufSize = 0;         // Work buffer size
 
 #ifdef USE_OPENMP
+    IppStatus * pStatus = NULL;
     IppiBorderSize borderSize = {0, 0, 0, 0};
     int numThreads, slice, tail;
     int bufSize1, bufSize2;
@@ -108,7 +109,6 @@ own_Resize(
     }
 #endif
 
-    IppStatus * pStatus = NULL;
 #endif
 
     // checking supported dtypes
