@@ -94,7 +94,7 @@ def configuration(parent_package='', top_path=None):
         elif IS_WIN:
             extra_compile_args.append('-openmp')
             extra_link_args.append('-openmp')
-        define_macros.append(('_OPENMP', None))
+        define_macros.append(('USE_OPENMP', None))
 
     extension_names = []  # extension names and their dir names are the same
     extension_cy_src = {}
