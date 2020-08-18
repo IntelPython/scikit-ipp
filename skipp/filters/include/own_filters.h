@@ -35,7 +35,10 @@
 #ifndef OWN_FILTERS_H
 #define OWN_FILTERS_H
 #include <stddef.h>
-#include "ipp.h"
+#include <ipp.h>
+#ifdef USE_OPENMP
+   #include <omp.h>
+#endif
 #include "_ipp_wr.h"
 #include "utils.h"
 

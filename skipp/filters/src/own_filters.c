@@ -347,7 +347,7 @@ own_FilterEdge(
     // currently Intel(R) IPP supports only 1C images for filtering by prewitt kernels
     srcStep = numChannels * img_width * sizeof_src;
     dstStep = numChannels * img_width * sizeof_dst;
-
+#ifdef USE_OPENMP
     int max_num_threads;
     int numThreads, slice, tail;
     IppiSize dstTileSize, dstLastTileSize;
@@ -360,6 +360,7 @@ own_FilterEdge(
     {
         max_num_threads = 1;
     }
+#endif
 #endif
 
     switch (edgeKernel)
@@ -502,6 +503,7 @@ own_FilterEdge(
         status = ippStsErr;
     }
     }
+#ifdef USE_OPENMP
     if (max_num_threads != 1)
     {
         // Parallelized only by Y-direction here
@@ -559,11 +561,16 @@ own_FilterEdge(
     }
     else
     {
+#endif
         status = ippiDivC_32f_C1IR(value, pDst, dstStep, roiSize);
         check_sts(status);
+#ifdef USE_OPENMP
     }
+#endif
 EXIT_FUNC
+#ifdef USE_OPENMP
     ippsFree(pStatus);
+#endif
     ippsFree(pBuffer);
     return status;
 }
