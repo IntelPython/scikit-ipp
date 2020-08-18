@@ -624,7 +624,7 @@ own_mask_filter_result(
 
     IppiSize horizRoiSize = {img_width, 1};
     IppiSize verRoiSize = {1, (img_height - 1)};
-
+#ifdef USE_OPENMP
 #ifdef MAX_NUM_THREADS
     max_num_threads = MAX_NUM_THREADS;
 #else
@@ -655,6 +655,7 @@ own_mask_filter_result(
     }
     else
     {
+#endif
         status = ippiSet_C1R(ippDstDataType, value, pTop, dstStep, horizRoiSize);
         check_sts(status);
         status = ippiSet_C1R(ippDstDataType, value, pBottom, dstStep, horizRoiSize);
@@ -663,7 +664,9 @@ own_mask_filter_result(
         check_sts(status);
         status = ippiSet_C1R(ippDstDataType, value, pRight, dstStep, verRoiSize);
         check_sts(status);
+#ifdef USE_OPENMP
     }
+#endif
 EXIT_FUNC
     return status;
 }
