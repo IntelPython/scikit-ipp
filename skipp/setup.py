@@ -74,6 +74,8 @@ def configuration(parent_package='', top_path=None):
 
     lib_root = os.environ['LIBROOT']
 
+    use_omp = True if 'USE_OPENMP' in os.environ else False
+
     include_dir = [join(lib_root, 'include')]
     library_dirs = [join(lib_root, 'lib')]
     ipp_libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
@@ -81,12 +83,18 @@ def configuration(parent_package='', top_path=None):
     _ipp_utils_dir = ['_ipp_utils']
     _ipp_wr_dir = ['_ipp_wr']
 
-    if IS_LIN or IS_MAC:
-        extra_compile_args=['-fopenmp']
-        extra_link_args=['-fopenmp']
-    elif IS_WIN:
-        extra_compile_args=['-openmp']
-        extra_link_args=['-openmp']
+    extra_compile_args=[]
+    extra_link_args=[]
+    define_macros=[]
+
+    if(use_omp):
+        if IS_LIN or IS_MAC:
+            extra_compile_args.append('-fopenmp')
+            extra_link_args.append('-fopenmp')
+        elif IS_WIN:
+            extra_compile_args.append('-openmp')
+            extra_link_args.append('-openmp')
+        define_macros.append(('USE_OPENMP', None))
 
     extension_names = []  # extension names and their dir names are the same
     extension_cy_src = {}
@@ -124,6 +132,7 @@ def configuration(parent_package='', top_path=None):
                     [extension_cy_src[extension_name]],
             language="c",
             libraries=ipp_libraries,
+            define_macros=define_macros,
             extra_compile_args=extra_compile_args,
             extra_link_args=extra_link_args,
             include_dirs=include_dirs,
