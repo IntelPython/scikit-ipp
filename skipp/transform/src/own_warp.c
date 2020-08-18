@@ -88,6 +88,7 @@ own_Warp(
     IppiPoint dstOffset = { 0, 0 };
 
 #ifdef USE_OPENMP
+    IppStatus * pStatus = NULL;
     int numThreads, slice, tail;
     int bufSize1, bufSize2;
     IppiSize dstTileSize, dstLastTileSize;
@@ -103,7 +104,7 @@ own_Warp(
         max_num_threads = 1;
     }
 #endif
-    IppStatus * pStatus = NULL;
+
 #endif
 
     // checking supported dtypes
