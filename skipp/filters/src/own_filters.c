@@ -609,7 +609,6 @@ own_mask_filter_result(
 
     IppStatus pStatus[4];
 
-    int max_num_threads;
     int sizeof_dst;
     status = get_sizeof(ippDstDataType, &sizeof_dst);
     check_sts(status);
@@ -625,6 +624,7 @@ own_mask_filter_result(
     IppiSize horizRoiSize = {img_width, 1};
     IppiSize verRoiSize = {1, (img_height - 1)};
 #ifdef USE_OPENMP
+    int max_num_threads;
 #ifdef MAX_NUM_THREADS
     max_num_threads = MAX_NUM_THREADS;
 #else
