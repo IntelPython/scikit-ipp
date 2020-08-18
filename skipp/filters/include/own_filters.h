@@ -211,4 +211,12 @@ own_FilterPrewitt(
     int img_width,
     int img_height,
     int numChannels);
+
+IppStatus
+own_mask_filter_result(
+    IppDataType ippSrcDataType,
+    void * pDst,
+    int img_width,
+    int img_height,
+    int numChannels);
 #endif // OWN_FILTERS_H

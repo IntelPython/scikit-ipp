@@ -30,6 +30,20 @@
 #include <stddef.h>
 #include "ipp.h"
 
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for ippiSet_<mode>_C1R functions,
+// where <mode> is 8u, 16u, 16s, 32s, 32f
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiSet_C1R(
+    IppDataType ippDataType,
+    double value,
+    void * pDst,
+    int dstStep,
+    IppiSize roiSize);
+
 /**************************************************************************************
  * filters module
  * funcs ...
