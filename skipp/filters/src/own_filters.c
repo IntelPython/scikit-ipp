@@ -316,7 +316,6 @@ own_FilterEdge(
     int numChannels)
 {
     IppStatus status = ippStsNoErr;
-    IppStatus * pStatus = NULL;
 
     Ipp8u * pBuffer = NULL;                         // Pointer to the work buffer
     int bufferSize;
@@ -348,6 +347,7 @@ own_FilterEdge(
     srcStep = numChannels * img_width * sizeof_src;
     dstStep = numChannels * img_width * sizeof_dst;
 #ifdef USE_OPENMP
+    IppStatus * pStatus = NULL;
     int max_num_threads;
     int numThreads, slice, tail;
     IppiSize dstTileSize, dstLastTileSize;
