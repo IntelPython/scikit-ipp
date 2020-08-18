@@ -87,7 +87,7 @@ own_Warp(
     int specSize = 0, initSize = 0, bufSize = 0;         // Work buffer size
     IppiPoint dstOffset = { 0, 0 };
 
-#ifdef _OPENMP
+#ifdef USE_OPENMP
     int numThreads, slice, tail;
     int bufSize1, bufSize2;
     IppiSize dstTileSize, dstLastTileSize;
@@ -181,7 +181,7 @@ own_Warp(
     }
     check_sts(status);
 
-#ifdef _OPENMP
+#ifdef USE_OPENMP
     if (max_num_threads != 1)
     {
         // General transform function
@@ -271,7 +271,7 @@ own_Warp(
         }
         status = _ippiWarpAffine_interpolation(ippDataType, interpolation, numChannels,
             pSrc, srcStep, pDst, dstStep, dstOffset, dstSize, pSpec, pBuffer);
-#ifdef _OPENMP
+#ifdef USE_OPENMP
     }
 #endif
 
@@ -279,7 +279,7 @@ EXIT_FUNC
     ippsFree(pInitBuf);
     ippsFree(pSpec);
     ippsFree(pBuffer);
-#ifdef _OPENMP
+#ifdef USE_OPENMP
     ippFree(pStatus);
 #endif
     return status;

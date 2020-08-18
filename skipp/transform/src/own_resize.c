@@ -90,7 +90,7 @@ own_Resize(
                                                          // image origin
     int specSize = 0, initSize = 0, bufSize = 0;         // Work buffer size
 
-#ifdef _OPENMP
+#ifdef USE_OPENMP
     IppiBorderSize borderSize = {0, 0, 0, 0};
     int numThreads, slice, tail;
     int bufSize1, bufSize2;
@@ -220,7 +220,7 @@ own_Resize(
         status = ippStsErr;
     }
     check_sts(status);
-#ifdef _OPENMP
+#ifdef USE_OPENMP
     if (max_num_threads != 1)
     {
         status = ippiResizeGetBorderSize(ippDataType, pSpec, &borderSize);
@@ -348,13 +348,13 @@ own_Resize(
             status = ippStsErr;
         }
         check_sts(status);
-#ifdef _OPENMP
+#ifdef USE_OPENMP
     }
 #endif
 EXIT_FUNC
     ippsFree(pSpec);
     ippsFree(pBuffer);
-#ifdef _OPENMP
+#ifdef USE_OPENMP
     ippFree(pStatus);
 #endif
     return status;
