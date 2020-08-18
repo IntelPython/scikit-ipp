@@ -1,5 +1,5 @@
 {% set version = "1.2.0dev" %}
-{% set buildnumber = 2 %}
+{% set buildnumber = 3 %}
 
 package:
     name: scikit-ipp
