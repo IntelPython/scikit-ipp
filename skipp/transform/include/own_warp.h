@@ -34,8 +34,10 @@
 #ifndef WARP_H
 #define WARP_H
 #include <stddef.h>
-#include "ipp.h"
-#include <omp.h>
+#include <ipp.h>
+#ifdef USE_OPENMP
+   #include <omp.h>
+#endif
 #include "_ipp_wr.h"
 #include "utils.h"
 
