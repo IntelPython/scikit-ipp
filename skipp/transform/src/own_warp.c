@@ -85,12 +85,12 @@ own_Warp(
                                                          // source/destination images
 
     int specSize = 0, initSize = 0, bufSize = 0;         // Work buffer size
+    IppiPoint dstOffset = { 0, 0 };
 
 #ifdef _OPENMP
     int numThreads, slice, tail;
     int bufSize1, bufSize2;
     IppiSize dstTileSize, dstLastTileSize;
-    IppiPoint dstOffset = { 0, 0 };
 
     int max_num_threads;
 
