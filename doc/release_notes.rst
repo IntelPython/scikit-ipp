@@ -11,10 +11,19 @@ API changes
 
 Bug fixes
 ^^^^^^^^^
-
+    update own_resize.h (#159)
 
 New features
 ^^^^^^^^^^^^
+    added option to disable OpenMP (#4)
+
+    update becnhmarks (#142)
+
+    `transform.resize` threaded version (#143)
+
+    example for affine warp transform (#151)
+
+    `transform.warp` threaded version (#139)
 
 
 Commits notes
@@ -65,11 +74,6 @@ Commits notes
 
 
     refactor: own_resize.c (#156)
-
-    * removed extra statement
-
-
-    refactor: own_filters.c
 
     * removed extra statement
 
