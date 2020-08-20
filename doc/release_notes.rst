@@ -8,165 +8,164 @@ Version 1.2.0
 
 New features
 ^^^^^^^^^^^^
-    added option to disable OpenMP (#4)
+added option to disable OpenMP (#4)
 
-    update becnhmarks (#142)
+update becnhmarks (#142)
 
-    `transform.resize` threaded version (#143)
+`transform.resize` threaded version (#143)
 
-    example for affine warp transform (#151)
+example for affine warp transform (#151)
 
-    `transform.warp` threaded version (#139)
+`transform.warp` threaded version (#139)
 
-    Multi-threading with OpenMP for some statements in `own_FilterEdge`  (#2)
+Multi-threading with OpenMP for some statements in `own_FilterEdge`  (#2)
 
-    re-implement `_mask_filter_results` (#3)
+re-implement `_mask_filter_results` (#3)
 
 
 Commits notes
 ^^^^^^^^^^^^^
 
-    Multi-threading with OpenMP for some statements in `own_FilterEdge`  (#2)
+Multi-threading with OpenMP for some statements in `own_FilterEdge`  (#2)
 
-    * Multi-threading with OpenMP for some statements in own_FilterEdge
+* Multi-threading with OpenMP for some statements in own_FilterEdge
 
-    * added USE_OPENMP directive
+* added USE_OPENMP directive
 
-    * Multi-threading with OpenMP for some statements in own_FilterEdge function, that is a backend for `scikit-ipp` edge filters
+* Multi-threading with OpenMP for some statements in own_FilterEdge function, that is a backend for `scikit-ipp` edge filters
 
-    * added external multi-threading with OpenMP for some part of code
+* added external multi-threading with OpenMP for some part of code
 
 
-    re-implement `_mask_filter_results` (#3)
+re-implement `_mask_filter_results` (#3)
 
-    * implemented native `own_mask_filter_results`
+* implemented native `own_mask_filter_results`
 
-    * template `ippiSet_<mode>_C1R`: added `ippiSet_C1R adpater`
+* template `ippiSet_<mode>_C1R`: added `ippiSet_C1R adpater`
 
 
-    added option to disable OpenMP (#4)
+added option to disable OpenMP (#4)
 
-    * added option to disable OpenMP
+* added option to disable OpenMP
 
-    * added using USE_OPENMP env variable
+* added using USE_OPENMP env variable
 
-    * disabled using OpenMP for osx
+* disabled using OpenMP for osx
 
 
-    Create CODE_OF_CONDUCT.md
+Create CODE_OF_CONDUCT.md
 
 
-    update becnhmarks (#142)
+update becnhmarks (#142)
 
-    * added test_benchmarks.py
+* added test_benchmarks.py
 
-    * corrected test suits inputs and settings
+* corrected test suits inputs and settings
 
-    * updated benchmarks/readme.md:
+* updated benchmarks/readme.md:
 
 
-    update own_resize.h (#159)
+update own_resize.h (#159)
 
-    added missed include
+added missed include
 
 
-    refactor: own_resize.c (#156)
+refactor: own_resize.c (#156)
 
-    * removed extra statement
+* removed extra statement
 
 
-    update `own_warp.c` and `own_warp.h` (#149)
+update `own_warp.c` and `own_warp.h` (#149)
 
-    * update own_warp.h/.c
+* update own_warp.h/.c
 
-    * removed unused own_RotateCoeffs, own_RotateCoeffs
+* removed unused own_RotateCoeffs, own_RotateCoeffs
 
-    * renamed number_of_threads to max_num_threads
+* renamed number_of_threads to max_num_threads
 
-    * added setting max_num_threads =1 for small images
+* added setting max_num_threads =1 for small images
 
-    * added case when num_threads == 1, that doesn't uses openmp for initializing single thread
+* added case when num_threads == 1, that doesn't uses openmp for initializing single thread
 
-    * removed unused variable srcOffset
+* removed unused variable srcOffset
 
 
-    example for affine warp transform (#151)
+example for affine warp transform (#151)
 
-    * added example for affine warp transform: plot_geometric.py
+* added example for affine warp transform: plot_geometric.py
 
 
-    update transform.pyx (#150)
+update transform.pyx (#150)
 
-    * implemented  `__rer__` and `__str__` for AffineTransform
+* implemented  `__rer__` and `__str__` for AffineTransform
 
 
-    `transform.resize` threaded version (#143)
+`transform.resize` threaded version (#143)
 
-    * added parallel verision of own_Resize
+* added parallel verision of own_Resize
 
-    * update resize func
+* update resize func
 
-    * added `ippiResizeGetSrcRoi_<mod>`
+* added `ippiResizeGetSrcRoi_<mod>`
 
-    * added `ippiResizeGetBorderSize_<mod>`
+* added `ippiResizeGetBorderSize_<mod>`
 
-    * update `own_Resize`
+* update `own_Resize`
 
-    * refactor own_resize.h /own_resize.c
+* refactor own_resize.h /own_resize.c
 
-    * update docstrings
+* update docstrings
 
-    * Update meta.yaml
+* Update meta.yaml
 
-    * using `num_threads` instdead of `omp_set_num_threads`
+* using `num_threads` instdead of `omp_set_num_threads`
 
-    * added case for when number of threads is 1
+* added case for when number of threads is 1
 
 
-    fix `own_Warp` threads statuses init (#145)
+fix `own_Warp` threads statuses init (#145)
 
-    * fix warp thread status init
+* fix warp thread status init
 
 
-    update setup.py (#147)
+update setup.py (#147)
 
-    fixed ignoring flags for openmp [win]
+fixed ignoring flags for openmp [win]
 
 
-    bump up numpy version (#146)
+bump up numpy version (#146)
 
 
-    Update meta.yaml (#144)
+Update meta.yaml (#144)
 
-    * fix buildnumber setting
+* fix buildnumber setting
 
 
-    feat: `transform.warp` threaded version (#139)
+feat: `transform.warp` threaded version (#139)
 
-    * added `openmp` dependecy
+* added `openmp` dependecy
 
-    * update `warp` and `rotate` backend funcs
+* update `warp` and `rotate` backend funcs
 
-    * implemented multithreaded `transfrom.warp`
+* implemented multithreaded `transfrom.warp`
 
-    * update `own_warp.c`
+* update `own_warp.c`
 
-    * update test suits
+* update test suits
 
-    * update _transform.pxd
+* update _transform.pxd
 
-    * update docsting for
+* update docsting for
 
 
-    update version (#140)
+update version (#140)
 
-    incremented to dev version 1.2.0dev
+incremented to dev version 1.2.0dev
 
 
-    removed not used dependecy (#138)
+removed not used dependecy (#138)
 
-    * removed `scipy` and `scikit-image` since they are not used in tests
-
+* removed `scipy` and `scikit-image` since they are not used in tests
 
 
 Version 1.1.0
