@@ -5,13 +5,6 @@ Release notes
 Version 1.1.0
 -------------
 
-API changes
-^^^^^^^^^^^
-
-
-Bug fixes
-^^^^^^^^^
-    update own_resize.h (#159)
 
 New features
 ^^^^^^^^^^^^
@@ -24,6 +17,10 @@ New features
     example for affine warp transform (#151)
 
     `transform.warp` threaded version (#139)
+
+    Multi-threading with OpenMP for some statements in `own_FilterEdge`  (#2)
+
+    re-implement `_mask_filter_results` (#3)
 
 
 Commits notes
