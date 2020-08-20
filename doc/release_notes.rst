@@ -8,6 +8,172 @@ Version 1.1.0
 API changes
 ^^^^^^^^^^^
 
+
+Bug fixes
+^^^^^^^^^
+
+
+New features
+^^^^^^^^^^^^
+
+
+Commits notes
+^^^^^^^^^^^^^
+
+    Multi-threading with OpenMP for some statements in `own_FilterEdge`  (#2)
+
+    * Multi-threading with OpenMP for some statements in own_FilterEdge
+
+    * added USE_OPENMP directive
+
+    * Multi-threading with OpenMP for some statements in own_FilterEdge function, that is a backend for `scikit-ipp` edge filters
+
+    * added external multi-threading with OpenMP for some part of code
+
+
+    re-implement `_mask_filter_results` (#3)
+
+    * implemented native `own_mask_filter_results`
+
+    * template `ippiSet_<mode>_C1R`: added `ippiSet_C1R adpater`
+
+
+    added option to disable OpenMP (#4)
+
+    * added option to disable OpenMP
+
+    * added using USE_OPENMP env variable
+
+    * disabled using OpenMP for osx
+
+
+    Create CODE_OF_CONDUCT.md
+
+
+    update becnhmarks (#142)
+
+    * added test_benchmarks.py
+
+    * corrected test suits inputs and settings
+
+    * updated benchmarks/readme.md:
+
+
+    update own_resize.h (#159)
+
+    added missed include
+
+
+    refactor: own_resize.c (#156)
+
+    * removed extra statement
+
+
+    refactor: own_filters.c
+
+    * removed extra statement
+
+
+    update `own_warp.c` and `own_warp.h` (#149)
+
+    * update own_warp.h/.c
+
+    * removed unused own_RotateCoeffs, own_RotateCoeffs
+
+    * renamed number_of_threads to max_num_threads
+
+    * added setting max_num_threads =1 for small images
+
+    * added case when num_threads == 1, that doesn't uses openmp for initializing single thread
+
+    * removed unused variable srcOffset
+
+
+    example for affine warp transform (#151)
+
+    * added example for affine warp transform: plot_geometric.py
+
+
+    update transform.pyx (#150)
+
+    * implemented  `__rer__` and `__str__` for AffineTransform
+
+
+    `transform.resize` threaded version (#143)
+
+    * added parallel verision of own_Resize
+
+    * update resize func
+
+    * added `ippiResizeGetSrcRoi_<mod>`
+
+    * added `ippiResizeGetBorderSize_<mod>`
+
+    * update `own_Resize`
+
+    * refactor own_resize.h /own_resize.c
+
+    * update docstrings
+
+    * Update meta.yaml
+
+    * using `num_threads` instdead of `omp_set_num_threads`
+
+    * added case for when number of threads is 1
+
+
+    fix `own_Warp` threads statuses init (#145)
+
+    * fix warp thread status init
+
+
+    update setup.py (#147)
+
+    fixed ignoring flags for openmp [win]
+
+
+    bump up numpy version (#146)
+
+
+    Update meta.yaml (#144)
+
+    * fix buildnumber setting
+
+
+    feat: `transform.warp` threaded version (#139)
+
+    * added `openmp` dependecy
+
+    * update `warp` and `rotate` backend funcs
+
+    * implemented multithreaded `transfrom.warp`
+
+    * update `own_warp.c`
+
+    * update test suits
+
+    * update _transform.pxd
+
+    * update docsting for
+
+
+    update version (#140)
+
+    incremented to dev version 1.2.0dev
+
+
+    removed not used dependecy (#138)
+
+    * removed `scipy` and `scikit-image` since they are not used in tests
+
+
+
+Version 1.1.0
+-------------
+
+API changes
+^^^^^^^^^^^
+
 * extend `skipp.filters.gaussian` filter supported dtypes(uint8, uint16, int16), update docstring (#119)
 
 * extend `skipp.filters.laplace` filter supported dtypes, more supported dtypes(uint8, uint16, int16) (#118)
