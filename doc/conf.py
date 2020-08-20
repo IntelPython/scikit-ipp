@@ -22,7 +22,7 @@ copyright = '2020, Intel'
 author = 'Intel'
 
 # The full version, including alpha/beta/rc tags
-release = 'Beta07'
+release = 'v1.2.0'
 
 
 # -- General configuration ---------------------------------------------------
