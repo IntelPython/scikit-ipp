@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Release notes &mdash; scikit-ipp Beta07 documentation</title>
+  <title>Release notes &mdash; scikit-ipp v1.2.0 documentation</title>
   
 
   
@@ -90,16 +90,21 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">scikit-ipp API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#version-1-1-0">Version 1.1.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#api-changes">API changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-2-0">Version 1.2.0</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#new-features">New features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#refactoring">Refactoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#commits-notes">Commits notes</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-1-0">Version 1.1.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-changes">API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">New features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#refactoring">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Commits notes</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-0-0">Version 1.0.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">New Features</a></li>
 </ul>
 </li>
 </ul>
@@ -172,6 +177,110 @@
             
   <div class="section" id="release-notes">
 <h1>Release notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-1-2-0">
+<h2>Version 1.2.0<a class="headerlink" href="#version-1-2-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="new-features">
+<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<p>added option to disable OpenMP (#4)</p>
+<p>update becnhmarks (#142)</p>
+<p><cite>transform.resize</cite> threaded version (#143)</p>
+<p>example for affine warp transform (#151)</p>
+<p><cite>transform.warp</cite> threaded version (#139)</p>
+<p>Multi-threading with OpenMP for some statements in <cite>own_FilterEdge</cite>  (#2)</p>
+<p>re-implement <cite>_mask_filter_results</cite> (#3)</p>
+</div>
+<div class="section" id="commits-notes">
+<h3>Commits notes<a class="headerlink" href="#commits-notes" title="Permalink to this headline">¶</a></h3>
+<p>Multi-threading with OpenMP for some statements in <cite>own_FilterEdge</cite>  (#2)</p>
+<ul class="simple">
+<li><p>Multi-threading with OpenMP for some statements in own_FilterEdge</p></li>
+<li><p>added USE_OPENMP directive</p></li>
+<li><p>Multi-threading with OpenMP for some statements in own_FilterEdge function, that is a backend for <cite>scikit-ipp</cite> edge filters</p></li>
+<li><p>added external multi-threading with OpenMP for some part of code</p></li>
+</ul>
+<p>re-implement <cite>_mask_filter_results</cite> (#3)</p>
+<ul class="simple">
+<li><p>implemented native <cite>own_mask_filter_results</cite></p></li>
+<li><p>template <cite>ippiSet_&lt;mode&gt;_C1R</cite>: added <cite>ippiSet_C1R adpater</cite></p></li>
+</ul>
+<p>added option to disable OpenMP (#4)</p>
+<ul class="simple">
+<li><p>added option to disable OpenMP</p></li>
+<li><p>added using USE_OPENMP env variable</p></li>
+<li><p>disabled using OpenMP for osx</p></li>
+</ul>
+<p>Create CODE_OF_CONDUCT.md</p>
+<p>update becnhmarks (#142)</p>
+<ul class="simple">
+<li><p>added test_benchmarks.py</p></li>
+<li><p>corrected test suits inputs and settings</p></li>
+<li><p>updated benchmarks/readme.md:</p></li>
+</ul>
+<p>update own_resize.h (#159)</p>
+<p>added missed include</p>
+<p>refactor: own_resize.c (#156)</p>
+<ul class="simple">
+<li><p>removed extra statement</p></li>
+</ul>
+<p>update <cite>own_warp.c</cite> and <cite>own_warp.h</cite> (#149)</p>
+<ul class="simple">
+<li><p>update own_warp.h/.c</p></li>
+<li><p>removed unused own_RotateCoeffs, own_RotateCoeffs</p></li>
+<li><p>renamed number_of_threads to max_num_threads</p></li>
+<li><p>added setting max_num_threads =1 for small images</p></li>
+<li><p>added case when num_threads == 1, that doesn’t uses openmp for initializing single thread</p></li>
+<li><p>removed unused variable srcOffset</p></li>
+</ul>
+<p>example for affine warp transform (#151)</p>
+<ul class="simple">
+<li><p>added example for affine warp transform: plot_geometric.py</p></li>
+</ul>
+<p>update transform.pyx (#150)</p>
+<ul class="simple">
+<li><p>implemented  <cite>__rer__</cite> and <cite>__str__</cite> for AffineTransform</p></li>
+</ul>
+<p><cite>transform.resize</cite> threaded version (#143)</p>
+<ul class="simple">
+<li><p>added parallel verision of own_Resize</p></li>
+<li><p>update resize func</p></li>
+<li><p>added <cite>ippiResizeGetSrcRoi_&lt;mod&gt;</cite></p></li>
+<li><p>added <cite>ippiResizeGetBorderSize_&lt;mod&gt;</cite></p></li>
+<li><p>update <cite>own_Resize</cite></p></li>
+<li><p>refactor own_resize.h /own_resize.c</p></li>
+<li><p>update docstrings</p></li>
+<li><p>Update meta.yaml</p></li>
+<li><p>using <cite>num_threads</cite> instdead of <cite>omp_set_num_threads</cite></p></li>
+<li><p>added case for when number of threads is 1</p></li>
+</ul>
+<p>fix <cite>own_Warp</cite> threads statuses init (#145)</p>
+<ul class="simple">
+<li><p>fix warp thread status init</p></li>
+</ul>
+<p>update setup.py (#147)</p>
+<p>fixed ignoring flags for openmp [win]</p>
+<p>bump up numpy version (#146)</p>
+<p>Update meta.yaml (#144)</p>
+<ul class="simple">
+<li><p>fix buildnumber setting</p></li>
+</ul>
+<p>feat: <cite>transform.warp</cite> threaded version (#139)</p>
+<ul class="simple">
+<li><p>added <cite>openmp</cite> dependecy</p></li>
+<li><p>update <cite>warp</cite> and <cite>rotate</cite> backend funcs</p></li>
+<li><p>implemented multithreaded <cite>transfrom.warp</cite></p></li>
+<li><p>update <cite>own_warp.c</cite></p></li>
+<li><p>update test suits</p></li>
+<li><p>update _transform.pxd</p></li>
+<li><p>update docsting for</p></li>
+</ul>
+<p>update version (#140)</p>
+<p>incremented to dev version 1.2.0dev</p>
+<p>removed not used dependecy (#138)</p>
+<ul class="simple">
+<li><p>removed <cite>scipy</cite> and <cite>scikit-image</cite> since they are not used in tests</p></li>
+</ul>
+</div>
+</div>
 <div class="section" id="version-1-1-0">
 <h2>Version 1.1.0<a class="headerlink" href="#version-1-1-0" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="api-changes">
@@ -193,8 +302,8 @@
 <li><p><cite>skipp.transfrom.warp</cite> bug for all provided non-default value of <cite>mode</cite> param (#130), (#123)</p></li>
 </ul>
 </div>
-<div class="section" id="new-features">
-<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h3>New features<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>added/update docstrings for all methods and structures (#108) and pep8 align docstrings - numpy style (#110). Also (#122), (#126), (#130)</p></li>
 <li><p>update README.md (#111), (#109): new modules were added.</p></li>
@@ -219,8 +328,8 @@
 <li><p>removed outdated, unused src file <cite>own_morphology_tl.c</cite> (#133)</p></li>
 </ul>
 </div>
-<div class="section" id="commits-notes">
-<h3>Commits notes<a class="headerlink" href="#commits-notes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Commits notes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>update README.md (#109)</p>
 <ul class="simple">
 <li><p>Getting started</p></li>
@@ -364,8 +473,8 @@
 </div>
 <div class="section" id="version-1-0-0">
 <h2>Version 1.0.0<a class="headerlink" href="#version-1-0-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>New Features<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>New Features<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>Gaussian filter</p>
 <ul class="simple">
 <li><p><cite>skipp.filters.gaussian</cite></p></li>
