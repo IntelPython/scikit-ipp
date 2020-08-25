@@ -48,6 +48,7 @@ test:
 
 about:
     license: BSD-3-Clause
+    license_file: LICENSE.txt
     license_family: BSD
     description: |
       <strong>LEGAL NOTICE: Use of this software package is subject to the
