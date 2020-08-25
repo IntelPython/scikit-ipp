@@ -3,8 +3,8 @@
 
 `scikit-ipp` is a standalone package, provided scikit-image-like API to some of Intel® IPP functions.
 
-- [Documentation](https://github.intel.com/pages/SAT/scikit-ipp/)
-- [Source Code](https://github.intel.com/SAT/scikit-ipp)
+- [Documentation](https://intelpython.github.io/scikit-ipp/)
+- [Source Code](https://github.com/IntelPython/scikit-ipp)
 - [About Intel® IPP](https://software.intel.com/en-us/intel-ipp)
 
 

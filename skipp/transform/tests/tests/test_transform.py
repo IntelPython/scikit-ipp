@@ -126,9 +126,9 @@ def test_rotate_resize():
 
 
 def test_rotate_center():
-    x = np.zeros((10, 10), dtype=np.double)
+    x = np.zeros((10, 10), dtype=np.float32)
     x[4, 4] = 1
-    refx = np.zeros((10, 10), dtype=np.double)
+    refx = np.zeros((10, 10), dtype=np.float32)
     refx[2, 5] = 1
     x20 = rotate(x, 20, order=0, center=(0, 0))
     assert_allclose(x20, refx, rtol=1e-06)
@@ -137,10 +137,10 @@ def test_rotate_center():
 
 
 def test_rotate_resize_center():
-    x = np.zeros((10, 10), dtype=np.double)
+    x = np.zeros((10, 10), dtype=np.float32)
     x[0, 0] = 1
 
-    ref_x45 = np.zeros((14, 14), dtype=np.double)
+    ref_x45 = np.zeros((14, 14), dtype=np.float32)
     ref_x45[6, 0] = 1
     ref_x45[7, 0] = 1
 
@@ -151,7 +151,7 @@ def test_rotate_resize_center():
 
 
 def test_rotate_resize_90():
-    x90 = rotate(np.zeros((470, 230), dtype=np.double), 90,
+    x90 = rotate(np.zeros((470, 230), dtype=np.float32), 90,
                  resize=True)
     assert x90.shape == (230, 470)
 

@@ -34,43 +34,13 @@
 #ifndef WARP_H
 #define WARP_H
 #include <stddef.h>
-#include "ipp.h"
+#include <ipp.h>
+#ifdef USE_OPENMP
+   #include <omp.h>
+#endif
 #include "_ipp_wr.h"
 #include "utils.h"
 
-////////////////////////////////////////////////////////////////////////////////////////
-//
-//    own_RotateCoeffs
-//
-//    own_RotateCoeffs uses Intel(R) IPP ippiGetRotateShift and
-//    ippiGetRotateTransform functions for getting affine coefficients for the rotation
-//    transform. ippiGetRotateShift, computes shift values for rotation of an image
-//    around the specified center. ippiGetRotateTransform computes the affine
-//    coefficients for the rotation transform.
-//
-////////////////////////////////////////////////////////////////////////////////////////
-IppStatus
-own_RotateCoeffs(
-    double angle,
-    double xCenter,
-    double yCenter,
-    double *coeffs);
-
-////////////////////////////////////////////////////////////////////////////////////////
-//
-//    own_GetAffineDstSize
-//
-//    own_GetAffineDstSize uses Intel(R) IPP ippiGetAffineBound for computing size
-//    destination image for the provided coeffs for the affine transformations.
-//
-////////////////////////////////////////////////////////////////////////////////////////
-IppStatus
-own_GetAffineDstSize(
-    int img_width,
-    int img_height,
-    int * dst_width,
-    int * dst_height,
-    double * coeffs);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //

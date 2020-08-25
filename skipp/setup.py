@@ -26,10 +26,16 @@
 # ******************************************************************************
 
 import os
+import platform
 
 from os.path import join, split, dirname, abspath
 from numpy import get_include as get_numpy_include
 from distutils.sysconfig import get_python_inc as get_python_include
+
+
+IS_WIN = platform.system() == 'Windows'
+IS_LIN = platform.system() == 'Linux'
+IS_MAC = platform.system() == 'Darwin'
 
 
 def configuration(parent_package='', top_path=None):
@@ -66,14 +72,29 @@ def configuration(parent_package='', top_path=None):
 
     config = Configuration('skipp', parent_package, top_path)
 
-    ipp_root = os.environ['IPPROOT']
+    lib_root = os.environ['LIBROOT']
 
-    ipp_include_dir = [join(ipp_root, 'include')]
-    ipp_library_dirs = [join(ipp_root, 'lib')]
+    use_omp = True if 'USE_OPENMP' in os.environ else False
+
+    include_dir = [join(lib_root, 'include')]
+    library_dirs = [join(lib_root, 'lib')]
     ipp_libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
 
     _ipp_utils_dir = ['_ipp_utils']
     _ipp_wr_dir = ['_ipp_wr']
+
+    extra_compile_args=[]
+    extra_link_args=[]
+    define_macros=[]
+
+    if(use_omp):
+        if IS_LIN or IS_MAC:
+            extra_compile_args.append('-fopenmp')
+            extra_link_args.append('-fopenmp')
+        elif IS_WIN:
+            extra_compile_args.append('-openmp')
+            extra_link_args.append('-openmp')
+        define_macros.append(('USE_OPENMP', None))
 
     extension_names = []  # extension names and their dir names are the same
     extension_cy_src = {}
@@ -101,7 +122,7 @@ def configuration(parent_package='', top_path=None):
                                  'Cython is required to build the initial .c file.')
 
     include_dirs = [get_numpy_include(), get_python_include()]
-    include_dirs.extend(ipp_include_dir)
+    include_dirs.extend(include_dir)
     include_dirs.extend(extension_includes)
 
     for extension_name in extension_names:
@@ -111,8 +132,11 @@ def configuration(parent_package='', top_path=None):
                     [extension_cy_src[extension_name]],
             language="c",
             libraries=ipp_libraries,
+            define_macros=define_macros,
+            extra_compile_args=extra_compile_args,
+            extra_link_args=extra_link_args,
             include_dirs=include_dirs,
-            library_dirs=ipp_library_dirs)
+            library_dirs=library_dirs)
     if have_cython:
         config.ext_modules = cythonize(config.ext_modules)
     return config

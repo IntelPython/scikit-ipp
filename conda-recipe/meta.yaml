@@ -1,4 +1,4 @@
-{% set version = "1.1.0" %}
+{% set version = "1.2.0" %}
 {% set buildnumber = 0 %}
 
 package:
@@ -8,6 +8,9 @@ package:
 source:
     path: ..
 
+build:
+    number: {{ buildnumber }}
+
 requirements:
     build:
       - {{ compiler('c') }}
@@ -16,12 +19,14 @@ requirements:
       - ipp
       - ipp-devel
       - ipp-include
-      - numpy >=1.13.3
+      - numpy >=1.15
       - python
       - setuptools
     run:
       - ipp
-      - numpy >=1.13.3
+      - intel-openmp # [not osx]
+      - llvm-openmp # [osx]
+      - numpy >=1.15
       - python
 
 test:
@@ -29,8 +34,6 @@ test:
       - numpy
       - pytest
       - pytest-benchmark
-      - scikit-image
-      - scipy
     imports:
       - skipp
       - skipp.filters

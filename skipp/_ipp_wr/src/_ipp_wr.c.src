@@ -28,6 +28,43 @@
 
 #include "_ipp_wr.h"
 
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for ippiSet_<mode>_C1R functions,
+// where <mode> is 8u, 16u, 16s, 32s, 32f
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiSet_C1R(
+    IppDataType ippDataType,
+    double value,
+    void * pDst,
+    int dstStep,
+    IppiSize roiSize)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        Ipp@ipp_type@ cast_value = (Ipp@ipp_type@)value;
+        status = ippiSet_@ipp_type@_C1R(cast_value, pDst, dstStep, roiSize);
+        break;
+    }
+    /**end repeat**/
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
 /**************************************************************************************
  * filters module
  * funcs ...
@@ -57,19 +94,19 @@ ippiFilterBorderInit(
     case ipp16s:
     {
         status = ippiFilterBorderInit_16s(pKernel, kernelSize, divisor,
-        	ippImageDataType, numChannels, roundMode, pSpec);
+            ippImageDataType, numChannels, roundMode, pSpec);
         break;
     }
     case ipp32f:
     {
         status = ippiFilterBorderInit_32f(pKernel, kernelSize, ippImageDataType,
-        	numChannels, roundMode, pSpec);
+            numChannels, roundMode, pSpec);
         break;
     }
     case ipp64f:
     {
         status = ippiFilterBorderInit_64f(pKernel, kernelSize, ippImageDataType,
-        	numChannels, roundMode, pSpec);
+            numChannels, roundMode, pSpec);
         break;
     }
     default:
@@ -116,7 +153,7 @@ ippiFilterBorder(
         {
             Ipp@ipp_type@ ippbordervalue = (Ipp@ipp_type@)ippBorderValue;
             status = ippiFilterBorder_@ipp_type@_C1R(pSrc, srcStep, pDst, dstStep,roiSize,
-            	             ippBorderType, &ippbordervalue, pSpec, pBuffer);
+                             ippBorderType, &ippbordervalue, pSpec, pBuffer);
             break;
         }
         /**end repeat**/
@@ -140,7 +177,7 @@ ippiFilterBorder(
                                                 (Ipp@ipp_type@)ippBorderValue,
                                                 (Ipp@ipp_type@)ippBorderValue };
             status = ippiFilterBorder_@ipp_type@_C3R(pSrc, srcStep, pDst, dstStep, roiSize,
-            	 ippBorderType, ippbordervalue, pSpec, pBuffer);
+                 ippBorderType, ippbordervalue, pSpec, pBuffer);
             break;
         }
         /**end repeat**/
@@ -165,7 +202,7 @@ ippiFilterBorder(
                                                 (Ipp@ipp_type@)ippBorderValue,
                                                 (Ipp@ipp_type@)ippBorderValue };
             status = ippiFilterBorder_@ipp_type@_C4R(pSrc, srcStep, pDst, dstStep, roiSize,
-            	 ippBorderType, ippbordervalue, pSpec, pBuffer);
+                 ippBorderType, ippbordervalue, pSpec, pBuffer);
             break;
         }
         /**end repeat**/
@@ -290,7 +327,7 @@ ippiFilterMedianBorder(
         {
             Ipp@ipp_type@ ippbordervalue = (Ipp@ipp_type@)ippBorderValue;
             status = ippiFilterMedianBorder_@ipp_type@_C1R(pSrc, srcStep, pDst, dstStep,
-            	dstRoiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
+                dstRoiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
             break;
 
         }
@@ -315,7 +352,7 @@ ippiFilterMedianBorder(
                                                 (Ipp@ipp_type@)ippBorderValue,
                                                 (Ipp@ipp_type@)ippBorderValue };
             status = ippiFilterMedianBorder_@ipp_type@_C3R(pSrc, srcStep, pDst, dstStep,
-            	dstRoiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
+                dstRoiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
             break;
 
         }
@@ -430,19 +467,19 @@ ippiFilter@filter_type@@filter_magnitude@Border(
         if (ippSrcDataType == ipp8u && ippDstDataType == ipp16s) {
             Ipp8u ippbordervalue = (Ipp8u)ippBorderValue;
             status = ippiFilter@filter_type@@filter_magnitude@Border_8u16s_C1R(pSrc, srcStep, pDst,
-            	dstStep, roiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
+                dstStep, roiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
         }
         else if (ippSrcDataType == ipp16s && ippDstDataType == ipp16s) {
             // 16s32f_C1R
             Ipp16s ippbordervalue = (Ipp16s)ippBorderValue;
             status = ippiFilter@filter_type@@filter_magnitude@Border_16s_C1R(pSrc, srcStep, pDst,
-            	dstStep, roiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
+                dstStep, roiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
         }
         else if (ippSrcDataType == ipp32f && ippDstDataType == ipp32f) {
             // 16u32f_C1R
             Ipp16u ippbordervalue = (Ipp16u)ippBorderValue;
             status = ippiFilter@filter_type@@filter_magnitude@Border_32f_C1R(pSrc, srcStep, pDst,
-            	dstStep, roiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
+                dstStep, roiSize, maskSize, ippBorderType, ippbordervalue, pBuffer);
         }
         else
         {
@@ -913,6 +950,103 @@ ippiResizeGetBufferSize(
     case ipp64f:
     {
         status = ippiResizeGetBufferSize_64f(pSpec, dstSize, numChannels, pBufSize);
+        break;
+    }
+    */
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeGetSrcRoi_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetSrcRoi(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiPoint dstRoiOffset,
+    IppiSize dstRoiSize,
+    IppiPoint* srcRoiOffset,
+    IppiSize* srcRoiSize)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeGetSrcRoi_@ipp_type@(pSpec, dstRoiOffset,
+            dstRoiSize, srcRoiOffset, srcRoiSize);
+        break;
+    }
+    /**end repeat**/
+    /*
+    // TODO
+    pSpec is not 32f
+    case ipp64f:
+    {
+        status = ippiResizeGetSrcRoi_64f(pSpec, dstRoiOffset,dstRoiSize,
+                srcRoiOffset, srcRoiSize);
+        break;
+    }
+    */
+    default:
+    {
+        status = ippStsDataTypeErr;
+    }
+    }
+    return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeGetBorderSize_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetBorderSize(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiBorderSize* borderSize)
+{
+    IppStatus status = ippStsNoErr;
+
+    switch (ippDataType)
+    {
+
+    /**begin repeat
+     *
+     * #ipp_type = 8u, 16u, 16s, 32f#
+     */
+    case ipp@ipp_type@:
+    {
+        status = ippiResizeGetBorderSize_@ipp_type@(pSpec, &borderSize);
+        break;
+    }
+    /**end repeat**/
+    /*
+    // TODO
+    pSpec is not 32f
+    case ipp64f:
+    {
+        status = ippiResizeGetBorderSize_64f(pSpec, &borderSize);
         break;
     }
     */

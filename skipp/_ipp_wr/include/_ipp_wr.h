@@ -30,6 +30,20 @@
 #include <stddef.h>
 #include "ipp.h"
 
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Adapter for ippiSet_<mode>_C1R functions,
+// where <mode> is 8u, 16u, 16s, 32s, 32f
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiSet_C1R(
+    IppDataType ippDataType,
+    double value,
+    void * pDst,
+    int dstStep,
+    IppiSize roiSize);
+
 /**************************************************************************************
  * filters module
  * funcs ...
@@ -355,6 +369,37 @@ ippiResizeGetBufferSize(
     IppiSize dstSize,
     Ipp32u numChannels,
     int* pBufSize);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeGetSrcRoi_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetSrcRoi(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiPoint dstRoiOffset,
+    IppiSize dstRoiSize,
+    IppiPoint* srcRoiOffset,
+    IppiSize* srcRoiSize);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Adapter for ippiResizeGetBorderSize_<mode> function, where <mode>
+//    is: 8u, 16u, 16s or 32f.
+//
+//    Note: currently ipp64f is not supported. TODO implement this.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+IppStatus
+ippiResizeGetBorderSize(
+    IppDataType ippDataType,
+    const IppiResizeSpec_32f* pSpec,
+    IppiBorderSize* borderSize);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
