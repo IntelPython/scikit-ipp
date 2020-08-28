@@ -44,6 +44,7 @@ def configuration(parent_package='', top_path=None):
     def _get_sources_and_includes(dirs_list):
         """
         Returns list of source files and list of includes
+
         Parameters
         ----------
         dirs_list : list:
@@ -77,22 +78,23 @@ def configuration(parent_package='', top_path=None):
 
     include_dir = [join(lib_root, 'include')]
     library_dirs = [join(lib_root, 'lib')]
-    libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
+    ipp_libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
 
     _ipp_utils_dir = ['_ipp_utils']
     _ipp_wr_dir = ['_ipp_wr']
 
-    if IS_LIN:
-        extra_compile_args=['-fopenmp']
-        extra_link_args=['-fopenmp']
-    elif IS_WIN:
-        extra_compile_args=['-openmp']
-        extra_link_args=['-openmp']
-    elif IS_MAC:
-        extra_compile_args=['-fopenmp']
-        extra_link_args=['-fopenmp=libiomp5']
-    if IS_MAC:
-        libraries.append("iomp5")  
+    extra_compile_args=[]
+    extra_link_args=[]
+    define_macros=[]
+
+    if(use_omp):
+        if IS_LIN or IS_MAC:
+            extra_compile_args.append('-fopenmp')
+            extra_link_args.append('-fopenmp')
+        elif IS_WIN:
+            extra_compile_args.append('-openmp')
+            extra_link_args.append('-openmp')
+        define_macros.append(('USE_OPENMP', None))
 
     extension_names = []  # extension names and their dir names are the same
     extension_cy_src = {}
@@ -129,7 +131,8 @@ def configuration(parent_package='', top_path=None):
             sources=extension_sources +
                     [extension_cy_src[extension_name]],
             language="c",
-            libraries=libraries,
+            libraries=ipp_libraries,
+            define_macros=define_macros,
             extra_compile_args=extra_compile_args,
             extra_link_args=extra_link_args,
             include_dirs=include_dirs,
