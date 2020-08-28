@@ -73,6 +73,8 @@ def configuration(parent_package='', top_path=None):
 
     lib_root = os.environ['LIBROOT']
 
+    use_omp = True if 'USE_OPENMP' in os.environ else False
+
     include_dir = [join(lib_root, 'include')]
     library_dirs = [join(lib_root, 'lib')]
     libraries = ["ippcv", "ippcore", "ippvm", "ipps", "ippi"]
@@ -91,7 +93,7 @@ def configuration(parent_package='', top_path=None):
         extra_link_args=['-fopenmp=libiomp5']
     if IS_MAC:
        libraries.append("iomp5")
-
+        
     extension_names = []  # extension names and their dir names are the same
     extension_cy_src = {}
 
