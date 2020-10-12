@@ -42,7 +42,10 @@ cnp.import_array()
 
 
 cpdef dilation(image, selem=None, out=None, shift_x=False, shift_y=False):
-    """Return greyscale morphological dilation of an image.
+    """
+    dilation(image, selem=None, out=None, shift_x=False, shift_y=False)
+
+    Return greyscale morphological dilation of an image.
 
     Morphological dilation sets a pixel at (i,j) to the maximum over all pixels
     in the neighborhood centered at (i,j). Dilation enlarges bright regions
@@ -198,7 +201,10 @@ cpdef dilation(image, selem=None, out=None, shift_x=False, shift_y=False):
 
 
 cpdef erosion(image, selem=None, out=None, shift_x=False, shift_y=False):
-    """Return greyscale morphological erosion of an image.
+    """
+    erosion(image, selem=None, out=None, shift_x=False, shift_y=False)
+
+    Return greyscale morphological erosion of an image.
 
     Morphological erosion sets a pixel at (i,j) to the minimum over all pixels
     in the neighborhood centered at (i,j). Erosion shrinks bright regions and
