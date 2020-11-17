@@ -11,7 +11,10 @@ else
 fi
 
 export LIBROOT=$PREFIX
-$PYTHON setup.py build install --old-and-unmanageable bdist_wheel ${WHEELS_BUILD_ARGS}
+$PYTHON setup.py build install --old-and-unmanageable
+
+# Build wheel package
 if [ -n "${WHEELS_OUTPUT_FOLDER}" ]; then
+    $PYTHON setup.py bdist_wheel ${WHEELS_BUILD_ARGS}
     cp dist/scikit-ipp*.whl ${WHEELS_OUTPUT_FOLDER}
 fi
