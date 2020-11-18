@@ -86,7 +86,7 @@ def setup_package():
     from numpy.distutils.core import setup
 
     metadata = dict(
-        name='scikit-ipp',
+        name='skipp',
         maintainer="Intel Corp.",
         maintainer_email="scripting@intel.com",
         long_description="""
