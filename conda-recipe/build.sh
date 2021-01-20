@@ -2,7 +2,11 @@
 set -ex
 
 if [ `uname` != Darwin ]; then
-    WHEELS_BUILD_ARGS="-p manylinux1_x86_64"
+    if [ "$CONDA_PY" == "36" ]; then
+        WHEELS_BUILD_ARGS="-p manylinux1_x86_64"
+    else
+        WHEELS_BUILD_ARGS="-p manylinux2014_x86_64"
+    fi
 	# currently intel-openmp does not work for osx
     export USE_OPENMP=1
 else
