@@ -20,5 +20,5 @@ $PYTHON setup.py build install --old-and-unmanageable
 # Build wheel package
 if [ -n "${WHEELS_OUTPUT_FOLDER}" ]; then
     $PYTHON setup.py bdist_wheel ${WHEELS_BUILD_ARGS}
-    cp dist/skipp*.whl ${WHEELS_OUTPUT_FOLDER}
+    cp dist/scikit_ipp*.whl ${WHEELS_OUTPUT_FOLDER}
 fi
