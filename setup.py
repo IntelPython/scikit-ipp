@@ -37,6 +37,8 @@ import sys
 with io.open('skipp/_version.py', 'rt', encoding='utf8') as f:
     version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
 
+with open("README.md", "r", encoding="utf-8") as file:
+    long_description = file.read()
 
 VERSION = version
 
@@ -86,15 +88,11 @@ def setup_package():
     from numpy.distutils.core import setup
 
     metadata = dict(
-        name='skipp',
+        name='scikit_ipp',
         maintainer="Intel Corp.",
         maintainer_email="scripting@intel.com",
-        long_description="""
-            scikit-ipp is a image processing library,
-            provided scikit-image-like API to some of
-            Intel(R) Integrated Performance Primitives (Intel(R) IPP)
-            functions
-        """,
+        long_description=long_description,
+        long_description_content_type="text/markdown",
         description="Image processing library powered by Intel(R) IPP",
         url="http://github.com/IntelPython/scikit-ipp",
         author="Intel Corporation",
@@ -103,7 +101,11 @@ def setup_package():
         classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
         platforms=["Windows", "Linux", "Mac OS-X"],
         python_requires='>=3.6',
-        install_requires=['numpy'],
+        install_requires=[
+            'ipp',
+            'intel-openmp',
+            'numpy'
+            ],
         packages=find_packages(),
         configuration=configuration
         )
