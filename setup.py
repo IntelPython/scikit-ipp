@@ -43,7 +43,7 @@ with open("README.md", "r", encoding="utf-8") as file:
 VERSION = version
 
 CLASSIFIERS = """\
-Development Status :: 0 - Alpha
+Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 License :: OSI Approved
