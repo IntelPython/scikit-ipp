@@ -15,7 +15,7 @@ build:
 
 requirements:
     build:
-      - {{ compiler('c') }} #[not osx]
+      - {{ compiler('c') }}
     host:
       - cython
       - ipp
