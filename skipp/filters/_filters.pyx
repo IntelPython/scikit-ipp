@@ -76,7 +76,11 @@ def _mask_filter_result(result, mask):
 
 cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
                multichannel=None, preserve_range=False, truncate=4.0):
-    """ Gaussian filter.
+    """
+    gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0, \
+    multichannel=None, preserve_range=False, truncate=4.0)
+
+    Gaussian filter.
     The function has `skimage.filters.gaussian` like signature,
     see: https://scikit-image.org/
     Parameters
@@ -227,7 +231,12 @@ cpdef gaussian(image, sigma=1.0, output=None, mode='nearest', cval=0,
 
 cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
              shift_y=False, mode='nearest', cval=0.0, behavior='ipp'):
-    """ Median filter.
+    """
+    median(image, selem=None, out=None, mask=None, shift_x=False,\
+    shift_y=False, mode='nearest', cval=0.0, behavior='ipp')
+
+    Median filter.
+
     Return local median of an image.
     The function has `skimage.filters.median` like signature,
     see: https://scikit-image.org/
@@ -344,7 +353,11 @@ cpdef median(image, selem=None, out=None, mask=None, shift_x=False,
 
 
 cpdef laplace(image, ksize=3, mask=None):
-    """Find the edges of an image using the Laplace operator.
+    """
+    laplace(image, ksize=3, mask=None)
+
+    Find the edges of an image using the Laplace operator.
+
     The function has `skimage.filters.laplace` like signature,
     see: https://scikit-image.org/
     Parameters
@@ -508,7 +521,11 @@ cpdef __edge(image, mask=None, edgeKernel=own_filterSobel):
 
 
 cpdef sobel(image, mask=None):
-    """Find edges in an image using the Sobel filter.
+    """
+    sobel(image, mask=None)
+
+    Find edges in an image using the Sobel filter.
+
     The function has `skimage.filters.sobel` like signature,
     see: https://scikit-image.org/
     Parameters
@@ -557,7 +574,11 @@ cpdef sobel(image, mask=None):
 
 
 cpdef sobel_h(image, mask=None):
-    """Find the horizontal edges of an image using the Sobel transform.
+    """
+    sobel_h(image, mask=None)
+
+    Find the horizontal edges of an image using the Sobel transform.
+
     The function has `skimage.filters.sobel_h` like signature,
     see: https://scikit-image.org/
     Parameters
@@ -602,7 +623,11 @@ cpdef sobel_h(image, mask=None):
 
 
 cpdef sobel_v(image, mask=None):
-    """Find the vertical edges of an image using the Sobel transform.
+    """
+    sobel_v(image, mask=None)
+
+    Find the vertical edges of an image using the Sobel transform.
+
     The function has `skimage.filters.sobel_v` like signature,
     see: https://scikit-image.org/
     Parameters
@@ -647,7 +672,11 @@ cpdef sobel_v(image, mask=None):
 
 
 cpdef prewitt(image, mask=None):
-    """Find the edge magnitude using the Prewitt transform.
+    """
+    prewitt(image, mask=None)
+
+    Find the edge magnitude using the Prewitt transform.
+
     The function has `skimage.filters.prewitt` like signature,
     see: https://scikit-image.org/
     Parameters
@@ -694,7 +723,11 @@ cpdef prewitt(image, mask=None):
 
 
 cpdef prewitt_h(image, mask=None):
-    """Find the horizontal edges of an image using the Prewitt transform.
+    """
+    prewitt_h(image, mask=None)
+
+    Find the horizontal edges of an image using the Prewitt transform.
+
     The function has `skimage.filters.prewitt_h` like signature,
     see: https://scikit-image.org/
     Parameters
@@ -739,7 +772,11 @@ cpdef prewitt_h(image, mask=None):
 
 
 cpdef prewitt_v(image, mask=None):
-    """Find the vertical edges of an image using the Prewitt transform.
+    """
+    prewitt_v(image, mask=None)
+
+    Find the vertical edges of an image using the Prewitt transform.
+
     The function has `skimage.filters.prewitt_v` like signature,
     see: https://scikit-image.org/
     Parameters

@@ -192,7 +192,11 @@ class AffineTransform(object):
 
 cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
            mode='constant', cval=0., clip=True, preserve_range=False):
-    """Warp an image according to a given coordinate transformation.
+    """
+    warp(image, inverse_map, map_args={}, output_shape=None, order=1, \
+    mode='constant', cval=0., clip=True, preserve_range=False)
+
+    Warp an image according to a given coordinate transformation.
 
     The function has `skimage.transform.warp` like signature,
     see: https://scikit-image.org/
@@ -402,7 +406,11 @@ cpdef warp(image, inverse_map, map_args={}, output_shape=None, order=1,
 
 cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
              cval=0, clip=True, preserve_range=False):
-    """Rotate image by a certain angle around its center.
+    """
+    rotate(image, angle, resize=False, center=None, order=1, mode='constant', \
+    cval=0, clip=True, preserve_range=False)
+
+    Rotate image by a certain angle around its center.
 
     The function has `skimage.transform.rotate` like signature,
     see: https://scikit-image.org/
@@ -533,7 +541,12 @@ cpdef rotate(image, angle, resize=False, center=None, order=1, mode='constant',
 cpdef resize(image, output_shape, order=1, mode='edge', cval=0, clip=True,
              preserve_range=False, anti_aliasing=True, anti_aliasing_sigma=None,
              num_lobes=3):
-    """Resize image to match a certain size.
+    """
+    resize(image, output_shape, order=1, mode='edge', cval=0, clip=True, \
+    preserve_range=False, anti_aliasing=True, anti_aliasing_sigma=None, \
+    num_lobes=3)
+
+    Resize image to match a certain size.
 
     Performs interpolation to up-size or down-size 2D images. Note
     that anti-aliasing should be enabled when down-sizing images to avoid
