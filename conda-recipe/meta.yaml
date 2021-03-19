@@ -1,5 +1,5 @@
 {% set version = "1.2.0" %}
-{% set buildnumber = 0 %}
+{% set buildnumber = 6 %}
 
 package:
     name: scikit-ipp
@@ -10,6 +10,8 @@ source:
 
 build:
     number: {{ buildnumber }}
+    script_env:
+      - WHEELS_OUTPUT_FOLDER
 
 requirements:
     build:
@@ -22,6 +24,7 @@ requirements:
       - numpy >=1.15
       - python
       - setuptools
+      - wheel
     run:
       - ipp
       - intel-openmp
@@ -58,7 +61,7 @@ about:
       <br/><br/>
       EULA: <a href="https://opensource.org/licenses/BSD-3-Clause" target="_blank">BSD-3-Clause</a>
       <br/><br/>
-      
+
 extra:
      recipe-maintainers:
       - samir-nasibli
