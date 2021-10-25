@@ -15,14 +15,13 @@ build:
 
 requirements:
     build:
-      - {{ compiler('c') }} #[not osx]
+      - {{ compiler('c') }}
     host:
       - cython
       - ipp
       - ipp-devel
       - ipp-include
       - numpy >=1.15
-      - numpy 1.20 # [osx]
       - python
       - setuptools
       - wheel
