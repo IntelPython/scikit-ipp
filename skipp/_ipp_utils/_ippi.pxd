@@ -25,6 +25,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ******************************************************************************
 
+cdef extern from "ippdefs.h":
+    cdef int COMPILER_SUPPORT_SHORT_FLOAT = 0
+
 cdef extern from "ippbase.h":
     ctypedef enum IppDataType:
         ippUndef = -1
@@ -49,6 +52,7 @@ cdef extern from "ippbase.h":
         ipp64sc = 18
         ipp64f = 19
         ipp64fc = 20
+        ipp16fc = 21
 
 
 cdef extern from "ipptypes.h":
