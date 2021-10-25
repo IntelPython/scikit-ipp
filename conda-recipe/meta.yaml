@@ -18,9 +18,9 @@ requirements:
       - {{ compiler('c') }} #[not osx]
     host:
       - cython
-      - ipp 2021.3
-      - ipp-devel 2021.3
-      - ipp-include 2021.3
+      - ipp
+      - ipp-devel
+      - ipp-include
       - numpy >=1.15
       - python
       - setuptools
